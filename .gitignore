@@ -1,4 +1,5 @@
 gocompiler
+lex.yy.c
 
 # Prerequisites
 *.d
