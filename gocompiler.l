@@ -2,10 +2,14 @@
  
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
-new_line       "\n"
+
+letter         [a-z]|[A-Z]|"_"
+
 decimal_digit  [0-9]
 octal_digit    [0-7]
 hex_digit      [0-9]|[a-f]|[A-F]
+
+ID             {letter}({letter}|{decimal_digit})*
 
 decimal_lit    [1-9]{decimal_digit}*
 octal_lit      0{octal_digit}+
@@ -59,7 +63,8 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 
 {INTLIT} {printf("INTLIT(%s)\n", yytext);}
 {REALLIT} {printf("REALLIT(%s)\n", yytext);}
-{new_line}	;
+{ID} {printf("ID(%s)\n", yytext);}
+\n	        ;
 " "         ;
 
 %%
