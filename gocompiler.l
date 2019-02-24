@@ -1,7 +1,7 @@
 %{
- 
+    int flag;
 %}
-reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
+reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."
 
 letter         [a-z]|[A-Z]|"_"
 
@@ -20,8 +20,10 @@ decimals       {decimal_digit}+
 exponent       ("e"|"E")("+"|"-")?{decimals}
 REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."{decimals}{exponent}?)
 
+%X              COMMENT1 COMMENT2
+
 %%
-{reserved} {printf("RESERVED\n");}
+{reserved} {if(1){printf("RESERVED\n");}}
 ";" {printf("SEMICOLON\n");}
 "_" {printf("BLANKID\n");}
 "package" {printf("PACKAGE\n");}
@@ -61,15 +63,34 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 "func" {printf("FUNC\n");}
 "os.Args" {printf("CMDARGS\n");}
 
+"/*" {BEGIN COMMENT1;}
+"//" {BEGIN COMMENT2;}
+<COMMENT1>"*/" {BEGIN 0;}
+<COMMENT1>\n ;
+
+<COMMENT2>"\n" {BEGIN 0;}
+<COMMENT1>.  ;
+<COMMENT2>.  ;
+
 {INTLIT} {printf("INTLIT(%s)\n", yytext);}
 {REALLIT} {printf("REALLIT(%s)\n", yytext);}
 {ID} {printf("ID(%s)\n", yytext);}
 \n	        ;
-" "         ;
+.           ;
 
 %%
-int main()
-{   
+int main(int argc, char *argv[])
+{
+    int flag;
+    if (argc > 2) {
+        printf("Only 2 args");
+        return 0;
+    }
+    if (argc == 2) {
+        if (strcmp(argv[1], "-l") == 0) {
+            flag = 1;
+        }
+    }
     yylex();
     return 0;
 }
