@@ -1,5 +1,6 @@
 %{
     int flag = 0;
+    int colno = 0;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."
 
@@ -24,59 +25,61 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 
 %%
 {reserved} {if(flag){printf("RESERVED\n");}}
-";" {if(flag){printf("SEMICOLON\n");}}
-"_" {if(flag){printf("BLANKID\n");}}
-"package" {if(flag){printf("PACKAGE\n");}}
-"return" {if(flag){printf("RETURN\n");}}
-"&&" {if(flag){printf("AND\n");}}
-"=" {if(flag){printf("ASSIGN\n");}}
-"*" {if(flag){printf("STAR\n");}}
-"," {if(flag){printf("COMMA\n");}}
-"/" {if(flag){printf("DIV\n");}}
-"==" {if(flag){printf("EQ\n");}}
-">=" {if(flag){printf("GE\n");}}
-">" {if(flag){printf("GT\n");}}
-"{" {if(flag){printf("LBRACE\n");}}
-"<=" {if(flag){printf("LE\n");}}
-"(" {if(flag){printf("LPAR\n");}}
-"[" {if(flag){printf("LSQ\n");}}
-"<" {if(flag){printf("LT\n");}}
-"-" {if(flag){printf("MINUS\n");}}
-"%" {if(flag){printf("MOD\n");}}
-"!=" {if(flag){printf("NE\n");}}
-"!" {if(flag){printf("NOT\n");}}
-"||" {if(flag){printf("OR\n");}}
-"+" {if(flag){printf("PLUS\n");}}
-"}" {if(flag){printf("RBRACE\n");}}
-")" {if(flag){printf("RPAR\n");}}
-"]" {if(flag){printf("RSQ\n");}}
-"else" {if(flag){printf("ELSE\n");}}
-"for" {if(flag){printf("FOR\n");}}
-"if" {if(flag){printf("IF\n");}}
-"var" {if(flag){printf("VAR\n");}}
-"int" {if(flag){printf("INT\n");}}
-"float32" {if(flag){printf("FLOAT32\n");}}
-"bool" {if(flag){printf("BOOL\n");}}
-"string" {if(flag){printf("STRING\n");}}
-"fmt.Println" {if(flag){printf("PRINT\n");}}
-"strconv.Atoi" {if(flag){printf("PARSEINT\n");}}
-"func" {if(flag){printf("FUNC\n");}}
-"os.Args" {if(flag){printf("CMDARGS\n");}}
+";" {colno += yyleng; if(flag){printf("SEMICOLON\n");}}
+"_" {colno += yyleng; if(flag){printf("BLANKID\n");}}
+"package" {colno += yyleng; if(flag){printf("PACKAGE\n");}}
+"return" {colno += yyleng; if(flag){printf("RETURN\n");}}
+"&&" {colno += yyleng; if(flag){printf("AND\n");}}
+"=" {colno += yyleng; if(flag){printf("ASSIGN\n");}}
+"*" {colno += yyleng; if(flag){printf("STAR\n");}}
+"," {colno += yyleng; if(flag){printf("COMMA\n");}}
+"/" {colno += yyleng; if(flag){printf("DIV\n");}}
+"==" {colno += yyleng; if(flag){printf("EQ\n");}}
+">=" {colno += yyleng; if(flag){printf("GE\n");}}
+">" {colno += yyleng; if(flag){printf("GT\n");}}
+"{" {colno += yyleng; if(flag){printf("LBRACE\n");}}
+"<=" {colno += yyleng; if(flag){printf("LE\n");}}
+"(" {colno += yyleng; if(flag){printf("LPAR\n");}}
+"[" {colno += yyleng; if(flag){printf("LSQ\n");}}
+"<" {colno += yyleng; if(flag){printf("LT\n");}}
+"-" {colno += yyleng; if(flag){printf("MINUS\n");}}
+"%" {colno += yyleng; if(flag){printf("MOD\n");}}
+"!=" {colno += yyleng; if(flag){printf("NE\n");}}
+"!" {colno += yyleng; if(flag){printf("NOT\n");}}
+"||" {colno += yyleng; if(flag){printf("OR\n");}}
+"+" {colno += yyleng; if(flag){printf("PLUS\n");}}
+"}" {colno += yyleng; if(flag){printf("RBRACE\n");}}
+")" {colno += yyleng; if(flag){printf("RPAR\n");}}
+"]" {colno += yyleng; if(flag){printf("RSQ\n");}}
+"else" {colno += yyleng; if(flag){printf("ELSE\n");}}
+"for" {colno += yyleng; if(flag){printf("FOR\n");}}
+"if" {colno += yyleng; if(flag){printf("IF\n");}}
+"var" {colno += yyleng; if(flag){printf("VAR\n");}}
+"int" {colno += yyleng; if(flag){printf("INT\n");}}
+"float32" {colno += yyleng; if(flag){printf("FLOAT32\n");}}
+"bool" {colno += yyleng; if(flag){printf("BOOL\n");}}
+"string" {colno += yyleng; if(flag){printf("STRING\n");}}
+"fmt.Println" {colno += yyleng; if(flag){printf("PRINT\n");}}
+"strconv.Atoi" {colno += yyleng; if(flag){printf("PARSEINT\n");}}
+"func" {colno += yyleng; if(flag){printf("FUNC\n");}}
+"os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
 
-"/*" {BEGIN COMMENT1;}
-"//" {BEGIN COMMENT2;}
-<COMMENT1>"*/" {BEGIN 0;}
+"/*" {colno += yyleng; BEGIN COMMENT1;}
+"//" {colno += yyleng; BEGIN COMMENT2;}
+<COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
 <COMMENT1>\n ;
 
 <COMMENT2>"\n" {BEGIN 0;}
-<COMMENT1>.  ;
-<COMMENT2>.  ;
+<COMMENT1>.  colno += yyleng;
+<COMMENT2>.  colno += yyleng;
 
-{INTLIT} {if(flag){printf("INTLIT(%s)\n", yytext);}}
-{REALLIT} {if(flag){printf("REALLIT(%s)\n", yytext);}}
-{ID} {if(flag){printf("ID(%s)\n", yytext);}}
-\n	        ;
-.           ;
+{INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
+{REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
+{ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
+\n	        {colno = 0;};
+\t          ;
+" "         ;
+.           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
 int main(int argc, char *argv[])
