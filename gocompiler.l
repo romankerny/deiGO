@@ -1,5 +1,5 @@
 %{
-    int flag;
+    int flag = 0;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."
 
@@ -23,45 +23,45 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 %X              COMMENT1 COMMENT2
 
 %%
-{reserved} {if(1){printf("RESERVED\n");}}
-";" {printf("SEMICOLON\n");}
-"_" {printf("BLANKID\n");}
-"package" {printf("PACKAGE\n");}
-"return" {printf("RETURN\n");}
-"&&" {printf("AND\n");}
-"=" {printf("ASSIGN\n");}
-"*" {printf("STAR\n");}
-"," {printf("COMMA\n");}
-"/" {printf("DIV\n");}
-"==" {printf("EQ\n");}
-">=" {printf("GE\n");}
-">" {printf("GT\n");}
-"{" {printf("LBRACE\n");}
-"<=" {printf("LE\n");}
-"(" {printf("LPAR\n");}
-"[" {printf("LSQ\n");}
-"<" {printf("LT\n");}
-"-" {printf("MINUS\n");}
-"%" {printf("MOD\n");}
-"!=" {printf("NE\n");}
-"!" {printf("NOT\n");}
-"||" {printf("OR\n");}
-"+" {printf("PLUS\n");}
-"}" {printf("RBRACE\n");}
-")" {printf("RPAR\n");}
-"]" {printf("RSQ\n");}
-"else" {printf("ELSE\n");}
-"for" {printf("FOR\n");}
-"if" {printf("IF\n");}
-"var" {printf("VAR\n");}
-"int" {printf("INT\n");}
-"float32" {printf("FLOAT32\n");}
-"bool" {printf("BOOL\n");}
-"string" {printf("STRING\n");}
-"fmt.Println" {printf("PRINT\n");}
-"strconv.Atoi" {printf("PARSEINT\n");}
-"func" {printf("FUNC\n");}
-"os.Args" {printf("CMDARGS\n");}
+{reserved} {if(flag){printf("RESERVED\n");}}
+";" {if(flag){printf("SEMICOLON\n");}}
+"_" {if(flag){printf("BLANKID\n");}}
+"package" {if(flag){printf("PACKAGE\n");}}
+"return" {if(flag){printf("RETURN\n");}}
+"&&" {if(flag){printf("AND\n");}}
+"=" {if(flag){printf("ASSIGN\n");}}
+"*" {if(flag){printf("STAR\n");}}
+"," {if(flag){printf("COMMA\n");}}
+"/" {if(flag){printf("DIV\n");}}
+"==" {if(flag){printf("EQ\n");}}
+">=" {if(flag){printf("GE\n");}}
+">" {if(flag){printf("GT\n");}}
+"{" {if(flag){printf("LBRACE\n");}}
+"<=" {if(flag){printf("LE\n");}}
+"(" {if(flag){printf("LPAR\n");}}
+"[" {if(flag){printf("LSQ\n");}}
+"<" {if(flag){printf("LT\n");}}
+"-" {if(flag){printf("MINUS\n");}}
+"%" {if(flag){printf("MOD\n");}}
+"!=" {if(flag){printf("NE\n");}}
+"!" {if(flag){printf("NOT\n");}}
+"||" {if(flag){printf("OR\n");}}
+"+" {if(flag){printf("PLUS\n");}}
+"}" {if(flag){printf("RBRACE\n");}}
+")" {if(flag){printf("RPAR\n");}}
+"]" {if(flag){printf("RSQ\n");}}
+"else" {if(flag){printf("ELSE\n");}}
+"for" {if(flag){printf("FOR\n");}}
+"if" {if(flag){printf("IF\n");}}
+"var" {if(flag){printf("VAR\n");}}
+"int" {if(flag){printf("INT\n");}}
+"float32" {if(flag){printf("FLOAT32\n");}}
+"bool" {if(flag){printf("BOOL\n");}}
+"string" {if(flag){printf("STRING\n");}}
+"fmt.Println" {if(flag){printf("PRINT\n");}}
+"strconv.Atoi" {if(flag){printf("PARSEINT\n");}}
+"func" {if(flag){printf("FUNC\n");}}
+"os.Args" {if(flag){printf("CMDARGS\n");}}
 
 "/*" {BEGIN COMMENT1;}
 "//" {BEGIN COMMENT2;}
@@ -72,24 +72,20 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 <COMMENT1>.  ;
 <COMMENT2>.  ;
 
-{INTLIT} {printf("INTLIT(%s)\n", yytext);}
-{REALLIT} {printf("REALLIT(%s)\n", yytext);}
-{ID} {printf("ID(%s)\n", yytext);}
+{INTLIT} {if(flag){printf("INTLIT(%s)\n", yytext);}}
+{REALLIT} {if(flag){printf("REALLIT(%s)\n", yytext);}}
+{ID} {if(flag){printf("ID(%s)\n", yytext);}}
 \n	        ;
 .           ;
 
 %%
 int main(int argc, char *argv[])
 {
-    int flag;
-    if (argc > 2) {
-        printf("Only 2 args");
-        return 0;
-    }
     if (argc == 2) {
-        if (strcmp(argv[1], "-l") == 0) {
+        if (strcmp(argv[1], "-l") == 0)
             flag = 1;
-        }
+        else
+            flag = 0;
     }
     yylex();
     return 0;
