@@ -1,3 +1,4 @@
+%option yylineno
 %{
     int flag = 0;
     int colno = 0;
@@ -74,19 +75,19 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 "/*" {colno += yyleng; BEGIN COMMENT1;}
 "//" {colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n ;
+<COMMENT1>\n {colno = 0;};
 
-<COMMENT2>"\n" {BEGIN 0;}
+<COMMENT2>"\n" {colno = 0; BEGIN 0;}
 <COMMENT1>.  colno += yyleng;
 <COMMENT2>.  colno += yyleng;
 
 {INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
 {REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
 {ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-{STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
-\n	        {colno = 0;};
-\t          ;
-" "         ;
+{STRLIT}   {colno += yyleng; if(flag) {printf("STRLIT(%s)\n", yytext);}}
+\n	        {colno = 0;}
+\t          {colno += yyleng;}
+" "         {colno += yyleng;}
 .           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
