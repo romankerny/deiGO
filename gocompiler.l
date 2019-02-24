@@ -2,7 +2,7 @@
     int flag = 0;
     int colno = 0;
 %}
-reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."
+reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."|":"|"."
 
 letter         [a-z]|[A-Z]|"_"
 
@@ -20,6 +20,13 @@ INTLIT         {decimal_lit}|{octal_lit}|{hex_lit}|0
 decimals       {decimal_digit}+
 exponent       ("e"|"E")("+"|"-")?{decimals}
 REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."{decimals}{exponent}?)
+
+chars_for_STRLIT  [^\n\r\"]
+
+escape_sequence  \(n|t|r|f|"|\)
+
+STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
+
 
 %X              COMMENT1 COMMENT2
 
@@ -76,6 +83,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 {INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
 {REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
 {ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
+{STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
 \n	        {colno = 0;};
 \t          ;
 " "         ;
