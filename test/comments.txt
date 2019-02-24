@@ -1,0 +1,11 @@
+/* boas */ 1
+// linha 1
+// linha 2 // caralho
+/* FDS CRL */
+
+
+/*
+
+paaa \n
+
+*/

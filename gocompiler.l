@@ -20,6 +20,13 @@ decimals       {decimal_digit}+
 exponent       ("e"|"E")("+"|"-")?{decimals}
 REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."{decimals}{exponent}?)
 
+chars_for_STRLIT  [^\n\r\"]
+
+escape_sequence  \(n|t|r|f|"|\)
+
+STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
+
+
 %X              COMMENT1 COMMENT2
 
 %%
@@ -63,6 +70,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 "func" {printf("FUNC\n");}
 "os.Args" {printf("CMDARGS\n");}
 
+
 "/*" {BEGIN COMMENT1;}
 "//" {BEGIN COMMENT2;}
 <COMMENT1>"*/" {BEGIN 0;}
@@ -75,6 +83,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 {INTLIT} {printf("INTLIT(%s)\n", yytext);}
 {REALLIT} {printf("REALLIT(%s)\n", yytext);}
 {ID} {printf("ID(%s)\n", yytext);}
+{STRLIT} {printf("STRLIT(%s)\n", yytext);}
 \n	        ;
 .           ;
 
