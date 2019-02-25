@@ -88,11 +88,11 @@ asp               \"
 <COMMENT2><<EOF>> {BEGIN 0; yyterminate();}
 
 
-{asp}                       {str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno; colno += yyleng;}
-<STRING>{asp}               {BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
+{asp}                       {colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno; colno += yyleng;}
+<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>.                   {colno += yyleng;}
-<STRING>{STRLIT_forbbiden}  {BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column + 1); yyterminate();}
-<STRING><<EOF>>             {BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",    string_beginning_line, string_beginning_column + 1); yyterminate();}
+<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column); yyterminate();}
+<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",    string_beginning_line, string_beginning_column); yyterminate();}
 
 
 
