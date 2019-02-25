@@ -1,4 +1,3 @@
 #!/bin/sh
 
-cd ..
-zip -r gocompiler.zip deiGO/
+zip -r gocompiler.zip gocompiler.l

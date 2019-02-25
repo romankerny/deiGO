@@ -31,10 +31,10 @@ escape_sequence  \(n|t|r|f|"|\)
 STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 
 
-%X              COMMENT1 COMMENT2
+%X              COMMENT1 COMMENT2 STRING
 
 %%
-{reserved} {if(flag){printf("RESERVED\n");}}
+{reserved} {if(flag){printf("RESERVED(%s)\n", yytext);}}
 ";" {colno += yyleng; if(flag){printf("SEMICOLON\n");}}
 "_" {colno += yyleng; if(flag){printf("BLANKID\n");}}
 "package" {colno += yyleng; if(flag){printf("PACKAGE\n");}}
@@ -78,21 +78,26 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 "//" {comment_begining_line = yylineno; comment_begining_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
 <COMMENT1>\n ;
-<COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_begining_line, comment_begining_column);}
+<COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_begining_line, comment_begining_column + 1);}
 
 <COMMENT2>\n {BEGIN 0;}
 <COMMENT1>.  {colno += yyleng;}
 <COMMENT2>.  {colno += yyleng;}
-<COMMENT2><<EOF>> {BEGIN 0;}
+<COMMENT2><<EOF>> {BEGIN 0; yyterminate();}
 
-{INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
-{REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
-{ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-{STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
-\n	        {colno = 0;};
-\t          ;
-" "         ;
-.           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
+
+<STRING>\" {BEGIN 0;}
+
+
+
+{INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
+{REALLIT}  {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
+{ID}       {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
+{STRLIT}   {colno += yyleng; if(flag) {printf("STRLIT(%s)\n", yytext);}}
+\n	       {colno = 0;};
+\t         {colno += yyleng;}
+" "        {colno += yyleng;}
+.          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
 int main(int argc, char *argv[])
