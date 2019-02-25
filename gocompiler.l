@@ -7,7 +7,7 @@
     int string_beginning_line,  string_beginning_column;
     char * str_beginning;
 %}
-reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."|":"|"."
+reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
 
 letter         [a-z]|[A-Z]|"_"
 
@@ -79,7 +79,7 @@ asp               \"
 "/*" {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT1;}
 "//" {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n {colno += 0}
+<COMMENT1>\n {colno += 0;}
 <COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
 
 <COMMENT2>\n {colno += 0; BEGIN 0;}
