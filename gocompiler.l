@@ -3,7 +3,9 @@
 %{
     int flag = 0;
     int colno = 0;
-    int comment_begining_line, comment_begining_column;
+    int comment_beginning_line, comment_beginning_column;
+    int string_beginning_line,  string_beginning_column;
+    char * str_beginning;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."|":"|"."
 
@@ -24,14 +26,14 @@ decimals       {decimal_digit}+
 exponent       ("e"|"E")("+"|"-")?{decimals}
 REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."{decimals}{exponent}?)
 
-chars_for_STRLIT  [^\n\r\"]
+STRLIT_forbbiden  (\n|\r)
 
 escape_sequence  \\(f|n|r|t|\"|\\)
+asp               \"
 
-STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 
 
-%X              COMMENT1 COMMENT2
+%X              COMMENT1 COMMENT2 STRING
 
 %%
 {reserved} {if(flag){printf("RESERVED(%s)\n", yytext);}}
@@ -74,25 +76,33 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 "func" {colno += yyleng; if(flag){printf("FUNC\n");}}
 "os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
 
-"/*" {comment_begining_line = yylineno; comment_begining_column = colno;  colno += yyleng; BEGIN COMMENT1;}
-"//" {comment_begining_line = yylineno; comment_begining_column = colno;  colno += yyleng; BEGIN COMMENT2;}
+"/*" {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT1;}
+"//" {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n {colno = 0;}
-<COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_begining_line, comment_begining_column);}
+<COMMENT1>\n ;
+<COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
 
-<COMMENT2>\n {colno = 0; BEGIN 0;}
+<COMMENT2>\n {BEGIN 0;}
 <COMMENT1>.  {colno += yyleng;}
 <COMMENT2>.  {colno += yyleng;}
-<COMMENT2><<EOF>> {BEGIN 0;}
+<COMMENT2><<EOF>> {BEGIN 0; yyterminate();}
 
-{INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
-{REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
-{ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-{STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
-\n	        {colno = 0;}
-\t          {colno += yyleng;}
-" "         {colno += yyleng;}
-.           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
+
+{asp}                       {str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno; colno += yyleng;}
+<STRING>{asp}               {BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
+<STRING>.                   {colno += yyleng;}
+<STRING>{STRLIT_forbbiden}  {BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column + 1); yyterminate();}
+<STRING><<EOF>>             {BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",    string_beginning_line, string_beginning_column + 1); yyterminate();}
+
+
+
+{INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
+{REALLIT}  {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
+{ID}       {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
+\n	       {colno = 0;};
+\t         {colno += yyleng;}
+" "        {colno += yyleng;}
+.          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
 int main(int argc, char *argv[])
