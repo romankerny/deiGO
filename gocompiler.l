@@ -77,6 +77,7 @@ asp               \"
 "func" {colno += yyleng; if(flag){printf("FUNC\n");}}
 "os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
 
+
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno; BEGIN COMMENT1;}
 "//"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
@@ -91,8 +92,8 @@ asp               \"
 
 {asp}                       {print_string = 1; colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
-<STRING>.                   {colno += yyleng;}
 <STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno, yytext); print_string = 0;} 
+<STRING>.                   {colno += yyleng;}
 <STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
 
