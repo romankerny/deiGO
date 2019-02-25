@@ -1,0 +1,25 @@
+# ignore all files
+meta1/*
+meta2/*
+meta3/*
+meta4/*
+
+# except .go .deigo .dgo files
+!meta1/*.go
+!meta1/*.deigo
+!meta1/*.dgo
+!meta2/*.go
+!meta2/*.deigo
+!meta2/*.dgo
+!meta3/*.go
+!meta3/*.deigo
+!meta3/*.dgo
+!meta4/*.go
+!meta4/*.deigo
+!meta4/*.dgo
+
+# and except .out files with compilation results
+!meta1/*.out
+!meta2/*.out
+!meta3/*.out
+!meta4/*.out
