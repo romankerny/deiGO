@@ -26,7 +26,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 
 chars_for_STRLIT  [^\n\r\"]
 
-escape_sequence  \(n|t|r|f|"|\)
+escape_sequence  \\(f|n|r|t|\"|\\)
 
 STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 
@@ -34,7 +34,7 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 %X              COMMENT1 COMMENT2
 
 %%
-{reserved} {if(flag){printf("RESERVED\n");}}
+{reserved} {if(flag){printf("RESERVED(%s)\n", yytext);}}
 ";" {colno += yyleng; if(flag){printf("SEMICOLON\n");}}
 "_" {colno += yyleng; if(flag){printf("BLANKID\n");}}
 "package" {colno += yyleng; if(flag){printf("PACKAGE\n");}}
@@ -89,9 +89,9 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 {REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
 {ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
 {STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
-\n	        {colno = 0;};
-\t          ;
-" "         ;
+\n	        {colno = 0;}
+\t          {colno += yyleng;}
+" "         {colno += yyleng;}
 .           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%

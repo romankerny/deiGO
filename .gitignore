@@ -1,7 +1,7 @@
 gocompiler
 lex.yy.c
 Comp2019/
-
+*.zip
 # Prerequisites
 *.d
 
