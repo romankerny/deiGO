@@ -3,6 +3,7 @@
 %{
     int flag = 0;
     int colno = 0;
+    int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
     char * str_beginning;
@@ -88,13 +89,12 @@ asp               \"
 <COMMENT2><<EOF>>   {colno += yyleng;BEGIN 0;}
 
 
-{asp}                       {colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
-<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
+{asp}                       {print_string = 1; colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
+<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>.                   {colno += yyleng;}
-<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno, yytext);} 
-<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
+<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno, yytext); print_string = 0;} 
+<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
-
 
 
 {INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
