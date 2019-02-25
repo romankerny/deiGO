@@ -1,7 +1,9 @@
 %option yylineno
+
 %{
     int flag = 0;
     int colno = 0;
+    int comment_begining_line, comment_begining_column;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"|"&"|"|"|"<<"|">>"|"&^"|"+="|"-="|"*="|"/="|"%="|"&="|"|="|"^="|"<<="|">>="|"&^="|"<-"|":="|"..."|":"|"."
 
@@ -72,22 +74,24 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 "func" {colno += yyleng; if(flag){printf("FUNC\n");}}
 "os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
 
-"/*" {colno += yyleng; BEGIN COMMENT1;}
-"//" {colno += yyleng; BEGIN COMMENT2;}
+"/*" {comment_begining_line = yylineno; comment_begining_column = colno;  colno += yyleng; BEGIN COMMENT1;}
+"//" {comment_begining_line = yylineno; comment_begining_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n {colno = 0;}
+<COMMENT1>\n ;
+<COMMENT1><<EOF>> {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_begining_line, comment_begining_column);}
 
-<COMMENT2>\n {colno = 0; BEGIN 0;}
-<COMMENT1>.  {colno += yyleng;};
+<COMMENT2>\n {BEGIN 0;}
+<COMMENT1>.  {colno += yyleng;}
 <COMMENT2>.  {colno += yyleng;}
+<COMMENT2><<EOF>> {BEGIN 0;}
 
 {INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
 {REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
 {ID} {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-{STRLIT}   {colno += yyleng; if(flag) {printf("STRLIT(%s)\n", yytext);}}
-\n	        {colno = 0;}
-\t          {colno += yyleng;}
-" "         {colno += yyleng;}
+{STRLIT}   {if(flag) {printf("STRLIT(%s)\n", yytext);}}
+\n	        {colno = 0;};
+\t          ;
+" "         ;
 .           {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
