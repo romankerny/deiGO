@@ -28,7 +28,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 
 STRLIT_forbbiden  (\n|\r)
 
-escape_sequence  \\(f|n|r|t|\"|\\)
+invalid_sequence  \\[^(f|n|r|t|\"|\\)]
 asp               \"
 
 
@@ -85,14 +85,15 @@ asp               \"
 <COMMENT2>\n {BEGIN 0;}
 <COMMENT1>.  {colno += yyleng;}
 <COMMENT2>.  {colno += yyleng;}
-<COMMENT2><<EOF>> {BEGIN 0; yyterminate();}
+<COMMENT2><<EOF>> {BEGIN 0;}
 
 
-{asp}                       {colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno; colno += yyleng;}
+{asp}                       {colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>.                   {colno += yyleng;}
-<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column); yyterminate();}
-<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",    string_beginning_line, string_beginning_column); yyterminate();}
+<STRING>{invalid_sequence}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: invalid escape sequence (%s)\n", string_beginning_line, string_beginning_column, yytext );} 
+<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
+<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
 
 
 
