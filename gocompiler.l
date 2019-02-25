@@ -79,7 +79,7 @@ asp               \"
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno; BEGIN COMMENT1;}
 "//"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n        {colno += 0}
+<COMMENT1>\n        {colno += 0;}
 <COMMENT1><<EOF>>   {colno += yyleng;BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
 
 <COMMENT2>\n        {colno += 0; BEGIN 0;}
@@ -91,7 +91,7 @@ asp               \"
 {asp}                       {colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag) {printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>.                   {colno += yyleng;}
-<STRING>{invalid_sequence}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: invalid escape sequence (%s)\n", string_beginning_line, string_beginning_column, yytext );} 
+<STRING>{invalid_sequence}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: invalid escape sequence (%s)\n", string_beginning_line, string_beginning_column, yytext);} 
 <STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
 
