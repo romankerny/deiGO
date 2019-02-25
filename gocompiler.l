@@ -75,11 +75,11 @@ STRLIT \"({chars_for_STRLIT}|escape_sequence)*\"
 "/*" {colno += yyleng; BEGIN COMMENT1;}
 "//" {colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/" {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n {colno = 0;};
+<COMMENT1>\n {colno = 0;}
 
-<COMMENT2>"\n" {colno = 0; BEGIN 0;}
-<COMMENT1>.  colno += yyleng;
-<COMMENT2>.  colno += yyleng;
+<COMMENT2>\n {colno = 0; BEGIN 0;}
+<COMMENT1>.  {colno += yyleng;};
+<COMMENT2>.  {colno += yyleng;}
 
 {INTLIT} {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
 {REALLIT} {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
