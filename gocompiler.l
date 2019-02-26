@@ -7,6 +7,7 @@
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
     char * str_beginning;
+    int semi = 0;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
 
@@ -39,45 +40,46 @@ asp               \"
 %X              COMMENT1 COMMENT2 STRING
 
 %%
-{reserved} {colno += yyleng; if(flag){printf("RESERVED(%s)\n", yytext);}}
-";" {colno += yyleng; if(flag){printf("SEMICOLON\n");}}
-"_" {colno += yyleng; if(flag){printf("BLANKID\n");}}
-"package" {colno += yyleng; if(flag){printf("PACKAGE\n");}}
-"return" {colno += yyleng; if(flag){printf("RETURN\n");}}
-"&&" {colno += yyleng; if(flag){printf("AND\n");}}
-"=" {colno += yyleng; if(flag){printf("ASSIGN\n");}}
-"*" {colno += yyleng; if(flag){printf("STAR\n");}}
-"," {colno += yyleng; if(flag){printf("COMMA\n");}}
-"/" {colno += yyleng; if(flag){printf("DIV\n");}}
-"==" {colno += yyleng; if(flag){printf("EQ\n");}}
-">=" {colno += yyleng; if(flag){printf("GE\n");}}
-">" {colno += yyleng; if(flag){printf("GT\n");}}
-"{" {colno += yyleng; if(flag){printf("LBRACE\n");}}
-"<=" {colno += yyleng; if(flag){printf("LE\n");}}
-"(" {colno += yyleng; if(flag){printf("LPAR\n");}}
-"[" {colno += yyleng; if(flag){printf("LSQ\n");}}
-"<" {colno += yyleng; if(flag){printf("LT\n");}}
-"-" {colno += yyleng; if(flag){printf("MINUS\n");}}
-"%" {colno += yyleng; if(flag){printf("MOD\n");}}
-"!=" {colno += yyleng; if(flag){printf("NE\n");}}
-"!" {colno += yyleng; if(flag){printf("NOT\n");}}
-"||" {colno += yyleng; if(flag){printf("OR\n");}}
-"+" {colno += yyleng; if(flag){printf("PLUS\n");}}
-"}" {colno += yyleng; if(flag){printf("RBRACE\n");}}
-")" {colno += yyleng; if(flag){printf("RPAR\n");}}
-"]" {colno += yyleng; if(flag){printf("RSQ\n");}}
-"else" {colno += yyleng; if(flag){printf("ELSE\n");}}
-"for" {colno += yyleng; if(flag){printf("FOR\n");}}
-"if" {colno += yyleng; if(flag){printf("IF\n");}}
-"var" {colno += yyleng; if(flag){printf("VAR\n");}}
-"int" {colno += yyleng; if(flag){printf("INT\n");}}
-"float32" {colno += yyleng; if(flag){printf("FLOAT32\n");}}
-"bool" {colno += yyleng; if(flag){printf("BOOL\n");}}
-"string" {colno += yyleng; if(flag){printf("STRING\n");}}
-"fmt.Println" {colno += yyleng; if(flag){printf("PRINT\n");}}
-"strconv.Atoi" {colno += yyleng; if(flag){printf("PARSEINT\n");}}
-"func" {colno += yyleng; if(flag){printf("FUNC\n");}}
-"os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
+{reserved} {semi = 0; colno += yyleng; if(flag){printf("RESERVED(%s)\n", yytext);}}
+";" {semi = 0; colno += yyleng; if(flag){printf("SEMICOLON\n");}}
+"_" {semi = 0; colno += yyleng; if(flag){printf("BLANKID\n");}}
+"package" {semi = 0; colno += yyleng; if(flag){printf("PACKAGE\n");}}
+"return" {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");}}
+"&&" {semi = 0; colno += yyleng; if(flag){printf("AND\n");}}
+"=" {semi = 0; colno += yyleng; if(flag){printf("ASSIGN\n");}}
+"*" {semi = 0; colno += yyleng; if(flag){printf("STAR\n");}}
+"," {semi = 0; colno += yyleng; if(flag){printf("COMMA\n");}}
+"/" {semi = 0; colno += yyleng; if(flag){printf("DIV\n");}}
+"==" {semi = 0; colno += yyleng; if(flag){printf("EQ\n");}}
+">=" {semi = 0; colno += yyleng; if(flag){printf("GE\n");}}
+">" {semi = 0; colno += yyleng; if(flag){printf("GT\n");}}
+"{" {semi = 0; colno += yyleng; if(flag){printf("LBRACE\n");}}
+"<=" {semi = 0; colno += yyleng; if(flag){printf("LE\n");}}
+"(" {semi = 0; colno += yyleng; if(flag){printf("LPAR\n");}}
+"[" {semi = 0; colno += yyleng; if(flag){printf("LSQ\n");}}
+"<" {semi = 0; colno += yyleng; if(flag){printf("LT\n");}}
+"-" {semi = 0; colno += yyleng; if(flag){printf("MINUS\n");}}
+"%" {semi = 0; colno += yyleng; if(flag){printf("MOD\n");}}
+"!=" {semi = 0; colno += yyleng; if(flag){printf("NE\n");}}
+"!" {semi = 0; colno += yyleng; if(flag){printf("NOT\n");}}
+"||" {semi = 0; colno += yyleng; if(flag){printf("OR\n");}}
+"+" {semi = 0; colno += yyleng; if(flag){printf("PLUS\n");}}
+"}" {semi = 1; colno += yyleng; if(flag){printf("RBRACE\n");}}
+")" {semi = 1; colno += yyleng; if(flag){printf("RPAR\n");}}
+"]" {semi = 1; colno += yyleng; if(flag){printf("RSQ\n");}}
+"else" {semi = 0; colno += yyleng; if(flag){printf("ELSE\n");}}
+"for" {semi = 0; colno += yyleng; if(flag){printf("FOR\n");}}
+"if" {semi = 0; colno += yyleng; if(flag){printf("IF\n");}}
+"var" {semi = 0; colno += yyleng; if(flag){printf("VAR\n");}}
+"int" {semi = 0; colno += yyleng; if(flag){printf("INT\n");}}
+"float32" {semi = 0; colno += yyleng; if(flag){printf("FLOAT32\n");}}
+"bool" {semi = 0; colno += yyleng; if(flag){printf("BOOL\n");}}
+"string" {semi = 0; colno += yyleng; if(flag){printf("STRING\n");}}
+"fmt.Println" {semi = 0; colno += yyleng; if(flag){printf("PRINT\n");}}
+"strconv.Atoi" {semi = 0; colno += yyleng; if(flag){printf("PARSEINT\n");}}
+"func" {semi = 0; semi = 0; colno += yyleng; if(flag){printf("FUNC\n");}}
+"os.Args" {semi = 0; colno += yyleng; if(flag){printf("CMDARGS\n");}}
+
 
 
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno-1; BEGIN COMMENT1;}
@@ -93,7 +95,7 @@ asp               \"
 
 
 {asp}                       {colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; str_beginning = yytext; BEGIN STRING;}
-<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
+<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {semi = 1; printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>{invalid_sequence}  {printf("Colno before: %d\n", colno); colno += yyleng; printf("Colno after: %d\n", colno); printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
@@ -101,10 +103,10 @@ asp               \"
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 
 
-{INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
-{REALLIT}  {colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
-{ID}       {colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-\n	       {colno = 0;};
+{INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
+{REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
+{ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
+\n	       {if (semi) {printf("SEMICOLON"); }colno = 0;};
 \t         {colno += yyleng;}
 " "        {colno += yyleng;}
 .          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
