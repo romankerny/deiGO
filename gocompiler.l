@@ -82,6 +82,8 @@ asp               \"
 
 
 
+
+
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno-1; BEGIN COMMENT1;}
 "//"                {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
