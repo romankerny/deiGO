@@ -2,7 +2,7 @@
 
 %{
     int flag = 0;
-    int colno = 0;
+    int colno = 1;
     int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
@@ -80,25 +80,25 @@ asp               \"
 "os.Args" {colno += yyleng; if(flag){printf("CMDARGS\n");}}
 
 
-"/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno; BEGIN COMMENT1;}
-"//"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
+"/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno-1; BEGIN COMMENT1;}
+"//"                {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n        {colno = 0;}
-<COMMENT1><<EOF>>   {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
+<COMMENT1>\n        {colno = 1;}
+<COMMENT1><<EOF>>   {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column); colno += yyleng; }
 
-<COMMENT2>\n        {colno = 0; BEGIN 0;}
+<COMMENT2>\n        {colno = 1; BEGIN 0;}
 <COMMENT1>.         {colno += yyleng;}
 <COMMENT2>.         {colno += yyleng;}
 <COMMENT2><<EOF>>   {colno += yyleng;BEGIN 0;}
 
 
-{asp}                       {print_string = 1; colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
+{asp}                       {print_string = 1; str_beginning = yytext; BEGIN STRING; colno += yyleng; }
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
-<STRING>{invalid_sequence}  {printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, string_beginning_column+colno, yytext); print_string = 0; colno += yyleng;} 
+<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
-<STRING>{STRLIT_forbbiden}  {colno = 0; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
-<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
+<STRING>{STRLIT_forbbiden}  {BEGIN 0; printf("-Line %d, column %d: unterminated string literal\n", yylineno-1,  colno); print_string = 0; colno = 1;}
+<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", yylineno, colno);}
 
 
 {INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
