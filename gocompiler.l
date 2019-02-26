@@ -6,8 +6,9 @@
     int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
-    char * str_beginning;
+    char str_beginning[1024];
     int semi = 0;
+    int i = 0;
 %}
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
 
@@ -97,11 +98,11 @@ asp               \"
 <COMMENT2><<EOF>>   {BEGIN 0;}
 
 
-{asp}                       {colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; str_beginning = yytext; BEGIN STRING;}
-<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {semi = 1; printf("STRLIT(%s)\n", str_beginning);}}
+{asp}                       {i = 0; colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; BEGIN STRING;}
+<STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {semi = 1; str_beginning[i] = '\0'; printf("STRLIT(\"%s\")\n", str_beginning);}}
 <STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
-<STRING>{valid_escape}      {colno += yyleng;}
-<STRING>.                   {colno += yyleng;}
+<STRING>{valid_escape}      {colno += yyleng; str_beginning[i] = yytext[0]; i++; str_beginning[i] = yytext[1]; i++;}
+<STRING>.                   {colno += yyleng; str_beginning[i] = *yytext; i++;}
 <STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0; colno = 0;}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 
