@@ -44,7 +44,7 @@ asp               \"
 ";" {semi = 0; colno += yyleng; if(flag){printf("SEMICOLON\n");}}
 "_" {semi = 0; colno += yyleng; if(flag){printf("BLANKID\n");}}
 "package" {semi = 0; colno += yyleng; if(flag){printf("PACKAGE\n");}}
-"return" {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");}}
+"return"  {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");}}
 "&&" {semi = 0; colno += yyleng; if(flag){printf("AND\n");}}
 "=" {semi = 0; colno += yyleng; if(flag){printf("ASSIGN\n");}}
 "*" {semi = 0; colno += yyleng; if(flag){printf("STAR\n");}}
@@ -106,7 +106,7 @@ asp               \"
 {INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
 {REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);}}
 {ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);}}
-\n	       {if (semi) {printf("SEMICOLON"); }colno = 0;};
+\n	       {if (semi) {printf("SEMICOLON\n"); }colno = 0; semi = 0;};
 \t         {colno += yyleng;}
 " "        {colno += yyleng;}
 .          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
