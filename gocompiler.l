@@ -2,7 +2,7 @@
 
 %{
     int flag = 0;
-    int colno = 1;
+    int colno = 0;
     int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
@@ -29,7 +29,7 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 
 STRLIT_forbbiden  (\n|\r)
 
-invalid_sequence  \\[^(f|n|r|t|\"|\\)]
+invalid_sequence  \\[^fnrt\"\\]
 valid_escape      \\(f|n|r|t|\"|\\)
 
 asp               \"
@@ -39,7 +39,7 @@ asp               \"
 %X              COMMENT1 COMMENT2 STRING
 
 %%
-{reserved} {if(flag){printf("RESERVED(%s)\n", yytext);}}
+{reserved} {colno += yyleng; if(flag){printf("RESERVED(%s)\n", yytext);}}
 ";" {colno += yyleng; if(flag){printf("SEMICOLON\n");}}
 "_" {colno += yyleng; if(flag){printf("BLANKID\n");}}
 "package" {colno += yyleng; if(flag){printf("PACKAGE\n");}}
@@ -83,22 +83,22 @@ asp               \"
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno-1; BEGIN COMMENT1;}
 "//"                {comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n        {colno = 1;}
-<COMMENT1><<EOF>>   {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column); colno += yyleng; }
+<COMMENT1>\n        {colno = 0;}
+<COMMENT1><<EOF>>   {BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column); }
 
-<COMMENT2>\n        {colno = 1; BEGIN 0;}
+<COMMENT2>\n        {colno = 0; BEGIN 0;}
 <COMMENT1>.         {colno += yyleng;}
 <COMMENT2>.         {colno += yyleng;}
-<COMMENT2><<EOF>>   {colno += yyleng;BEGIN 0;}
+<COMMENT2><<EOF>>   {BEGIN 0;}
 
 
-{asp}                       {print_string = 1; str_beginning = yytext; BEGIN STRING; colno += yyleng; }
+{asp}                       {colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; str_beginning = yytext; BEGIN STRING;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
-<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
+<STRING>{invalid_sequence}  {printf("Colno before: %d\n", colno); colno += yyleng; printf("Colno after: %d\n", colno); printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
-<STRING>{STRLIT_forbbiden}  {BEGIN 0; printf("-Line %d, column %d: unterminated string literal\n", yylineno-1,  colno); print_string = 0; colno = 1;}
-<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", yylineno, colno);}
+<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0; colno = 0;}
+<STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 
 
 {INTLIT}   {colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);}}
