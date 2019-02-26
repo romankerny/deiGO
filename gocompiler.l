@@ -83,10 +83,10 @@ asp               \"
 "/*"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno; BEGIN COMMENT1;}
 "//"                {colno += yyleng; comment_beginning_line = yylineno; comment_beginning_column = colno;  colno += yyleng; BEGIN COMMENT2;}
 <COMMENT1>"*/"      {colno += yyleng; BEGIN 0;}
-<COMMENT1>\n        {colno += 0;}
-<COMMENT1><<EOF>>   {colno += yyleng;BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
+<COMMENT1>\n        {colno = 0;}
+<COMMENT1><<EOF>>   {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated comment\n", comment_beginning_line, comment_beginning_column + 1);}
 
-<COMMENT2>\n        {colno += 0; BEGIN 0;}
+<COMMENT2>\n        {colno = 0; BEGIN 0;}
 <COMMENT1>.         {colno += yyleng;}
 <COMMENT2>.         {colno += yyleng;}
 <COMMENT2><<EOF>>   {colno += yyleng;BEGIN 0;}
@@ -94,10 +94,10 @@ asp               \"
 
 {asp}                       {print_string = 1; colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
-<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno, yytext); print_string = 0;} 
+<STRING>{invalid_sequence}  {printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, string_beginning_column+colno, yytext); print_string = 0; colno += yyleng;} 
 <STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
-<STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
+<STRING>{STRLIT_forbbiden}  {colno = 0; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
 
 
