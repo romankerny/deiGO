@@ -19,10 +19,11 @@ hex_digit      [0-9]|[a-f]|[A-F]
 
 ID             {letter}({letter}|{decimal_digit})*
 
-decimal_lit    [1-9]{decimal_digit}*
+INTLIT         {decimal_lit}|{octal_lit}|{hex_lit}
+decimal_lit    [0-9]{decimal_digit}*|0
 octal_lit      0{octal_digit}+
 hex_lit        0("x"|"X"){hex_digit}{hex_digit}*
-INTLIT         {decimal_lit}|{octal_lit}|{hex_lit}|0
+
 
 decimals       {decimal_digit}+
 exponent       ("e"|"E")("+"|"-")?{decimals}
@@ -96,7 +97,7 @@ asp               \"
 
 {asp}                       {colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; str_beginning = yytext; BEGIN STRING;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {semi = 1; printf("STRLIT(%s)\n", str_beginning);}}
-<STRING>{invalid_sequence}  {printf("Colno before: %d\n", colno); colno += yyleng; printf("Colno after: %d\n", colno); printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
+<STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
 <STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0; colno = 0;}
