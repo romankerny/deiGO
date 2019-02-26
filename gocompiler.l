@@ -30,6 +30,8 @@ REALLIT        ({decimals}"."{decimals}?{exponent}?)|({decimals}{exponent})|("."
 STRLIT_forbbiden  (\n|\r)
 
 invalid_sequence  \\[^(f|n|r|t|\"|\\)]
+valid_escape      \\(f|n|r|t|\"|\\)
+
 asp               \"
 
 
@@ -93,6 +95,7 @@ asp               \"
 {asp}                       {print_string = 1; colno += yyleng; str_beginning = yytext; BEGIN STRING; string_beginning_column = colno; string_beginning_line = yylineno;}
 <STRING>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {printf("STRLIT(%s)\n", str_beginning);}}
 <STRING>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno, yytext); print_string = 0;} 
+<STRING>{valid_escape}      {colno += yyleng;}
 <STRING>.                   {colno += yyleng;}
 <STRING>{STRLIT_forbbiden}  {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line,  string_beginning_column); print_string = 0;}
 <STRING><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n",   string_beginning_line, string_beginning_column);}
