@@ -4,13 +4,14 @@
     #include <string.h>
 
     int flag = 0;
+    int error = 0;
 
     int yylex(void);
     void yyerror (const char *s);
 %}
 
 %union{
-        int i;
+        int   i;
         float f;
         char* s;
 }
@@ -82,14 +83,15 @@ Statement: ID ASSIGN Expr
     |     LBRACE ListStatSemi RBRACE
     |     IF Expr LBRACE ListStatSemi RBRACE
     |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE
-    |     FOR LBRACE ListStatSemi RBRACE
-    |     FOR Expr LBRACE RBRACE ListStatSemi RBRACE
+    |     FOR      LBRACE ListStatSemi RBRACE
+    |     FOR Expr LBRACE ListStatSemi RBRACE
     |     RETURN
     |     RETURN Expr
     |     FuncInvocation
     |     ParseArgs
     |     PRINT LPAR Expr RPAR
     |     PRINT LPAR STRLIT RPAR
+    |     error
     ;
 
 ListStatSemi:
@@ -97,10 +99,12 @@ ListStatSemi:
     ;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
+    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
     ;
 
 FuncInvocation: ID LPAR RPAR
     | ID LPAR Expr ListCommaExpr RPAR
+    | ID LPAR error RPAR
     ;
 
 ListCommaExpr:
@@ -128,6 +132,7 @@ Expr:   Expr AND Expr
     |   ID              
     |   FuncInvocation
     |   LPAR Expr RPAR 
+    |   LPAR error RPAR
     ;
 
 %%
