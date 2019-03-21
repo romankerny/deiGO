@@ -1,3 +1,3 @@
 #!/bin/sh
 
-zip -r gocompiler.zip gocompiler.l
+zip -r gocompiler.zip gocompiler.l gocompiler.y

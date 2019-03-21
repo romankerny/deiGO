@@ -1,4 +1,5 @@
 gocompiler
+.DS_Store/
 lex.yy.c
 Comp2019/
 *.zip
