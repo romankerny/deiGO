@@ -37,7 +37,7 @@ Program: PACKAGE ID SEMICOLON Declarations {printf("accepted\n");}
     ;
 
 Declarations:
-    |     Declarations VarDeclaration SEMICOLON
+    |     Declarations VarDeclaration SEMICOLON 
     |     Declarations FuncDeclaration SEMICOLON
     ;
 
@@ -68,7 +68,6 @@ Parameters:
 
 FuncBody: LBRACE VarsAndStatements RBRACE
     ;
-
 
 VarsAndStatements: 
     |     VarsAndStatements SEMICOLON

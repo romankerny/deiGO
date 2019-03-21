@@ -102,7 +102,7 @@ asp               \"
 <COMMENT2><<EOF>>   {BEGIN 0;}
 
 
-{asp}                       {i = 0; colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; BEGIN STRINGLIT;}
+{asp}                          {i = 0; colno += yyleng; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; BEGIN STRINGLIT;}
 <STRINGLIT>{asp}               {colno += yyleng; BEGIN 0; if(flag && print_string) {semi = 1; str_beginning[i] = '\0'; printf("STRLIT(\"%s\")\n", str_beginning);} yylval.s = strdup(str_beginning); return STRLIT;}
 <STRINGLIT>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRINGLIT>{valid_escape}      {colno += yyleng; str_beginning[i] = yytext[0]; i++; str_beginning[i] = yytext[1]; i++;}
@@ -114,10 +114,9 @@ asp               \"
 {INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.i=atoi(yytext); return INTLIT;}
 {REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.f = atof(yytext); return REALLIT;}
 {ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.s = strdup(yytext); return ID;}
-\n	       {if (semi && flag) {printf("SEMICOLON\n"); }colno = 0; semi = 0;};
+\n	       {if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; return SEMICOLON;}}
 \t         {colno += yyleng;}
 " "        {colno += yyleng;}
-<<EOF>>    {return 0;}
 .          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
