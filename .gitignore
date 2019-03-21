@@ -1,8 +1,13 @@
 gocompiler
 .DS_Store/
 lex.yy.c
-Comp2019/
+Comp2019/*
 *.zip
+y.output
+y.tab.c
+
+
+
 # Prerequisites
 *.d
 

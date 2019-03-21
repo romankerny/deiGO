@@ -7,4 +7,6 @@ Este repositório reúne os **casos de teste criados por estudantes** para verif
 * É necessário testar variáveis, funções, operadores, condições, erros, etc.
 * Os programas a compilar devem ter extensão **.go**, **.deigo** ou **.dgo**
 
+O **diff** compara os outputs da seguinte forma: **gocompiler -l &lt; factorial.dgo | diff factorial.out -**
+
 **Nota:** devem ter espírito crítico relativamente aos ficheiros **.out** com os resultados esperados.

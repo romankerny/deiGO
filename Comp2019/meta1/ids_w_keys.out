@@ -35,7 +35,7 @@ ID(if_else)
 SEMICOLON
 ID(id)
 SEMICOLON
-RESERVED
+RESERVED(default)
 IF
 SEMICOLON
 ID(true)

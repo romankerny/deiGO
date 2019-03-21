@@ -30,7 +30,23 @@
 
 %%
 
-prog: STRLIT {printf("str %s\n", $1);} 
+prog: VarDelaration {printf("accepeted\n");};
+
+VarDelaration: VAR VarSpec
+    |          VAR LPAR VarSpec SEMICOLON RPAR
+    ;
+
+VarSpec: ID ListComID Type
+    ;
+
+ListComID:
+    |     ListComID COMMA ID
+    ;
+
+Type: INT
+    | FLOAT32
+    | BOOL
+    | STRING
     ;
 
 %%
