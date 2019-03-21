@@ -98,28 +98,42 @@ ListStatSemi:
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     ;
 
-Expr:   Expr AND Expr   {$$ = ($1 && $3);}
-    |   Expr OR Expr    {$$ = ($1 || $3);}
-    |   Expr LT Expr    {$$ = ($1 < $3);}
-    |   Expr GT Expr    {$$ = ($1 > $3);}
-    |   Expr EQ Expr    {$$ = ($1 == $3);}
-    |   Expr NE Expr    {$$ = ($1 != $3);}
-    |   Expr LE Expr    {$$ = ($1 <= $3);}
-    |   Expr GE Expr    {$$ = ($1 >= $3);}
-    |   Expr PLUS Expr  {$$ = $1 + $3; printf("+");}
-    |   Expr MINUS Expr {$$ = $1 - $3;}
-    |   Expr STAR Expr  {$$ = $1 * $3;}
-    |   Expr DIV Expr   {$$ = $1 / $3;}
-    |   Expr MOD Expr   {$$ = $1 % $3;}
-    |   NOT Expr        {$$ = !$2;}
-    |   MINUS Expr      {$$ = -$2;}
-    |   PLUS Expr       {$$ = $2;}
-    |   INTLIT          {$$ = $1;}
-    |   REALLIT         {$$ = $1;}
-    |   ID              {$$ = 69;}
-    // |   FuncInvocation
-    |   LPAR Expr RPAR {$$ = $2;}
+
+FuncInvocation: ID LPAR RPAR
+    | ID LPAR Expr ListCommaExpr RPAR
     ;
+
+ListCommaExpr:
+    | ListCommaExpr COMMA Expr
+    ;
+
+
+
+
+Expr:   Expr AND Expr   
+    |   Expr OR Expr   
+    |   Expr LT Expr 
+    |   Expr GT Expr   
+    |   Expr EQ Expr  
+    |   Expr NE Expr    
+    |   Expr LE Expr    
+    |   Expr GE Expr    
+    |   Expr PLUS Expr   
+    |   Expr MINUS Expr  
+    |   Expr STAR Expr   
+    |   Expr DIV Expr    
+    |   Expr MOD Expr    
+    |   NOT Expr        
+    |   MINUS Expr      
+    |   PLUS Expr       
+    |   INTLIT          
+    |   REALLIT         
+    |   ID              
+    // |   FuncInvocation
+    |   LPAR Expr RPAR 
+    ;
+
+
 
 %%
 
