@@ -67,11 +67,11 @@ Parameters:
     ;
 
 FuncBody: LBRACE VarsAndStatements RBRACE
-    |     LBRACE RBRACE
     ;
 
 
-VarsAndStatements: VarsAndStatements SEMICOLON
+VarsAndStatements: 
+    |     VarsAndStatements SEMICOLON
     |     VarsAndStatements VarDeclaration SEMICOLON
     |     VarsAndStatements Statement SEMICOLON
     ;
