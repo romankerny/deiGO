@@ -85,7 +85,7 @@ Statement: ID ASSIGN Expr
     |     FOR Expr LBRACE RBRACE ListStatSemi RBRACE
     |     RETURN
     |     RETURN Expr
-    //|     FuncInvocation
+    |     FuncInvocation
     |     ParseArgs
     |     PRINT LPAR Expr RPAR
     |     PRINT LPAR STRLIT RPAR
@@ -98,7 +98,6 @@ ListStatSemi:
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     ;
 
-
 FuncInvocation: ID LPAR RPAR
     | ID LPAR Expr ListCommaExpr RPAR
     ;
@@ -106,9 +105,6 @@ FuncInvocation: ID LPAR RPAR
 ListCommaExpr:
     | ListCommaExpr COMMA Expr
     ;
-
-
-
 
 Expr:   Expr AND Expr   
     |   Expr OR Expr   
@@ -129,7 +125,7 @@ Expr:   Expr AND Expr
     |   INTLIT          
     |   REALLIT         
     |   ID              
-    // |   FuncInvocation
+    |   FuncInvocation
     |   LPAR Expr RPAR 
     ;
 
