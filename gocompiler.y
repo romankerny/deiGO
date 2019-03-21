@@ -63,8 +63,11 @@ FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody
     ;
 
 Parameters:
-    |     ID Type ListComID Type
+    |     ID Type ListComIdType
     ;
+
+ListComIdType:
+    |     ListComIdType COMMA ID Type
 
 FuncBody: LBRACE VarsAndStatements RBRACE
     ;
