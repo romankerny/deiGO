@@ -16,7 +16,7 @@
 }
 
 %right '='
-%left '+' '-'
+%left PLUS '-'
 %left '*' '/'
 %left '^'
 %nonassoc '('
@@ -27,10 +27,16 @@
 %token <s> ID
 %token <s> STRLIT
 
+%type <i> Expr
+
 
 %%
 
-prog: VarDeclaration | FuncDeclaration {printf("accepeted\n");};
+Program: VarDeclaration {printf("var\n");}
+    |    FuncDeclaration {printf("func\n");}
+    |    Expr {printf("expr\n");}
+    ;
+
 
 VarDeclaration: VAR VarSpec
     |          VAR LPAR VarSpec SEMICOLON RPAR
@@ -49,18 +55,28 @@ Type: INT
     | STRING
     ;
 
-FuncDeclaration: FUNC ID LPAR Parameters RPAR OptinalType FuncBody
+FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody
+    |     FUNC ID LPAR Parameters RPAR FuncBody
     ;
 
 Parameters:
     | ID Type ListComID Type
     ;
 
-OptinalType:
-    |     Type
+FuncBody: LBRACE VarsAndStatements RBRACE
+    |     LBRACE RBRACE
     ;
 
-FuncBody: LBRACE RBRACE
+VarsAndStatements: VarsAndStatements SEMICOLON
+    |     VarsAndStatements VarDeclaration SEMICOLON
+    |     VarsAndStatements Statement SEMICOLON
+    ;
+
+Statement: ID ASSIGN Expr
+    ;
+
+Expr: Expr PLUS Expr {$$ = $1 + $3; printf("plus");}
+    | INTLIT {$$ = $1; printf("intlit\n");}
     ;
 
 
