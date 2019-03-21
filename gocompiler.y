@@ -30,9 +30,9 @@
 
 %%
 
-prog: VarDelaration {printf("accepeted\n");};
+prog: VarDeclaration | FuncDeclaration {printf("accepeted\n");};
 
-VarDelaration: VAR VarSpec
+VarDeclaration: VAR VarSpec
     |          VAR LPAR VarSpec SEMICOLON RPAR
     ;
 
@@ -48,6 +48,21 @@ Type: INT
     | BOOL
     | STRING
     ;
+
+FuncDeclaration: FUNC ID LPAR Parameters RPAR OptinalType FuncBody
+    ;
+
+Parameters:
+    | ID Type ListComID Type
+    ;
+
+OptinalType:
+    |     Type
+    ;
+
+FuncBody: LBRACE RBRACE
+    ;
+
 
 %%
 
