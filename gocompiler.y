@@ -79,7 +79,6 @@ Expr: Expr PLUS Expr {$$ = $1 + $3; printf("plus");}
     | INTLIT {$$ = $1; printf("intlit\n");}
     ;
 
-
 %%
 
 int main(int argc, char *argv[])
