@@ -30,12 +30,10 @@
 %token <s> ID
 %token <s> STRLIT
 
-%type <i> Expr
-
 
 %%
 
-Program: PACKAGE ID SEMICOLON Declarations
+Program: PACKAGE ID SEMICOLON Declarations {printf("accepted\n");}
     ;
 
 Declarations:
@@ -71,6 +69,7 @@ Parameters:
 FuncBody: LBRACE VarsAndStatements RBRACE
     |     LBRACE RBRACE
     ;
+
 
 VarsAndStatements: VarsAndStatements SEMICOLON
     |     VarsAndStatements VarDeclaration SEMICOLON
@@ -128,8 +127,6 @@ Expr:   Expr AND Expr
     |   FuncInvocation
     |   LPAR Expr RPAR 
     ;
-
-
 
 %%
 

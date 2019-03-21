@@ -117,13 +117,14 @@ asp               \"
 \n	       {if (semi && flag) {printf("SEMICOLON\n"); }colno = 0; semi = 0;};
 \t         {colno += yyleng;}
 " "        {colno += yyleng;}
+<<EOF>>    {return 0;}
 .          {colno += yyleng; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
 
 void yyerror (const char *s)
 {
-    printf ("%s\n", s);
+    printf ("Line %d, column %d: syntax error: %s\n", yylineno, colno, yytext);
 }
 
 int yywrap()
