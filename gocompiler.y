@@ -35,11 +35,13 @@
 
 %%
 
-Program: VarDeclaration {printf("var\n");}
-    |    FuncDeclaration {printf("func\n");}
-    |    Expr {printf("expr\n");}
+Program: PACKAGE ID SEMICOLON Declarations
     ;
 
+Declarations:
+    |     Declarations VarDeclaration SEMICOLON
+    |     Declarations FuncDeclaration SEMICOLON
+    ;
 
 VarDeclaration: VAR VarSpec
     |          VAR LPAR VarSpec SEMICOLON RPAR
@@ -63,7 +65,7 @@ FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody
     ;
 
 Parameters:
-    | ID Type ListComID Type
+    |     ID Type ListComID Type
     ;
 
 FuncBody: LBRACE VarsAndStatements RBRACE
@@ -76,6 +78,24 @@ VarsAndStatements: VarsAndStatements SEMICOLON
     ;
 
 Statement: ID ASSIGN Expr
+    |     LBRACE ListStatSemi RBRACE
+    |     IF Expr LBRACE ListStatSemi RBRACE
+    |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE
+    |     FOR LBRACE ListStatSemi RBRACE
+    |     FOR Expr LBRACE RBRACE ListStatSemi RBRACE
+    |     RETURN
+    |     RETURN Expr
+    //|     FuncInvocation
+    |     ParseArgs
+    |     PRINT LPAR Expr RPAR
+    |     PRINT LPAR STRLIT RPAR
+    ;
+
+ListStatSemi:
+    |     ListStatSemi Statement SEMICOLON
+    ;
+
+ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     ;
 
 Expr:   Expr AND Expr   {$$ = ($1 && $3);}
