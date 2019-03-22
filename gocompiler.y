@@ -18,12 +18,12 @@
 
 %left OR
 %left AND
-%left LT GT LE GE
-%left EQ NE
+%left EQ NE LT LE GT GE 
 %left PLUS MINUS
 %left STAR DIV MOD
 %right NOT
 %nonassoc LPAR
+%right ASSIGN
 
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS RESERVED
 %token <i> INTLIT
@@ -88,8 +88,8 @@ Statement: ID ASSIGN Expr
     |     FOR Expr LBRACE ListStatSemi RBRACE
     |     RETURN
     |     RETURN Expr
-    |     FuncInvocation // ??
-    |     ParseArgs      // ??
+    |     FuncInvocation 
+    |     ParseArgs      
     |     PRINT LPAR Expr RPAR
     |     PRINT LPAR STRLIT RPAR
     |     error
