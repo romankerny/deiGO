@@ -14,6 +14,7 @@
     int semi = 0;
     int i = 0;
 %}
+
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
 
 letter         [a-z]|[A-Z]|"_"
@@ -46,7 +47,7 @@ asp               \"
 %X              COMMENT1 COMMENT2 STRINGLIT
 
 %%
-{reserved} {semi = 0; colno += yyleng; if(flag){printf("RESERVED(%s)\n", yytext);}}
+{reserved} {semi = 0; colno += yyleng; if(flag){printf("RESERVED(%s)\n", yytext);} return RESERVED;}
 ";" {semi = 0; colno += yyleng; if(flag){printf("SEMICOLON\n");} return SEMICOLON;}
 "_" {semi = 0; colno += yyleng; if(flag){printf("BLANKID\n");} return BLANKID;}
 "package" {semi = 0; colno += yyleng; if(flag){printf("PACKAGE\n");} return PACKAGE;}

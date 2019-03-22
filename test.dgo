@@ -4,7 +4,7 @@ package main;
 
 func main() {
    
-    	break;
+break;
 
     	var a int;
 	a = 5;
