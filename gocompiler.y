@@ -34,7 +34,7 @@
 
 %%
 
-Program: PACKAGE ID SEMICOLON Declarations {printf("accepted\n");}
+Program: PACKAGE ID SEMICOLON Declarations
     ;
 
 Declarations:
@@ -69,6 +69,7 @@ Parameters:
 
 ListComIdType:
     |     ListComIdType COMMA ID Type
+    ;
 
 FuncBody: LBRACE VarsAndStatements RBRACE
     ;
