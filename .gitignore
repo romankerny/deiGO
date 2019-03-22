@@ -6,6 +6,8 @@ Comp2019/*
 y.output
 y.tab.c
 y.tab.h
+*.go
+*.dgo
 
 
 # Prerequisites
