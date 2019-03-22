@@ -83,7 +83,7 @@ asp               \"
 "string" {semi = 0; colno += yyleng; if(flag){printf("STRING\n");} return STRING;}
 "fmt.Println" {semi = 0; colno += yyleng; if(flag){printf("PRINT\n");} return PRINT;}
 "strconv.Atoi" {semi = 0; colno += yyleng; if(flag){printf("PARSEINT\n");} return PARSEINT;}
-"func" {semi = 0; semi = 0; colno += yyleng; if(flag){printf("FUNC\n");} return FUNC;}
+"func" { semi = 0; colno += yyleng; if(flag){printf("FUNC\n");} return FUNC;}
 "os.Args" {semi = 0; colno += yyleng; if(flag){printf("CMDARGS\n");} return CMDARGS;}
 
 
@@ -123,7 +123,7 @@ asp               \"
 
 void yyerror (const char *s)
 {
-    printf ("Line %d, column %d: syntax error: %s\n", yylineno, colno, yytext);
+    printf ("Line %d, column %d: syntax error: %s\n", yylineno, colno - yyleng + 1, yytext);
 }
 
 int yywrap()
