@@ -69,6 +69,7 @@ Parameters:
 
 ListComIdType:
     |     ListComIdType COMMA ID Type
+    ;
 
 FuncBody: LBRACE VarsAndStatements RBRACE
     ;
