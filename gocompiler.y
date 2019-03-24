@@ -65,20 +65,23 @@ Program: PACKAGE ID SEMICOLON Declarations
                                                     {$$ = add_node("Program", NULL, $4, NULL, NULL); print_tree($$, 0);}
     ;
 
-Declarations:                                       {$$ = NULL; }
-    |     Declarations VarDeclaration SEMICOLON     {$$ = add_node_to_list($$, "VarDecl", NULL, $2, NULL, NULL);}
+Declarations:                                       {$$ = NULL;}
+    |     Declarations VarDeclaration SEMICOLON     {$$ = $2;}
     |     Declarations FuncDeclaration SEMICOLON    {$$ = add_node_to_list($$, "FuncDecl", NULL, $2, NULL, NULL);}
     ;
 
-VarDeclaration: VAR VarSpec                          {$$ = $2;}
+VarDeclaration: VAR VarSpec                          {$$ = $2; }
     |           VAR LPAR VarSpec SEMICOLON RPAR      {$$ = $3;}
     ;
 
-VarSpec: ID ListComID Type                            {$$ = set_type($2, $3); $$ = add_node_to_list_beggining($2, $3, $1, NULL, NULL, NULL);}
+VarSpec: ID ListComID Type                             {$$ = set_type($2, $3); 
+                                                        n * id = add_node($3, $1, NULL, NULL, NULL);
+                                                        $$ = add_node_to_list_beggining($2, "VarDecl", NULL, id, NULL, NULL);}
     ;
 
 ListComID:                                             {$$ = NULL;}
-    |     ListComID COMMA ID                           {$$ = add_node_to_list($1, NULL, $3, NULL, NULL, NULL);}
+    |     ListComID COMMA ID                           {n * id = add_node(NULL, $3, NULL, NULL, NULL);
+                                                        $$ = add_node_to_list($1, "VarDecl", NULL, id, NULL, NULL);}
     ;
 
 Type: INT                                            {$$ = "Int";}                                                                          

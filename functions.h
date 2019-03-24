@@ -8,3 +8,4 @@ n * add_node_to_list_beggining(n * head, char * str, char * id, n * down, n * ri
 n * correct_type(n * head, char * str);
 n * set_type (n * head, char * _str);
 void print_tree(n * head, int dots);
+void print_node(n * node);

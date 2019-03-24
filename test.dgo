@@ -1,18 +1,14 @@
-package main;
+package main
 
-// tab? 
+/*import (
+	"fmt"
+	"os"
+	"strconv"
+var (ci, rad, area, PI float32;);
 
-
-
-func calcArea(rad float32) float32{
-	
-}
-
-func calcCir(rad float32) {
-	
-}
+)*/
 
 
-var (i, x , z , a ,b string;);
 
-
+var PUTAS_CARALHO, fds string;
+var l int;

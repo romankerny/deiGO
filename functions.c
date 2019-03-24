@@ -9,10 +9,14 @@
 n * set_type (n * head, char * _str) {
     n * tmp = head;
     while(tmp) {
-        tmp->str = _str;
+        tmp->down->str = _str;
         tmp = tmp->right;
     }
     return head;
+}
+
+void print_node(n * node) {
+    printf("id:%s type:%s extra:%s\n", node->id, node->str, node->extra);
 }
 
 n * add_node(char * _str, char * _id, n * _down, n * _right, char * _extra) {
@@ -33,13 +37,12 @@ n * add_node_to_list(n * head, char * str, char * id, n * down, n * right, char 
     n * u = add_node(str, id, down, right, extra);
     n * tmp;
 
-    // printf("a adicionar %s %s %s\n", id, str, extra);
+    print_node(u);
 
     if(head==NULL) {return u;}
 
     for(tmp = head; tmp->right; tmp = tmp->right) ;
     tmp->right = u;
-
 
     return head;
 
@@ -51,6 +54,7 @@ n * add_node_to_list_beggining(n * head, char * str, char * id, n * down, n * ri
 
     n * u = add_node(str, id, down, right, extra);
     n * tmp;
+    
 
 
     if(head==NULL) {return u;}
@@ -73,38 +77,12 @@ void print_dots(int n) {
     for (i = 0; i < n; i++) printf(".");
 }
 
+
 void print_tree(n * head, int dots) {
     n * aux;
-  
 
-    if(head->down == NULL && !(strcmp(head->str,"FuncBody") == 0)) {
-            // FINAIS
-            print_dots(dots);printf("%s\n", head->str);
-            print_dots(dots);printf("Id(%s)\n", head->id);
-                    
-    } else {
-        if(strcmp(head->str,"FuncParams") == 0) {
- 
-            print_dots(dots);printf("Id(%s)\n", head->id);
-            if(head->extra != NULL) {print_dots(dots);printf("%s\n", head->extra);}
-            print_dots(dots);printf("FuncParams\n");
-        } else {
-            print_dots(dots);printf("%s\n", head->str);
-        }
-
-    }
-    
-
-    aux = head;
-
-    if(head->down != NULL)  
-        print_tree(head->down, dots + 2);
+    printf("Program");
     
     
-    if (aux->right != NULL) {
-        print_tree(aux->right, dots);
-    }
-        
-    
 
-}
+}   
