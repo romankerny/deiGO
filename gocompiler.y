@@ -2,20 +2,46 @@
     #include <stdlib.h>
     #include <stdio.h>
     #include <string.h>
+    #include "functions.h"
+    #include "y.tab.h"    
+
 
     int flag = 0;
     int error = 0;
 
     int yylex(void);
     void yyerror (const char *s);
+
+
+    n * tree_node_pointer = NULL;
 %}
+
+
+%type<tree_node_pointer>Program
+%type<tree_node_pointer>Declarations
+%type<tree_node_pointer>VarDeclaration
+%type<tree_node_pointer>VarSpec
+%type<tree_node_pointer>ListComID
+%type<tree_node_pointer>FuncBody
+%type<tree_node_pointer>FuncDeclaration
+%type<tree_node_pointer>Parameters
+%type<tree_node_pointer>ListComIdType
+%type<tree_node_pointer>VarsAndStatements
+
+%type<s>Type
+
+
 
 %union{
         int   i;
         float f;
         char* s;
+        n * tree_node_pointer;
+      
 }
 
+
+%right ASSIGN
 %left OR
 %left AND
 %left EQ NE LT LE GT GE 
@@ -23,7 +49,7 @@
 %left STAR DIV MOD
 %right NOT
 %nonassoc LPAR
-%right ASSIGN
+
 
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS RESERVED
 %token <i> INTLIT
@@ -34,50 +60,63 @@
 
 %%
 
-Program: PACKAGE ID SEMICOLON Declarations
+
+Program: PACKAGE ID SEMICOLON Declarations 
+                                                    {$$ = add_node("Program", NULL, $4, NULL, NULL); print_tree($$, 0);}
     ;
 
-Declarations:
-    |     Declarations VarDeclaration SEMICOLON 
-    |     Declarations FuncDeclaration SEMICOLON
+Declarations:                                       {$$ = NULL; }
+    |     Declarations VarDeclaration SEMICOLON     {$$ = add_node_to_list($$, "VarDecl", NULL, $2, NULL, NULL);}
+    |     Declarations FuncDeclaration SEMICOLON    {$$ = add_node_to_list($$, "FuncDecl", NULL, $2, NULL, NULL);}
     ;
 
-VarDeclaration: VAR VarSpec
-    |          VAR LPAR VarSpec SEMICOLON RPAR
+VarDeclaration: VAR VarSpec                          {$$ = $2;}
+    |           VAR LPAR VarSpec SEMICOLON RPAR      {$$ = $3;}
     ;
 
-VarSpec: ID ListComID Type
+VarSpec: ID ListComID Type                            {$$ = set_type($2, $3); $$ = add_node_to_list_beggining($2, $3, $1, NULL, NULL, NULL);}
     ;
 
-ListComID:
-    |     ListComID COMMA ID
+ListComID:                                             {$$ = NULL;}
+    |     ListComID COMMA ID                           {$$ = add_node_to_list($1, NULL, $3, NULL, NULL, NULL);}
     ;
 
-Type: INT
-    | FLOAT32
-    | BOOL
-    | STRING
+Type: INT                                            {$$ = "Int";}                                                                          
+    | FLOAT32                                        {$$ = "Float32";}   
+    | BOOL                                           {$$ = "Bool";}   
+    | STRING                                         {$$ = "String";}   
+    ;
+// n * add_node(char * str, char * id, n * down, n * right, char * extra);
+FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       {
+                                                                   n * paramDeclaration = add_node("ParamDecl", NULL, $4, NULL, NULL);
+                                                                   n * funcParams =  add_node("FuncParams", $2, paramDeclaration, NULL, $6);
+                                                                   $$ = add_node_to_list(NULL, "FuncHeader", NULL, funcParams, NULL, NULL);
+                                                                   $$ = add_node_to_list($$, "FuncBody", NULL, $7, NULL, NULL);
+                                                                  }
+
+    |            FUNC ID LPAR Parameters RPAR      FuncBody       {
+                                                                   n * paramDeclaration = add_node("ParamDecl", NULL, $4, NULL, NULL);
+                                                                   n * funcParams =  add_node("FuncParams", $2, paramDeclaration, NULL, NULL);
+                                                                   $$ = add_node_to_list(NULL, "FuncHeader", NULL, funcParams, NULL, NULL);
+                                                                   $$ = add_node_to_list($$, "FuncBody", NULL, $6, NULL, NULL);
+                                                                  }
     ;
 
-FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody
-    |     FUNC ID LPAR Parameters RPAR FuncBody
+Parameters:                                                       {$$ = NULL;}
+    |     ID Type ListComIdType                                   {$$ = add_node_to_list_beggining($3, $2, $1, NULL, NULL, NULL);}    
     ;
 
-Parameters:
-    |     ID Type ListComIdType
+ListComIdType:                                                    {$$ = NULL;}
+    |     ListComIdType COMMA ID Type                             {$$ = add_node_to_list($$, $4, $3, NULL, NULL, NULL);}
     ;
 
-ListComIdType:
-    |     ListComIdType COMMA ID Type
+FuncBody: LBRACE VarsAndStatements RBRACE                         {$$ = NULL;}
     ;
 
-FuncBody: LBRACE VarsAndStatements RBRACE
-    ;
-
-VarsAndStatements: 
+VarsAndStatements:                                                {$$ = NULL;}
     |     VarsAndStatements SEMICOLON
-    |     VarsAndStatements VarDeclaration SEMICOLON
-    |     VarsAndStatements Statement SEMICOLON
+    |     VarsAndStatements VarDeclaration SEMICOLON 
+    |     VarsAndStatements Statement SEMICOLON 
     ;
 
 Statement: ID ASSIGN Expr
@@ -100,7 +139,7 @@ ListStatSemi:
     ;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
-    | ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
+    |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
     ;
 
 FuncInvocation: ID LPAR RPAR
@@ -130,11 +169,14 @@ Expr:   Expr AND Expr
     |   PLUS Expr       
     |   INTLIT          
     |   REALLIT         
-    |   ID              
+    |   ID            
     |   FuncInvocation
-    |   LPAR Expr RPAR 
+    |   LPAR Expr RPAR
     |   LPAR error RPAR
     ;
+
+
+
 
 %%
 

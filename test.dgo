@@ -2,13 +2,17 @@ package main;
 
 // tab? 
 
-func main() {
 
 
-    	var a int;
-	a = 5;
-
-
-	a = (1/20*(1+1)) * (!2);
-a = 1+1;
+func calcArea(rad float32) float32{
+	
 }
+
+func calcCir(rad float32) {
+	
+}
+
+
+var (i, x , z , a ,b string;);
+
+
