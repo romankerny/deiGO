@@ -2,7 +2,9 @@
 
 %{
     #include <string.h>
+    #include "structures.h"
     #include "y.tab.h"
+    
 
 
     extern int flag;

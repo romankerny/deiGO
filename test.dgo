@@ -1,14 +1,14 @@
-package main;
+package main
 
-// tab? 
+/*import (
+	"fmt"
+	"os"
+	"strconv"
+var (ci, rad, area, PI float32;);
 
-func main() {
+)*/
 
 
-    	var a int;
-	a = 5;
 
-
-	a = (1/20*(1+1)) * (!2);
-a = 1+1;
-}
+var PUTAS_CARALHO, fds string;
+var l int;
