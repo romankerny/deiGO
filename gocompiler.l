@@ -124,7 +124,7 @@ asp               \"
 
 void yyerror (const char *s)
 {
-    printf ("Line %d, column %d: syntax error: %s\n", yylineno, colno - yyleng + 1, yytext);
+    printf ("Line %d, column %lu: syntax error: %s\n", yylineno, colno - yyleng + 1, yytext);
 }
 
 int yywrap()
