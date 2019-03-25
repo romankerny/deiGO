@@ -18,5 +18,12 @@ func PUTA(putas int, caralho string) string {
    merdas(a,b+1,c*2,d)
    a = dce(5)
    a = 1+call(2)
+	var dentro string;
+	fmt.Println("non-negative number please");
+		return;
+
+
+n,_ = strconv.Atoi(os.Args[1]);
 }
+
 
