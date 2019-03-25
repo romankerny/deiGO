@@ -28,6 +28,8 @@
 %type<tree_node_pointer>Parameters
 %type<tree_node_pointer>ListComIdType
 %type<tree_node_pointer>VarsAndStatements
+%type<tree_node_pointer>Expr
+%type<tree_node_pointer>Statement
 
 %type<s>Type
 
@@ -150,10 +152,10 @@ FuncBody: LBRACE VarsAndStatements RBRACE                         {$$ =  add_nod
 VarsAndStatements:                                                {$$ = NULL;}
     |     VarsAndStatements SEMICOLON                             {$$ = $1;}
     |     VarsAndStatements VarDeclaration SEMICOLON              {$$ = add_to_end_of_list ($1, $2);}   
-    |     VarsAndStatements Statement SEMICOLON                   {printf("statemet\n");}
+    |     VarsAndStatements Statement SEMICOLON                   {}
     ;
 
-Statement: ID ASSIGN Expr
+Statement: ID ASSIGN Expr {$$ = add_node("Assign", $1, NULL); $1->right = $3;}
     |     LBRACE ListStatSemi RBRACE
     |     IF Expr LBRACE ListStatSemi RBRACE
     |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE
@@ -176,7 +178,9 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR
     ;
 
-FuncInvocation: ID LPAR RPAR
+FuncInvocation: ID LPAR RPAR {char aux[1024];
+                        sprintf(aux, "Id(%s)", $1);
+                        $$ = add_node(strdup(aux), NULL, NULL); } 
     | ID LPAR Expr ListCommaExpr RPAR
     | ID LPAR error RPAR
     ;
@@ -185,28 +189,36 @@ ListCommaExpr:
     | ListCommaExpr COMMA Expr
     ;
 
-Expr:   Expr AND Expr   
-    |   Expr OR Expr   
-    |   Expr LT Expr 
-    |   Expr GT Expr   
-    |   Expr EQ Expr  
-    |   Expr NE Expr    
-    |   Expr LE Expr    
-    |   Expr GE Expr    
-    |   Expr PLUS Expr   
-    |   Expr MINUS Expr  
-    |   Expr STAR Expr   
-    |   Expr DIV Expr    
-    |   Expr MOD Expr    
-    |   NOT Expr        
-    |   MINUS Expr      
-    |   PLUS Expr       
-    |   INTLIT          
-    |   REALLIT         
-    |   ID            
-    |   FuncInvocation
-    |   LPAR Expr RPAR
-    |   LPAR error RPAR
+Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
+    |   Expr OR Expr   {$$ = add_node("Or", $1, NULL); $1->right = $3;}
+    |   Expr LT Expr    {$$ = add_node("Lt", $1, NULL); $1->right = $3;}
+    |   Expr GT Expr   {$$ = add_node("Gt", $1, NULL); $1->right = $3;}
+    |   Expr EQ Expr  {$$ = add_node("Eq", $1, NULL); $1->right = $3;}
+    |   Expr NE Expr    {$$ = add_node("Ne", $1, NULL); $1->right = $3;}
+    |   Expr LE Expr    {$$ = add_node("Le", $1, NULL); $1->right = $3;}
+    |   Expr GE Expr    {$$ = add_node("Ge", $1, NULL); $1->right = $3;}
+    |   Expr PLUS Expr   {$$ = add_node("Plus", $1, NULL); $1->right = $3;}
+    |   Expr MINUS Expr  {$$ = add_node("Minus", $1, NULL); $1->right = $3;}
+    |   Expr STAR Expr   {$$ = add_node("Star", $1, NULL); $1->right = $3;}
+    |   Expr DIV Expr    {$$ = add_node("Div", $1, NULL); $1->right = $3;}
+    |   Expr MOD Expr    {$$ = add_node("Mod", $1, NULL); $1->right = $3;}
+    |   NOT Expr        {$$ = add_node("Not", $2, NULL);}
+    |   MINUS Expr      {$$ = add_node("Minus", $2, NULL);}
+    |   PLUS Expr       {{$$ = add_node("Plus", $2, NULL);}}
+    |   INTLIT          {char aux[1024];
+                        sprintf(aux, "IntLit(%s)", $1);
+                        $$ = add_node(strdup(aux), NULL, NULL); }
+
+    |   REALLIT         {char aux[1024];
+                        sprintf(aux, "RealLit(%s)", $1);
+                        $$ = add_node(strdup(aux), NULL, NULL); }
+
+    |   ID              {char aux[1024];
+                        sprintf(aux, "Id(%s)", $1);
+                        $$ = add_node(strdup(aux), NULL, NULL); }   
+    |   FuncInvocation {$$ = NULL;}
+    |   LPAR Expr RPAR {$$ = $2;}
+    |   LPAR error RPAR  {$$ = NULL;}
     ;
 
 

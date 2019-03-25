@@ -12,4 +12,8 @@ var a, b,c int;
 
 var x string;
 
-func PUTA(putas int, caralho string) string {}
+func PUTA(putas int, caralho string) string {
+
+   a = 5+5
+}
+

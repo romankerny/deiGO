@@ -19,7 +19,7 @@ void print_node(n * node) {
     printf("type:%s", node->str);
 }
 
-n * add_to_end_of_list (n * head, n * to_add) {
+n * add_to_end_of_list (n * head, n *to_add) {
 
     n * first = head;
 
