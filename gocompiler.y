@@ -125,8 +125,7 @@ FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       {
                                                                     char aux [1024];
                                                                     sprintf(aux,"Id(%s)", $2);
                                                                     n * func_params = add_node("FuncParams", $4, NULL);
-                                                                    n * type_spec   = add_node(NULL, NULL, func_params);
-                                                                    n * id          = add_node(strdup(aux), NULL, type_spec);
+                                                                    n * id          = add_node(strdup(aux), NULL, func_params);
                                                                     n * header      = add_node("FuncHeader", id, $6);
                                                                     $$ = add_node("FuncDecl", header, NULL);}
     ;
