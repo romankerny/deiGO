@@ -163,9 +163,16 @@ VarsAndStatements:                                                {$$ = NULL;}
 Statement: ID ASSIGN Expr {char aux[1024];
                         sprintf(aux, "Id(%s)", $1);
                         $$ = add_node("Assign", add_node(aux, NULL, $3), NULL);}
-    |     LBRACE ListStatSemi RBRACE                                                 {$$ = NULL;}
-    |     IF Expr LBRACE ListStatSemi RBRACE                                         {$$ = NULL;}
-    |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE         {$$ = NULL;}
+    |     LBRACE ListStatSemi RBRACE                                                 {}
+    |     IF Expr LBRACE ListStatSemi RBRACE                                         {$2->right = add_node("Block", $2, NULL);
+                                                                                      $$ = add_node("If", $2, NULL);
+                                                                                     }
+    |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE         {
+                                                                                     n * block2       = add_node("Block", $8, NULL);
+                                                                                     $2->right        = add_node("Block", $4, block2);
+                                                                                     $$ = add_node("If", $2, NULL);
+                                                                                
+                                                                                     }
     |     FOR      LBRACE ListStatSemi RBRACE                                        {$$ = NULL;}   
     |     FOR Expr LBRACE ListStatSemi RBRACE                                        {$$ = NULL;}
     |     RETURN                                                                     {$$ = add_node("Return", NULL, NULL);}
@@ -181,8 +188,8 @@ Statement: ID ASSIGN Expr {char aux[1024];
     |     error                                                                      {$$ = NULL;}
     ;
 
-ListStatSemi: {$$ = NULL;}
-    |     ListStatSemi Statement SEMICOLON
+ListStatSemi:                                                                        {$$ = NULL;}
+    |     ListStatSemi Statement SEMICOLON                                           {$$ = add_to_end_of_list($1,$2);}
     ;
 
 ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR           {  char aux [1024];

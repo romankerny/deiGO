@@ -13,11 +13,17 @@ var a, b,c int;
 var x string;
 
 func PUTA(putas int, caralho string) string {
-   abc()
-   dce(z)
-   merdas(a,b+1,c*2,d)
-   a = dce(5)
-   a = 1+call(2)
+
+
+if n<0 {
+		fmt.Println("non-negative number please");
+	
+		return;
+	} else {
+		sum=0;
+		
+		
+	}
 }
 
 
