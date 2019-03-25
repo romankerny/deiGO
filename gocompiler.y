@@ -173,8 +173,12 @@ Statement: ID ASSIGN Expr {char aux[1024];
                                                                                      $$ = add_node("If", $2, NULL);
                                                                                 
                                                                                      }
-    |     FOR      LBRACE ListStatSemi RBRACE                                        {$$ = NULL;}   
-    |     FOR Expr LBRACE ListStatSemi RBRACE                                        {$$ = NULL;}
+    |     FOR      LBRACE ListStatSemi RBRACE                                        { n* block = add_node("Block", $3, NULL);
+                                                                                        $$ = add_node("For", block, NULL); }
+
+    |     FOR Expr LBRACE ListStatSemi RBRACE                                        {$2->right = add_node("Block", $4, NULL);
+                                                                                        $$ = add_node("For", $2, NULL);}
+
     |     RETURN                                                                     {$$ = add_node("Return", NULL, NULL);}
     |     RETURN Expr                                                                {$$ = add_node("Return", $2, NULL);;}
     |     FuncInvocation                                                             {$$ = add_node("Call", $1, NULL);}
