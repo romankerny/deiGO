@@ -19,10 +19,6 @@ if n<0 {
 		fmt.Println("non-negative number please");
 	
 		return;
-	} else {
-		sum=0;
-		
-		
 	}
 }
 
