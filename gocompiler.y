@@ -225,9 +225,9 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
     |   Expr NE Expr    {$$ = add_node("Ne", $1, NULL); $1->right = $3;}
     |   Expr LE Expr    {$$ = add_node("Le", $1, NULL); $1->right = $3;}
     |   Expr GE Expr    {$$ = add_node("Ge", $1, NULL); $1->right = $3;}
-    |   Expr PLUS Expr   {$$ = add_node("Plus", $1, NULL); $1->right = $3;}
-    |   Expr MINUS Expr  {$$ = add_node("Minus", $1, NULL); $1->right = $3;}
-    |   Expr STAR Expr   {$$ = add_node("Star", $1, NULL); $1->right = $3;}
+    |   Expr PLUS Expr   {$$ = add_node("Add", $1, NULL); $1->right = $3;}
+    |   Expr MINUS Expr  {$$ = add_node("Sub", $1, NULL); $1->right = $3;}
+    |   Expr STAR Expr   {$$ = add_node("Mul", $1, NULL); $1->right = $3;}
     |   Expr DIV Expr    {$$ = add_node("Div", $1, NULL); $1->right = $3;}
     |   Expr MOD Expr    {$$ = add_node("Mod", $1, NULL); $1->right = $3;}
     |   NOT Expr        {$$ = add_node("Not", $2, NULL);}
