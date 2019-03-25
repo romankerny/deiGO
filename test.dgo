@@ -13,7 +13,11 @@ var a, b,c int;
 var x string;
 
 func PUTA(putas int, caralho string) string {
-var dentro string;
-fmt.Println("non-negative number please");
+	var dentro string;
+	fmt.Println("non-negative number please");
+		return;
+
+
+n,_ = strconv.Atoi(os.Args[1]);
 
 }
