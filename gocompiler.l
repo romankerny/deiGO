@@ -115,7 +115,7 @@ asp               \"
 
 
 {INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.i=atoi(yytext); return INTLIT;}
-{REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.f = atof(yytext); return REALLIT;}
+{REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.s = strdup(yytext); return REALLIT;}
 {ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.s = strdup(yytext); return ID;}
 \n	       {if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; return SEMICOLON;}}
 \t         {colno += yyleng;}

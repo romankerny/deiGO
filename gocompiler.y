@@ -61,7 +61,7 @@
 
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS RESERVED
 %token <i> INTLIT
-%token <f> REALLIT
+%token <s> REALLIT
 %token <s> ID
 %token <s> STRLIT
 
@@ -228,7 +228,7 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
                         $$ = add_node(strdup(aux), NULL, NULL); }
 
     |   REALLIT         {char aux[1024];
-                        sprintf(aux, "RealLit(%f)", $1);
+                        sprintf(aux, "RealLit(%s)", $1);
                         $$ = add_node(strdup(aux), NULL, NULL); }
 
     |   ID              {char aux[1024];
