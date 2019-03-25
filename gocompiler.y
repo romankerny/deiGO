@@ -161,7 +161,7 @@ VarsAndStatements:                                                {$$ = NULL;}
 
 Statement: ID ASSIGN Expr {char aux[1024];
                         sprintf(aux, "Id(%s)", $1);
-                        $$ = add_node("Assign", add_node(aux, NULL, $3), NULL);}
+                        $$ = add_node("Assign", add_node(strdup(aux), NULL, $3), NULL);}
     |     LBRACE ListStatSemi RBRACE                                                 {$$ = add_node("Block", $2, NULL);}
     |     IF Expr LBRACE ListStatSemi RBRACE                                         {$2->right = add_node("Block", $4, NULL);
                                                                                       $$ = add_node("If", $2, NULL);
@@ -208,7 +208,7 @@ FuncInvocation: ID LPAR RPAR {char aux[1024];
 
     | ID LPAR Expr ListCommaExpr RPAR { char aux[1024];
                                         sprintf(aux, "Id(%s)", $1);
-                                        $$ = add_to_end_of_list (add_node(aux, NULL, $3), $4);}
+                                        $$ = add_to_end_of_list (add_node(strdup(aux), NULL, $3), $4);}
     | ID LPAR error RPAR {$$ = NULL;}
     ;
 
@@ -231,7 +231,7 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
     |   Expr MOD Expr    {$$ = add_node("Mod", $1, NULL); $1->right = $3;}
     |   NOT Expr        {$$ = add_node("Not", $2, NULL);}
     |   MINUS Expr      {$$ = add_node("Minus", $2, NULL);}
-    |   PLUS Expr       {{$$ = add_node("Plus", $2, NULL);}}
+    |   PLUS Expr       {$$ = add_node("Plus", $2, NULL);}
     |   INTLIT          {char aux[1024];
                         sprintf(aux, "IntLit(%d)", $1);
                         $$ = add_node(strdup(aux), NULL, NULL); }
