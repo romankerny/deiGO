@@ -184,7 +184,7 @@ Statement: ID ASSIGN Expr {char aux[1024];
     |     ParseArgs                                                                  {$$ = $1;}
     |     PRINT LPAR Expr   RPAR                                                     {$$ = add_node("Print", $3, NULL);}
     |     PRINT LPAR STRLIT RPAR                                                     {char aux [1024];
-                                                                                      sprintf(aux,"StrLit(%s)", $3);
+                                                                                      sprintf(aux,"StrLit(\"%s\")", $3);
                                                                                       n * strlit = add_node(strdup(aux), NULL, NULL);
                                                                                       $$ = add_node("Print", strlit, NULL);
                                                                                      }
