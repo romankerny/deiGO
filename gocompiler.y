@@ -14,6 +14,8 @@
 
 
     n * tree_node_pointer = NULL;
+
+    n * aux = NULL;
 %}
 
 
@@ -60,66 +62,62 @@
 
 %%
 
-
-Program: PACKAGE ID SEMICOLON Declarations 
-                                                    {$$ = add_node("Program", NULL, $4, NULL, NULL); print_tree($$, 0);}
+Program: PACKAGE ID SEMICOLON Declarations
+                                                    {$$ = tree_node_pointer = add_node("Program", NULL, $4, NULL, NULL);  print_tree(tree_node_pointer, 0);}
     ;
 
 Declarations:                                       {$$ = NULL;}
-    |     Declarations VarDeclaration SEMICOLON     {$$ = $2;}
-    |     Declarations FuncDeclaration SEMICOLON    {$$ = add_node_to_list($$, "FuncDecl", NULL, $2, NULL, NULL);}
+    |     Declarations VarDeclaration SEMICOLON     {$$ = add_to_end_of_list ($1, $2);}
+    |     Declarations FuncDeclaration SEMICOLON    {$$ = add_to_end_of_list ($1, $2);}
     ;
 
-VarDeclaration: VAR VarSpec                          {$$ = $2; }
+VarDeclaration: VAR VarSpec                          {$$ = $2;}
     |           VAR LPAR VarSpec SEMICOLON RPAR      {$$ = $3;}
     ;
 
 VarSpec: ID ListComID Type                             {$$ = set_type($2, $3); 
                                                         n * id = add_node($3, $1, NULL, NULL, NULL);
-                                                        $$ = add_node_to_list_beggining($2, "VarDecl", NULL, id, NULL, NULL);}
+                                                        $$ = add_node_to_list_beggining($2, "VarDecl", NULL, id, NULL, NULL);
+                                                        }
     ;
 
 ListComID:                                             {$$ = NULL;}
     |     ListComID COMMA ID                           {n * id = add_node(NULL, $3, NULL, NULL, NULL);
-                                                        $$ = add_node_to_list($1, "VarDecl", NULL, id, NULL, NULL);}
+                                                        $$ = add_node_to_list($$, "VarDecl", NULL, id, NULL, NULL);}
     ;
 
-Type: INT                                            {$$ = "Int";}                                                                          
-    | FLOAT32                                        {$$ = "Float32";}   
-    | BOOL                                           {$$ = "Bool";}   
+Type: INT                                            {$$ = "Int";}                                                                   
+    | FLOAT32                                        {$$ = "Float32";}
+    | BOOL                                           {$$ = "Bool";} 
     | STRING                                         {$$ = "String";}   
     ;
-// n * add_node(char * str, char * id, n * down, n * right, char * extra);
-FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       {
-                                                                   n * paramDeclaration = add_node("ParamDecl", NULL, $4, NULL, NULL);
-                                                                   n * funcParams =  add_node("FuncParams", $2, paramDeclaration, NULL, $6);
-                                                                   $$ = add_node_to_list(NULL, "FuncHeader", NULL, funcParams, NULL, NULL);
-                                                                   $$ = add_node_to_list($$, "FuncBody", NULL, $7, NULL, NULL);
-                                                                  }
 
-    |            FUNC ID LPAR Parameters RPAR      FuncBody       {
-                                                                   n * paramDeclaration = add_node("ParamDecl", NULL, $4, NULL, NULL);
-                                                                   n * funcParams =  add_node("FuncParams", $2, paramDeclaration, NULL, NULL);
-                                                                   $$ = add_node_to_list(NULL, "FuncHeader", NULL, funcParams, NULL, NULL);
-                                                                   $$ = add_node_to_list($$, "FuncBody", NULL, $6, NULL, NULL);
-                                                                  }
+// n * add_node(char * str, char * id, n * down, n * right, char * extra);
+
+
+FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       { n * header = add_node("FuncHeader", $2, $4, $7, $6);
+                                                                    $$ = add_node("FuncDecl", NULL, header, NULL,NULL);}
+
+    |            FUNC ID LPAR Parameters RPAR      FuncBody       {n * header = add_node("FuncHeader", $2, $4, $6, NULL);
+                                                                    $$ = add_node("FuncDecl", NULL, header, $6,NULL);}
     ;
 
 Parameters:                                                       {$$ = NULL;}
-    |     ID Type ListComIdType                                   {$$ = add_node_to_list_beggining($3, $2, $1, NULL, NULL, NULL);}    
+    |     ID Type ListComIdType                                   {$$ = add_node_to_list_beggining($3, $2, $1, NULL, NULL, NULL);
+                                                                   $$ = add_node("FuncParams", NULL, $$, NULL, NULL);}    
     ;
 
 ListComIdType:                                                    {$$ = NULL;}
     |     ListComIdType COMMA ID Type                             {$$ = add_node_to_list($$, $4, $3, NULL, NULL, NULL);}
     ;
 
-FuncBody: LBRACE VarsAndStatements RBRACE                         {$$ = NULL;}
+FuncBody: LBRACE VarsAndStatements RBRACE                         {$$ =  add_node("FuncBody", NULL, $2, NULL, NULL);}
     ;
 
 VarsAndStatements:                                                {$$ = NULL;}
-    |     VarsAndStatements SEMICOLON
-    |     VarsAndStatements VarDeclaration SEMICOLON 
-    |     VarsAndStatements Statement SEMICOLON 
+    |     VarsAndStatements SEMICOLON                             {$$ = $1;}
+    |     VarsAndStatements VarDeclaration SEMICOLON              {$$ = add_to_end_of_list ($1, $2);}   
+    |     VarsAndStatements Statement SEMICOLON                   {printf("statemet\n");}
     ;
 
 Statement: ID ASSIGN Expr

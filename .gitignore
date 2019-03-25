@@ -8,6 +8,7 @@ y.tab.c
 y.tab.h
 *.go
 *.dgo
+.vscode/*
 
 
 # Prerequisites
