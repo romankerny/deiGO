@@ -30,6 +30,11 @@
 %type<tree_node_pointer>VarsAndStatements
 %type<tree_node_pointer>Expr
 %type<tree_node_pointer>Statement
+%type<tree_node_pointer>FuncInvocation
+%type<tree_node_pointer>ListStatSemi
+%type<tree_node_pointer>ListCommaExpr
+
+
 
 %type<s>Type
 
@@ -152,25 +157,27 @@ FuncBody: LBRACE VarsAndStatements RBRACE                         {$$ =  add_nod
 VarsAndStatements:                                                {$$ = NULL;}
     |     VarsAndStatements SEMICOLON                             {$$ = $1;}
     |     VarsAndStatements VarDeclaration SEMICOLON              {$$ = add_to_end_of_list ($1, $2);}   
-    |     VarsAndStatements Statement SEMICOLON                   {}
+    |     VarsAndStatements Statement SEMICOLON                   {$$ = add_to_end_of_list ($1, $2);}
     ;
 
-Statement: ID ASSIGN Expr {$$ = add_node("Assign", $1, NULL); $1->right = $3;}
-    |     LBRACE ListStatSemi RBRACE
-    |     IF Expr LBRACE ListStatSemi RBRACE
-    |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE
-    |     FOR      LBRACE ListStatSemi RBRACE
-    |     FOR Expr LBRACE ListStatSemi RBRACE
-    |     RETURN
-    |     RETURN Expr
-    |     FuncInvocation 
-    |     ParseArgs      
-    |     PRINT LPAR Expr RPAR
-    |     PRINT LPAR STRLIT RPAR
-    |     error
+Statement: ID ASSIGN Expr {char aux[1024];
+                        sprintf(aux, "Id(%s)", $1);
+                        $$ = add_node("Assign", add_node(aux, NULL, $3), NULL);}
+    |     LBRACE ListStatSemi RBRACE {$$=NULL;}
+    |     IF Expr LBRACE ListStatSemi RBRACE {$$=NULL;}
+    |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE {$$=NULL;}
+    |     FOR      LBRACE ListStatSemi RBRACE {$$=NULL;}
+    |     FOR Expr LBRACE ListStatSemi RBRACE {$$=NULL;}
+    |     RETURN {$$=NULL;}
+    |     RETURN Expr {$$=NULL;}
+    |     FuncInvocation {$$ = add_node("Call", $1, NULL);}
+    |     ParseArgs  {$$=NULL;}
+    |     PRINT LPAR Expr RPAR {$$=NULL;}
+    |     PRINT LPAR STRLIT RPAR    {$$=NULL;}
+    |     error {$$=NULL;}
     ;
 
-ListStatSemi:
+ListStatSemi: {$$ = NULL;}
     |     ListStatSemi Statement SEMICOLON
     ;
 
@@ -179,14 +186,17 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR
     ;
 
 FuncInvocation: ID LPAR RPAR {char aux[1024];
-                        sprintf(aux, "Id(%s)", $1);
-                        $$ = add_node(strdup(aux), NULL, NULL); } 
-    | ID LPAR Expr ListCommaExpr RPAR
-    | ID LPAR error RPAR
+                                sprintf(aux, "Id(%s)", $1);
+                                $$ = add_node(strdup(aux), NULL, NULL); }
+
+    | ID LPAR Expr ListCommaExpr RPAR { char aux[1024];
+                                        sprintf(aux, "Id(%s)", $1);
+                                        $$ = add_to_end_of_list (add_node(aux, NULL, $3), $4);}
+    | ID LPAR error RPAR {$$ = NULL;}
     ;
 
-ListCommaExpr:
-    | ListCommaExpr COMMA Expr
+ListCommaExpr:                 {$$ = NULL;}
+    | ListCommaExpr COMMA Expr {$$ = add_to_end_of_list($1, $3);}
     ;
 
 Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
@@ -206,17 +216,17 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
     |   MINUS Expr      {$$ = add_node("Minus", $2, NULL);}
     |   PLUS Expr       {{$$ = add_node("Plus", $2, NULL);}}
     |   INTLIT          {char aux[1024];
-                        sprintf(aux, "IntLit(%s)", $1);
+                        sprintf(aux, "IntLit(%d)", $1);
                         $$ = add_node(strdup(aux), NULL, NULL); }
 
     |   REALLIT         {char aux[1024];
-                        sprintf(aux, "RealLit(%s)", $1);
+                        sprintf(aux, "RealLit(%f)", $1);
                         $$ = add_node(strdup(aux), NULL, NULL); }
 
     |   ID              {char aux[1024];
                         sprintf(aux, "Id(%s)", $1);
                         $$ = add_node(strdup(aux), NULL, NULL); }   
-    |   FuncInvocation {$$ = NULL;}
+    |   FuncInvocation {$$ = add_node("Call", $1, NULL);}
     |   LPAR Expr RPAR {$$ = $2;}
     |   LPAR error RPAR  {$$ = NULL;}
     ;
