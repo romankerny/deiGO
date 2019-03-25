@@ -3,19 +3,13 @@ package main
 /*import (
 	"fmt"
 	"os"
-	"strconv"*/
+	"strconv"
+)*/
 
+var (ci, rad, area, PI float32;);
 
+var a, b,c int;
 
+var x string;
 
-
-var (a,b,c string;);
-
-var x int;
-
-
-
-func caralho(cona int, piXa string) string {
-
-var i string;
-}
+func PUTA(putas int, caralho string) string {}
