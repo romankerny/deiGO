@@ -163,7 +163,7 @@ VarsAndStatements:                                                {$$ = NULL;}
 Statement: ID ASSIGN Expr {char aux[1024];
                         sprintf(aux, "Id(%s)", $1);
                         $$ = add_node("Assign", add_node(aux, NULL, $3), NULL);}
-    |     LBRACE ListStatSemi RBRACE                                                 {}
+    |     LBRACE ListStatSemi RBRACE                                                 {$$ = add_node("Block", $2, NULL);}
     |     IF Expr LBRACE ListStatSemi RBRACE                                         {$2->right = add_node("Block", $4, NULL);
                                                                                       $$ = add_node("If", $2, NULL);
                                                                                      }
@@ -171,7 +171,6 @@ Statement: ID ASSIGN Expr {char aux[1024];
                                                                                      n * block2       = add_node("Block", $8, NULL);
                                                                                      $2->right        = add_node("Block", $4, block2);
                                                                                      $$ = add_node("If", $2, NULL);
-                                                                                
                                                                                      }
     |     FOR      LBRACE ListStatSemi RBRACE                                        { n* block = add_node("Block", $3, NULL);
                                                                                         $$ = add_node("For", block, NULL); }
