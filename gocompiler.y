@@ -57,7 +57,7 @@
 %left PLUS MINUS
 %left STAR DIV MOD
 %right NOT
-%nonassoc LPAR
+%left LPAR
 
 
 %token SEMICOLON BLANKID PACKAGE RETURN AND ASSIGN STAR COMMA DIV EQ GE GT LBRACE LE LPAR LSQ LT MINUS MOD NE NOT OR PLUS RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC CMDARGS RESERVED
@@ -239,8 +239,8 @@ Expr:   Expr AND Expr    {$$ = add_node("And", $1, NULL); $1->right = $3;}
     |   Expr DIV Expr    {$$ = add_node("Div", $1, NULL); $1->right = $3;}
     |   Expr MOD Expr    {$$ = add_node("Mod", $1, NULL); $1->right = $3;}
     |   NOT Expr         {$$ = add_node("Not", $2, NULL);}
-    |   MINUS Expr       {$$ = add_node("Minus", $2, NULL);}
-    |   PLUS Expr        {$$ = add_node("Plus", $2, NULL);}
+    |   MINUS Expr %prec NOT       {$$ = add_node("Minus", $2, NULL);}
+    |   PLUS Expr  %prec NOT      {$$ = add_node("Plus", $2, NULL);}
     |   INTLIT           {char aux[1024];
                          sprintf(aux, "IntLit(%d)", $1);
                          $$ = add_node(strdup(aux), NULL, NULL); }
