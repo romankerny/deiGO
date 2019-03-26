@@ -114,7 +114,7 @@ asp               \"
 <STRINGLIT><<EOF>>             {colno += yyleng; BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 
 
-{INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.i=atoi(yytext); if(!flag) return INTLIT;}
+{INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.s=strdup(yytext); if(!flag) return INTLIT;}
 {REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.s = strdup(yytext); if(!flag) return REALLIT;}
 {ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.s = strdup(yytext); if(!flag) return ID;}
 \n	       {if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) return SEMICOLON;}}
