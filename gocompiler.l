@@ -15,6 +15,7 @@
     char str_beginning[1024];
     int semi = 0;
     int i = 0;
+    int last_c = 0, last_l = 0;
 %}
 
 reserved break|case|chan|const|continue|default|defer|fallthrough|go|goto|import|interface|map|range|select|struct|switch|type|"++"|"--"
@@ -62,7 +63,7 @@ asp               \"
 "==" {semi = 0; colno += yyleng; if(flag){printf("EQ\n");} if(!flag) return EQ;}
 ">=" {semi = 0; colno += yyleng; if(flag){printf("GE\n");} if(!flag) return GE;}
 ">" {semi = 0; colno += yyleng; if(flag){printf("GT\n");} if(!flag) return GT;}
-"{" {semi = 0; colno += yyleng; if(flag){printf("LBRACE\n");} if(!flag) return LBRACE;}
+"{" {semi = 0; colno += yyleng; if(flag){printf("LBRACE\n");} last_c = colno; last_l = yylineno; if(!flag) return LBRACE;}
 "<=" {semi = 0; colno += yyleng; if(flag){printf("LE\n");} if(!flag) return LE;}
 "(" {semi = 0; colno += yyleng; if(flag){printf("LPAR\n");} if(!flag) return LPAR;}
 "[" {semi = 0; colno += yyleng; if(flag){printf("LSQ\n");} if(!flag) return LSQ;}
@@ -73,7 +74,7 @@ asp               \"
 "!" {semi = 0; colno += yyleng; if(flag){printf("NOT\n");} if(!flag) return NOT;}
 "||" {semi = 0; colno += yyleng; if(flag){printf("OR\n");} if(!flag) return OR;}
 "+" {semi = 0; colno += yyleng; if(flag){printf("PLUS\n");} if(!flag) return PLUS;}
-"}" {semi = 1; colno += yyleng; if(flag){printf("RBRACE\n");} if(!flag) return RBRACE;}
+"}" {semi = 1; colno += yyleng; if(flag){printf("RBRACE\n");} last_c = colno; last_l = yylineno; if(!flag) return RBRACE;}
 ")" {semi = 1; colno += yyleng; if(flag){printf("RPAR\n");} if(!flag) return RPAR;}
 "]" {semi = 1; colno += yyleng; if(flag){printf("RSQ\n");} if(!flag) return RSQ;}
 "else" {semi = 0; colno += yyleng; if(flag){printf("ELSE\n");} if(!flag) return ELSE;}
@@ -127,7 +128,7 @@ asp               \"
 void yyerror (const char *s)
 {   
     if(yytext[0] == 0) {
-        printf ("Line %d, column %d: syntax error: EOF\n", yylineno, (int) (colno + 1));
+        printf ("Line %d, column %d: syntax error: %s\n", last_l, (int) (colno - yyleng), yytext);
     }
     else
         printf ("Line %d, column %d: syntax error: %s\n", yylineno, (int) (colno - yyleng + 1), yytext);
