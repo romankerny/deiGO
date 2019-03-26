@@ -165,8 +165,8 @@ Statement: ID ASSIGN Expr {char aux[1024];
                         $$ = add_node("Assign", add_node(strdup(aux), NULL, $3), NULL);}
     |     LBRACE ListStatSemi RBRACE                                                 {$$ = add_node("Block", $2, NULL);}
     |     IF Expr LBRACE ListStatSemi RBRACE                                         {
-                
-                                                                                      $2->right = add_node("Block", $4, NULL);
+                                                                                      n * block2       = add_node("Block", NULL, NULL);
+                                                                                      $2->right = add_node("Block", $4, block2);
                                                                                       $$ = add_node("If", $2, NULL);
                                                                                      }
     |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE         {

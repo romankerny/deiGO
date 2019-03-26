@@ -1,25 +1,11 @@
 package main
 
-/*import (
-	"fmt"
-	"os"
-	"strconv"
-)*/
+//import "fmt"
 
-var (ci, rad, area, PI float32;);
+func main() {
+	var a int;
+	a = 4;
+	fmt.Println(a);
 
-var a, b,c func;
-
-var x string;
-
-func PUTA(putas int, caralho string) string {
-
-
-if n<0 {
-		fmt.Println("non-negative number please");
-	
-		return;
-	
-}
-
+{
 }

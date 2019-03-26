@@ -125,8 +125,12 @@ asp               \"
 %%
 
 void yyerror (const char *s)
-{
-    printf ("Line %d, column %d: syntax error: %s\n", yylineno, (int) (colno - yyleng + 1), yytext);
+{   
+    if(yytext[0] == 0) {
+        printf ("Line %d, column %d: syntax error: EOF\n", yylineno, (int) (colno + 1));
+    }
+    else
+        printf ("Line %d, column %d: syntax error: %s\n", yylineno, (int) (colno - yyleng + 1), yytext);
 }
 
 int yywrap()
