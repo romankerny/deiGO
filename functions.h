@@ -11,6 +11,7 @@ n * add_to_end_of_list (n * head, n * to_add);
 void print_tree(n * head, int dots);
 void print_node_from_tree(n * head, int dots);
 void print_node(n * node);
+int need_to_create_block(n * head);
 
 
 void print_dec(n* head, int dots);

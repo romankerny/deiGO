@@ -10,6 +10,7 @@
     int error = 0;
 
     int yylex(void);
+    int yywrap(void);
     void yyerror (const char *s);
 
 
@@ -69,7 +70,7 @@
 %%
 
 Program: PACKAGE ID SEMICOLON Declarations
-                                                    {$$ = tree_node_pointer = add_node("Program", $4, NULL);  print_tree(tree_node_pointer, 0);}
+                                                    {$$ = tree_node_pointer = add_node("Program", $4, NULL);}
     ;
 
 Declarations:                                       {$$ = NULL;}
@@ -163,7 +164,9 @@ Statement: ID ASSIGN Expr {char aux[1024];
                         sprintf(aux, "Id(%s)", $1);
                         $$ = add_node("Assign", add_node(strdup(aux), NULL, $3), NULL);}
     |     LBRACE ListStatSemi RBRACE                                                 {$$ = add_node("Block", $2, NULL);}
-    |     IF Expr LBRACE ListStatSemi RBRACE                                         {$2->right = add_node("Block", $4, NULL);
+    |     IF Expr LBRACE ListStatSemi RBRACE                                         {
+                
+                                                                                      $2->right = add_node("Block", $4, NULL);
                                                                                       $$ = add_node("If", $2, NULL);
                                                                                      }
     |     IF Expr LBRACE ListStatSemi RBRACE ELSE LBRACE ListStatSemi RBRACE         {
@@ -187,7 +190,7 @@ Statement: ID ASSIGN Expr {char aux[1024];
                                                                                       n * strlit = add_node(strdup(aux), NULL, NULL);
                                                                                       $$ = add_node("Print", strlit, NULL);
                                                                                      }
-    |     error                                                                      {$$ = NULL;}
+    |     error                                                                      {$$ = NULL; error = 1;}
     ;
 
 ListStatSemi:                                                                        {$$ = NULL;}
@@ -199,7 +202,7 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR      
                                                                                         n * left      = add_node(strdup(aux), NULL, $9);
                                                                                         $$            = add_node("ParseArgs", left, NULL);
                                                                                      }
-    |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                          {$$ = NULL;}
+    |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                          {$$ = NULL; error = 1;}
     ;
 
 FuncInvocation: ID LPAR RPAR {char aux[1024];
@@ -209,7 +212,7 @@ FuncInvocation: ID LPAR RPAR {char aux[1024];
     | ID LPAR Expr ListCommaExpr RPAR { char aux[1024];
                                         sprintf(aux, "Id(%s)", $1);
                                         $$ = add_to_end_of_list (add_node(strdup(aux), NULL, $3), $4);}
-    | ID LPAR error RPAR {$$ = NULL;}
+    | ID LPAR error RPAR {$$ = NULL; error = 1;}
     ;
 
 ListCommaExpr:                 {$$ = NULL;}
@@ -245,7 +248,7 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
                         $$ = add_node(strdup(aux), NULL, NULL); }   
     |   FuncInvocation {$$ = add_node("Call", $1, NULL);}
     |   LPAR Expr RPAR {$$ = $2;}
-    |   LPAR error RPAR  {$$ = NULL;}
+    |   LPAR error RPAR  {$$ = NULL; error = 1;}
     ;
 
 
@@ -255,12 +258,29 @@ Expr:   Expr AND Expr   {$$ = add_node("And", $1, NULL); $1->right = $3;}
 
 int main(int argc, char *argv[])
 {
+    int print_tr = 0;
+
     if (argc == 2) {
-        if (strcmp(argv[1], "-l") == 0)
+        if (strcmp(argv[1], "-l") == 0) {
             flag = 1;
+        }
+        if (strcmp(argv[1], "-t") == 0) {
+             print_tr = 1;
+        }
     }
-    yyparse();
+
+    if(flag == 1) {
+        yylex();
+
+    } else if(print_tr == 1 && error == 0) {
+        yyparse();
+        print_tree(tree_node_pointer, 0);
+    } else {
+        yyparse();
+    }
+
     return 0;
 }
+
 
 

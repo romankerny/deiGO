@@ -15,11 +15,23 @@ n * set_type (n * head, char * _str) {
     return head;
 }
 
+
+int need_to_create_block(n * head) {
+    n * tmp = head; int c = 0;
+    while(tmp) {
+        tmp = tmp->right;
+        c++;
+        if(c == 2) return 1;
+    }
+    return 0;
+}
+
+
 void print_node(n * node) {
     printf("type:%s", node->str);
 }
 
-n * add_to_end_of_list (n * head, n *to_add) {
+n * add_to_end_of_list (n * head, n * to_add) {
 
     n * first = head;
 
@@ -67,12 +79,9 @@ n * add_node_to_list_beggining(n * head, char * str, n * down, n * right) {
     n * u = add_node(str, down, right);
     n * tmp;
     
-
-
     if(head==NULL) {return u;}
 
     tmp = head;
-    
     while(tmp->right) {
             tmp = tmp->right;
     }

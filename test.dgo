@@ -8,7 +8,7 @@ package main
 
 var (ci, rad, area, PI float32;);
 
-var a, b,c int;
+var a, b,c func;
 
 var x string;
 
@@ -22,4 +22,4 @@ if n<0 {
 	
 }
 
-
+}
