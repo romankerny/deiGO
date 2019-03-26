@@ -175,7 +175,7 @@ Statement: ID ASSIGN Expr {char aux[1024];
                                                                                      $$ = add_node("If", $2, NULL);
                                                                                      }
     |     FOR      LBRACE ListStatSemi RBRACE                                        { n* block = add_node("Block", $3, NULL);
-                                                                                        $$ = add_node("For", block, NULL); }
+                                                                                       $$ = add_node("For", block, NULL); }
 
     |     FOR Expr LBRACE ListStatSemi RBRACE                                        {$2->right = add_node("Block", $4, NULL);
                                                                                         $$ = add_node("For", $2, NULL);}
