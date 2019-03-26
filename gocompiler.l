@@ -106,8 +106,8 @@ asp               \"
 <COMMENT2><<EOF>>   {BEGIN 0;}
 
 
-{asp}                          {i = 0; colno += yyleng; last_c = colno; last_l = yylineno; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; BEGIN STRINGLIT;}
-<STRINGLIT>{asp}               {colno += yyleng; BEGIN 0; str_beginning[i] = '\0'; if(flag && print_string) {semi = 1; printf("STRLIT(\"%s\")\n", str_beginning);} yylval.s = strdup(str_beginning); if(!flag) return STRLIT;}
+{asp}                          {i = 1; str_beginning[0] = '"'; colno += yyleng; last_c = colno; last_l = yylineno; string_beginning_column = colno; string_beginning_line = yylineno; print_string = 1; BEGIN STRINGLIT;}
+<STRINGLIT>{asp}               {colno += yyleng; BEGIN 0; str_beginning[i] = '"'; str_beginning[i+1] = '\0'; if(flag && print_string) {semi = 1; printf("STRLIT(%s)\n", str_beginning);} yylval.s = strdup(str_beginning); if(!flag) return STRLIT;}
 <STRINGLIT>{invalid_sequence}  {colno += yyleng; printf("Line %d, column %d: invalid escape sequence (%s)\n", yylineno, colno-1, yytext); print_string = 0; } 
 <STRINGLIT>{valid_escape}      {colno += yyleng; str_beginning[i] = yytext[0]; i++; str_beginning[i] = yytext[1]; i++;}
 <STRINGLIT>.                   {colno += yyleng; str_beginning[i] = *yytext; i++;}
@@ -131,7 +131,7 @@ void yyerror (const char *s)
     if(yytext[0] == 0) {
         printf ("Line %d, column %d: syntax error: %s\n", last_l, (int) last_c+1, yytext);
     } else if (yytext[0] == '"')
-        printf ("Line %d, column %d: syntax error: \"%s\"\n", string_beginning_line, string_beginning_column, str_beginning);
+        printf ("Line %d, column %d: syntax error: %s\n", string_beginning_line, string_beginning_column, str_beginning);
     else {
         printf ("Line %d, column %d: syntax error: %s\n", yylineno, (int) (colno - yyleng + 1), yytext);
 
