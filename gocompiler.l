@@ -118,9 +118,9 @@ asp               \"
 {INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.s=strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return INTLIT;}
 {REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.s = strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return REALLIT;}
 {ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.s = strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return ID;}
-\n	       {if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) return SEMICOLON;}}
-\t         {colno += 4;}
-" "        {colno += yyleng;}
+\n	       {/*last_l = yylineno; last_c = 0;*/ if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) return SEMICOLON;}}
+\t         {colno += 4; last_l = yylineno; last_c = colno;}
+" "        {colno += yyleng; last_l = yylineno; last_c = colno;}
 .          {colno += yyleng; last_c = colno; last_l = yylineno; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
