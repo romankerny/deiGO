@@ -190,7 +190,7 @@ Statement: ID ASSIGN Expr {char aux[1024];
                                                                                       n * strlit = add_node(strdup(aux), NULL, NULL);
                                                                                       $$ = add_node("Print", strlit, NULL);
                                                                                      }
-    |     error                                                                      {$$ = NULL; error = 1;}
+    |     error                                                                      {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
 
 ListStatSemi:                                                                        {$$ = NULL;}
@@ -202,7 +202,7 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR      
                                                                                         n * left      = add_node(strdup(aux), NULL, $9);
                                                                                         $$            = add_node("ParseArgs", left, NULL);
                                                                                      }
-    |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                          {$$ = NULL; error = 1;}
+    |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                          {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
 
 FuncInvocation: ID LPAR RPAR {char aux[1024];
@@ -212,7 +212,7 @@ FuncInvocation: ID LPAR RPAR {char aux[1024];
     | ID LPAR Expr ListCommaExpr RPAR { char aux[1024];
                                         sprintf(aux, "Id(%s)", $1);
                                         $$ = add_to_end_of_list (add_node(strdup(aux), NULL, $3), $4);}
-    | ID LPAR error RPAR {$$ = NULL; error = 1;}
+    | ID LPAR error RPAR {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
 
 ListCommaExpr:                 {$$ = NULL;}
@@ -248,7 +248,7 @@ Expr:   Expr AND Expr    {$$ = add_node("And", $1, NULL); $1->right = $3;}
                          $$ = add_node(strdup(aux), NULL, NULL); }   
     |   FuncInvocation  {$$ = add_node("Call", $1, NULL);}
     |   LPAR Expr RPAR  {$$ = $2;}
-    |   LPAR error RPAR {$$ = NULL; error = 1;}
+    |   LPAR error RPAR {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
 
 
