@@ -269,14 +269,13 @@ int main(int argc, char *argv[])
         }
     }
 
-    if(flag == 1) {
+    if(flag == 1)
         yylex();
+     else
+        yyparse();
 
-    } else if(print_tr == 1 && error == 0) {
-        yyparse();
+    if (error == 0 && print_tr == 1) {
         print_tree(tree_node_pointer, 0);
-    } else {
-        yyparse();
     }
 
     return 0;
