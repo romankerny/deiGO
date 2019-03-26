@@ -1,0 +1,50 @@
+Program
+..FuncDecl
+....FuncHeader
+......Id(main)
+......FuncParams
+....FuncBody
+......Print
+........StrLit("No block here")
+......Block
+........Print
+..........StrLit("with block")
+........Print
+..........StrLit("with block")
+......If
+........Eq
+..........Id(n)
+..........IntLit(0)
+........Block
+........Block
+......If
+........Eq
+..........Id(n)
+..........IntLit(1)
+........Block
+..........Print
+............StrLit("block here if")
+........Block
+......If
+........Eq
+..........Id(n)
+..........IntLit(2)
+........Block
+..........Print
+............StrLit("block here if")
+........Block
+..........Print
+............StrLit("block here else")
+......For
+........Block
+..........Print
+............StrLit("block here for")
+......For
+........Not
+..........IntLit(3)
+........Block
+..........Print
+............StrLit("block here for")
+......Return
+........IntLit(1)
+......Return
