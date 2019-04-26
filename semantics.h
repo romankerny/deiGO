@@ -3,4 +3,4 @@
 
 void check_program(n* prog);
 void check_FuncDecl(n* FuncDecl);
-void check_FuncHeader(n* FuncHeader);
+Function * check_FuncHeader(n* FuncHeader);

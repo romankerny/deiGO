@@ -12,40 +12,36 @@ Function * insert_Function(char *name) {
     Function * new_Function = malloc(sizeof(Function));
 
     new_Function->down = NULL;
-    new_Function->name = NULL;
+    new_Function->name = strdup(name);
     new_Function->next = NULL;
+
+    if(funcs == NULL) {
+        funcs = new_Function;
+        return new_Function;
+    }
 
     for (aux = funcs; aux->down; aux = aux->down);
     aux->down = new_Function;
 
-    new_Function->name = strdup(name);
+    
 
     return new_Function;
 }
 
-Params * insert_Param(char * type, Params * head)
-{
-    Params * aux;
-    Params * new_param = malloc(sizeof(Params));
-    new_param->type = strdup(type);
-    new_param->next = NULL;
-
-    if(head == NULL) return new_param;
-
-    for (aux = head; aux->next; aux = aux->next);
-    aux->next = new_param;
-
-    return head;
-}
 
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
-    new_func_el->name  = NULL;
     new_func_el->next  = NULL;
-    new_func_el->param = NULL;
-    new_func_el->type  = NULL;
+    new_func_el->name  = name;
+    new_func_el->param = param;
+    new_func_el->type  = type;
+
+    if(func->next == NULL) {
+        func->next = new_func_el;
+        return new_func_el;
+    }
 
     for (aux = func->next; aux->next; aux = aux->next)
     {
@@ -54,21 +50,21 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     
     aux->next = new_func_el;
 
-    new_func_el->name  = name;
-    new_func_el->param = param;
-    new_func_el->type  = type;
+
 
     return new_func_el;
     
 }
 
-Global_element * insert_Global_element(char * name, char * type, Params * params) {
+Global_element * insert_Global_element(char * name, char * type, char * params) {
     
     Global_element * aux;
     Global_element * new_global_el = malloc(sizeof(Global_element));
     new_global_el->name = strdup(name);
     new_global_el->type = strdup(type);
-    new_global_el->params = params;
+
+    if(params != NULL)
+        new_global_el->params = strdup(params);
 
     if(global == NULL)
     {
@@ -85,23 +81,7 @@ Global_element * insert_Global_element(char * name, char * type, Params * params
     return new_global_el;
 }
 
-void print_params(Params * params) {
-    Params * aux;
-    int i;
 
-    if (params == NULL) return;
-
-    printf("(");
-    for (aux = params, i = 0; params->next; aux = aux->next, i++)
-    {   
-        if(i == 0)
-            printf("%s",aux->type);
-        else
-            printf(",%s",aux->type);
-    }
-    printf(")\t");
-
-}
 
 void show_Global_table()
 {
@@ -109,14 +89,14 @@ void show_Global_table()
     printf("===== Global Symbol Table =====\n");
 
     while(aux) {
-        printf("%s\t",aux->name);
-        print_params(aux->params);
+        printf("%s\t", aux->name);
+        if(aux->params != NULL)
+            printf("%s\t", aux->params);
         printf("%s\n", aux->type);
         aux = aux->next;
     }
 
-    
-
+    printf("\n");
 }
 
 
@@ -152,6 +132,7 @@ void print_Function_table(Function * func) {
 
         aux = aux->next;
     }
+    printf("\n");
 
 }
 

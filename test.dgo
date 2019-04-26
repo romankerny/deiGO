@@ -4,6 +4,9 @@ package main
 var a int;
 var b float32;
 
-var (x,y int;);
+func putas(c int, d int, crl float32) int{
+
+var dentro int;
+}
 
 func main(){ }

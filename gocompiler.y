@@ -293,7 +293,7 @@ int main(int argc, char *argv[])
  
     show_Global_table();
    
-    // show_Functions_table();
+    show_Functions_table();
 
     return 0;
 }

@@ -9,7 +9,7 @@ typedef struct _t3 {
 
 typedef struct _t0 {
     char *name;
-    Params *params;
+    char *params;
     char *type;
     struct _t0 *next;
 } Global_element;
@@ -42,11 +42,12 @@ Function_element *search_el(char *str);*/
 
 Function * insert_Function(char *name);
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func);
-Global_element * insert_Global_element(char * name, char * type, Params * params);
+Global_element * insert_Global_element(char * name, char * type, char * params);
 
-void print_params(Params * params);
+
 void show_Global_table();
 void show_Functions_table();
 void print_Function_table(Function * func);
+
 
 #endif
