@@ -5,7 +5,6 @@
 #include <stdio.h>
 
 
-
 n * set_type (n * head, char * _str) {
     n * tmp = head;
     while(tmp) {
@@ -51,6 +50,21 @@ n * add_node(char * _str, n * _down, n * _right) {
     node->str = _str;
     node->down = _down;
     node->right = _right;
+    return node;
+
+}
+
+n * create_node(char * _str, n * _down, n * _right, int line, int col) {
+
+    n * node = malloc(sizeof(n));
+    node->str = _str;
+    node->down = _down;
+    node->right = _right;
+
+    // Meta 3
+    node->line = line;
+    node->col = col;
+
     return node;
 
 }

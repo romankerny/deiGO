@@ -72,7 +72,7 @@ Global_element * insert_Global_element(char * name, char * type, char * params) 
         return new_global_el;
     }
 
-    for(aux = global; aux->next; aux = aux->next)
+    for(aux = global; aux; aux = aux->next)
     {
         if(strcmp(aux->name, name) == 0) return NULL;
     }
