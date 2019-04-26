@@ -1,6 +1,9 @@
 package main
 
 
+var a int;
+var b float32;
 
-func main(){ "s
-/*
+var (x,y int;);
+
+func main(){ }

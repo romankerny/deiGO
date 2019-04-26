@@ -19,8 +19,8 @@
     n * tree_node_pointer = NULL;
     n * aux = NULL;
 
-    Global_element *global;
-    Function *funcs;
+    Global_element *global = NULL;
+    Function       *funcs  = NULL;
 
 %}
 
@@ -52,7 +52,6 @@
         float f;
         char* s;
         n * tree_node_pointer;
-      
 }
 
 
@@ -289,6 +288,12 @@ int main(int argc, char *argv[])
     if (error == 0 && print_tr == 1) {
         print_tree(tree_node_pointer, 0);
     }
+
+    check_program(tree_node_pointer);
+ 
+    show_Global_table();
+   
+    // show_Functions_table();
 
     return 0;
 }

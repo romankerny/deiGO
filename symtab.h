@@ -11,24 +11,41 @@ typedef struct _t0 {
     char *name;
     Params *params;
     char *type;
+    struct _t0 *next;
 } Global_element;
+
+
+
+
+
 
 typedef struct _t1{
 	char *name;
     char *type;
     char *param;
 	struct _t1 *next;
-} Func_element;
+} Function_element;
 
 typedef struct _t2 {
     char *name;
-    Func_element *next;
+    Function_element *next;
     struct _t2 *down;
 } Function;
 
-Func_element *insert_el(char *str);
+/*
+Function_element *insert_el(char *str);
 void show_table();
 void clean_table();
-Func_element *search_el(char *str);
+Function_element *search_el(char *str);*/
+
+
+
+Function * insert_Function(char *name);
+void insert_Func_element(char * name, char * type, char * param, Function * func);
+void insert_Global_element(char * name, char * type, Params * params);
+void print_params(Params * params);
+void show_Global_table();
+void show_Functions_table();
+void print_Function_table(Function * func);
 
 #endif
