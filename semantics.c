@@ -6,15 +6,14 @@
 
 
 
-int check_VarDecl(char * name, char * type) {
+void check_VarDecl(n* VarType) {
+    
+    n* VarId = VarType->right;
 
-    if (insert_Global_element(name, type, NULL) == NULL)
+    if (insert_Global_element(VarId->str, VarType->str, NULL) == NULL)
     {
-        // printf("Line <linha>, column <coluna>:Symbol < token > already defined\n");
-        return 0;
+        printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, VarId->str);
     }
-
-    return 1;
 }
 
 void check_program(n* prog)
@@ -25,7 +24,7 @@ void check_program(n* prog)
     
         if(strcmp(aux->str, "VarDecl") == 0)
         {
-            check_VarDecl(aux->down->right->str, aux->down->str);
+            check_VarDecl(aux->down);
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
@@ -42,7 +41,7 @@ void check_FuncDecl(n* FuncDecl)
 
 void check_FuncHeader(n* FuncHeader)
 {   
-    n* FuncId = FuncHeader->down;
+    //n* FuncId = FuncHeader->down;
     /*
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
         insert_Global_element(FuncHeader->down->str, "none", "()");*/

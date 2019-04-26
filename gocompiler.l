@@ -5,7 +5,14 @@
     #include "structures.h"
     #include "y.tab.h"
     
-
+    location create_loc(int line, int col, char* str)
+    {
+        location loc;
+        loc.line = line;
+        loc.col = col;
+        loc.str = strdup(str);
+        return loc;
+    }
 
     extern int flag;
     int colno = 0;
@@ -55,25 +62,25 @@ asp               \"
 "_" {semi = 0; colno += yyleng; if(flag){printf("BLANKID\n");} last_c = colno; last_l = yylineno; if(!flag) return BLANKID;}
 "package" {semi = 0; colno += yyleng; if(flag){printf("PACKAGE\n");} last_c = colno; last_l = yylineno; if(!flag) return PACKAGE;}
 "return"  {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");} last_c = colno; last_l = yylineno; if(!flag) return RETURN;}
-"&&" {semi = 0; colno += yyleng; if(flag){printf("AND\n");} last_c = colno; last_l = yylineno; if(!flag) return AND;}
-"=" {semi = 0; colno += yyleng;  if(flag){printf("ASSIGN\n");} last_c = colno; last_l = yylineno; if(!flag) return ASSIGN;}
-"*" {semi = 0; colno += yyleng;  if(flag){printf("STAR\n");} last_c = colno; last_l = yylineno; if(!flag) return STAR;}
+"&&" {semi = 0; colno += yyleng; if(flag){printf("AND\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return AND;}
+"=" {semi = 0; colno += yyleng;  if(flag){printf("ASSIGN\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return ASSIGN;}
+"*" {semi = 0; colno += yyleng;  if(flag){printf("STAR\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return STAR;}
 "," {semi = 0; colno += yyleng;  if(flag){printf("COMMA\n");} last_c = colno; last_l = yylineno; if(!flag) return COMMA;}
-"/" {semi = 0; colno += yyleng;  if(flag){printf("DIV\n");} last_c = colno; last_l = yylineno; if(!flag) return DIV;}
-"==" {semi = 0; colno += yyleng; if(flag){printf("EQ\n");} last_c = colno; last_l = yylineno; if(!flag) return EQ;}
-">=" {semi = 0; colno += yyleng; if(flag){printf("GE\n");} last_c = colno; last_l = yylineno; if(!flag) return GE;}
-">" {semi = 0; colno += yyleng;  if(flag){printf("GT\n");} last_c = colno; last_l = yylineno; if(!flag) return GT;}
+"/" {semi = 0; colno += yyleng;  if(flag){printf("DIV\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return DIV;}
+"==" {semi = 0; colno += yyleng; if(flag){printf("EQ\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return EQ;}
+">=" {semi = 0; colno += yyleng; if(flag){printf("GE\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return GE;}
+">" {semi = 0; colno += yyleng;  if(flag){printf("GT\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return GT;}
 "{" {semi = 0; colno += yyleng;  if(flag){printf("LBRACE\n");} last_c = colno; last_l = yylineno; if(!flag) return LBRACE;}
-"<=" {semi = 0; colno += yyleng; if(flag){printf("LE\n");} last_c = colno; last_l = yylineno; if(!flag) return LE;}
+"<=" {semi = 0; colno += yyleng; if(flag){printf("LE\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return LE;}
 "(" {semi = 0; colno += yyleng;  if(flag){printf("LPAR\n");} last_c = colno; last_l = yylineno; if(!flag) return LPAR;}
 "[" {semi = 0; colno += yyleng;  if(flag){printf("LSQ\n");} last_c = colno; last_l = yylineno; if(!flag) return LSQ;}
-"<" {semi = 0; colno += yyleng;  if(flag){printf("LT\n");} last_c = colno; last_l = yylineno; if(!flag) return LT;}
-"-" {semi = 0; colno += yyleng;  if(flag){printf("MINUS\n");} last_c = colno; last_l = yylineno; if(!flag) return MINUS;}
-"%" {semi = 0; colno += yyleng;  if(flag){printf("MOD\n");} last_c = colno; last_l = yylineno; if(!flag) return MOD;}
-"!=" {semi = 0; colno += yyleng; if(flag){printf("NE\n");} last_c = colno; last_l = yylineno; if(!flag) return NE;}
-"!" {semi = 0; colno += yyleng;  if(flag){printf("NOT\n");} last_c = colno; last_l = yylineno; if(!flag) return NOT;}
-"||" {semi = 0; colno += yyleng; if(flag){printf("OR\n");} last_c = colno; last_l = yylineno; if(!flag) return OR;}
-"+" {semi = 0; colno += yyleng;  if(flag){printf("PLUS\n");} last_c = colno; last_l = yylineno; if(!flag) return PLUS;}
+"<" {semi = 0; colno += yyleng;  if(flag){printf("LT\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return LT;}
+"-" {semi = 0; colno += yyleng;  if(flag){printf("MINUS\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return MINUS;}
+"%" {semi = 0; colno += yyleng;  if(flag){printf("MOD\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return MOD;}
+"!=" {semi = 0; colno += yyleng; if(flag){printf("NE\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return NE;}
+"!" {semi = 0; colno += yyleng;  if(flag){printf("NOT\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return NOT;}
+"||" {semi = 0; colno += yyleng; if(flag){printf("OR\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return OR;}
+"+" {semi = 0; colno += yyleng;  if(flag){printf("PLUS\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return PLUS;}
 "}" {semi = 1; colno += yyleng;  if(flag){printf("RBRACE\n");} last_c = colno; last_l = yylineno; if(!flag) return RBRACE;}
 ")" {semi = 1; colno += yyleng;  if(flag){printf("RPAR\n");} last_c = colno; last_l = yylineno; if(!flag) return RPAR;}
 "]" {semi = 1; colno += yyleng;  if(flag){printf("RSQ\n");} last_c = colno; last_l = yylineno; if(!flag) return RSQ;}
@@ -86,7 +93,7 @@ asp               \"
 "bool" {semi = 0; colno += yyleng; if(flag){printf("BOOL\n");} last_c = colno; last_l = yylineno; if(!flag) return BOOL;}
 "string" {semi = 0; colno += yyleng; if(flag){printf("STRING\n");} last_c = colno; last_l = yylineno; if(!flag) return STRING;}
 "fmt.Println" {semi = 0; colno += yyleng; if(flag){printf("PRINT\n");} last_c = colno; last_l = yylineno; if(!flag) return PRINT;}
-"strconv.Atoi" {semi = 0; colno += yyleng; if(flag){printf("PARSEINT\n");} last_c = colno; last_l = yylineno; if(!flag) return PARSEINT;}
+"strconv.Atoi" {semi = 0; colno += yyleng; if(flag){printf("PARSEINT\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return PARSEINT;}
 "func" { semi = 0; colno += yyleng; if(flag){printf("FUNC\n");} last_c = colno; last_l = yylineno; if(!flag) return FUNC;}
 "os.Args" {semi = 0; colno += yyleng; if(flag){printf("CMDARGS\n");} last_c = colno; last_l = yylineno; if(!flag) return CMDARGS;}
 
@@ -115,9 +122,9 @@ asp               \"
 <STRINGLIT><<EOF>>             {BEGIN 0; printf("Line %d, column %d: unterminated string literal\n", string_beginning_line, string_beginning_column);}
 
 
-{INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.s=strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return INTLIT;}
-{REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.s = strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return REALLIT;}
-{ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.s = strdup(yytext); last_c = colno; last_l = yylineno; if(!flag) return ID;}
+{INTLIT}   {semi = 1; colno += yyleng; if(flag){printf("INTLIT(%s)\n", yytext);} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return INTLIT;}
+{REALLIT}  {semi = 1; colno += yyleng; if(flag){printf("REALLIT(%s)\n", yytext);} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return REALLIT;}
+{ID}       {semi = 1; colno += yyleng; if(flag){printf("ID(%s)\n", yytext);} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return ID;}
 \n	       {colno += yyleng; last_l = yylineno-1; last_c = colno; if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) return SEMICOLON;}}
 \t         {colno += yyleng; last_l = yylineno; last_c = colno;}
 " "        {colno += yyleng; last_l = yylineno; last_c = colno;}

@@ -16,3 +16,5 @@ int need_to_create_block(n * head);
 
 void print_dec(n* head, int dots);
 void print_func_body(n * head, int dots);
+
+n * create_node(char * _str, n * _down, n * _right, int line, int col); // MEta 3
