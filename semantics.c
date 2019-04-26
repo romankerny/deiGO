@@ -4,20 +4,34 @@
 #include <stdio.h>
 #include <string.h>
 
+
+
+int check_VarDecl(char * name, char * type) {
+
+    if (insert_Global_element(name, type, NULL) == NULL)
+    {
+        // printf("Line <linha>, column <coluna>:Symbol < token > already defined\n");
+        return 0;
+    }
+
+    return 1;
+}
+
 void check_program(n* prog)
 {
-    n * aux;
+    n * aux = prog->down;
     
-    for (aux = prog->down; aux; aux = aux->right)
-    {
+    while(aux){
+    
         if(strcmp(aux->str, "VarDecl") == 0)
         {
-            insert_Global_element(aux->down->right->str, aux->down->str, NULL);
+            check_VarDecl(aux->down->right->str, aux->down->str);
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
             check_FuncDecl(aux);
         }
+        aux = aux->right;
     }
 }
 

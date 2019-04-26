@@ -41,8 +41,9 @@ Function_element *search_el(char *str);*/
 
 
 Function * insert_Function(char *name);
-void insert_Func_element(char * name, char * type, char * param, Function * func);
-void insert_Global_element(char * name, char * type, Params * params);
+Function_element * insert_Func_element(char * name, char * type, char * param, Function * func);
+Global_element * insert_Global_element(char * name, char * type, Params * params);
+
 void print_params(Params * params);
 void show_Global_table();
 void show_Functions_table();
