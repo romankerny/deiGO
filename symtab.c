@@ -23,7 +23,7 @@ Function * insert_Function(char *name) {
     return new_Function;
 }
 
-void insert_Func_element(char * name, char * type, char * param, Function * func) {
+Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
@@ -32,17 +32,22 @@ void insert_Func_element(char * name, char * type, char * param, Function * func
     new_func_el->param = NULL;
     new_func_el->type  = NULL;
 
-    for (aux = func->next; aux->next; aux = aux->next);
+    for (aux = func->next; aux->next; aux = aux->next)
+    {
+        if(strcmp(aux->name, name) == 0) return NULL;
+    }
     
     aux->next = new_func_el;
 
     new_func_el->name  = name;
     new_func_el->param = param;
     new_func_el->type  = type;
+
+    return new_func_el;
     
 }
 
-void insert_Global_element(char * name, char * type, Params * params) {
+Global_element * insert_Global_element(char * name, char * type, Params * params) {
     
     Global_element * aux;
     Global_element * new_global_el = malloc(sizeof(Global_element));
@@ -50,16 +55,19 @@ void insert_Global_element(char * name, char * type, Params * params) {
     new_global_el->type = strdup(type);
     new_global_el->params = params;
 
-    if(global == NULL) 
+    if(global == NULL)
     {
-        global = new_global_el; 
-        return;
+        global = new_global_el;
+        return new_global_el;
     }
 
-    for(aux = global; aux->next; aux = aux->next);
+    for(aux = global; aux->next; aux = aux->next)
+    {
+        if(strcmp(aux->name, name) == 0) return NULL;
+    }
     aux->next = new_global_el;
 
-
+    return new_global_el;
 }
 
 void print_params(Params * params) {
