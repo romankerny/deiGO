@@ -8,7 +8,7 @@ void check_program(n* prog)
 {
     n * aux;
     
-    for (aux = prog->down; aux->right; aux = aux->right)
+    for (aux = prog->down; aux; aux = aux->right)
     {
         if(strcmp(aux->str, "VarDecl") == 0)
         {
@@ -16,7 +16,22 @@ void check_program(n* prog)
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
-
+            check_FuncDecl(aux);
         }
     }
+}
+
+void check_FuncDecl(n* FuncDecl)
+{
+    check_FuncHeader(FuncDecl->down);
+}
+
+void check_FuncHeader(n* FuncHeader)
+{   
+    n* FuncId = FuncHeader->down;
+    /*
+    if (strcmp(FuncId->right->str, "FuncParams") == 0)
+        insert_Global_element(FuncHeader->down->str, "none", "()");*/
+
+
 }
