@@ -23,6 +23,21 @@ Function * insert_Function(char *name) {
     return new_Function;
 }
 
+Params * insert_Param(char * type, Params * head)
+{
+    Params * aux;
+    Params * new_param = malloc(sizeof(Params));
+    new_param->type = strdup(type);
+    new_param->next = NULL;
+
+    if(head == NULL) return new_param;
+
+    for (aux = head; aux->next; aux = aux->next);
+    aux->next = new_param;
+
+    return head;
+}
+
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
     Function_element * aux;
