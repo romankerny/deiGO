@@ -3,6 +3,8 @@
     #include <stdio.h>
     #include <string.h>
     #include "functions.h"
+    #include "symtab.h"
+    #include "semantics.h"
     #include "y.tab.h"    
 
 
@@ -16,6 +18,10 @@
 
     n * tree_node_pointer = NULL;
     n * aux = NULL;
+
+    Global_element *global;
+    Function *funcs;
+
 %}
 
 
