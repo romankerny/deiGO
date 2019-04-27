@@ -108,7 +108,7 @@ Function * check_FuncHeader(n* FuncHeader)
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
     {
         
-        strcpy(type ,strdup("none"));
+        strcpy(type ,"none");
         FuncParams = FuncId->right;
     }
     else
@@ -119,8 +119,6 @@ Function * check_FuncHeader(n* FuncHeader)
     }
     
     
-
-    printf("%s\n", type);
     insert_Func_element("return", type, NULL, to_return);
     
     ParamDecl = FuncParams->down;
@@ -155,8 +153,7 @@ Function * check_FuncHeader(n* FuncHeader)
     }
 
     strcat(param_str, ")");
-    param_str[strlen(param_str)] = '\0';
-
+    
     strcat(to_return->name, param_str);
     
     insert_Global_element(id, type, param_str);

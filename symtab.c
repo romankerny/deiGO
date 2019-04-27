@@ -34,9 +34,12 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
     new_func_el->next  = NULL;
-    new_func_el->name  = name;
-    new_func_el->param = param;
-    new_func_el->type  = type;
+    new_func_el->name  = strdup(name);
+    new_func_el->type  = strdup(type);
+    new_func_el->param = NULL;
+
+    if(param != NULL)
+        new_func_el->param = strdup(param);
 
     if(func->next == NULL) {
         func->next = new_func_el;
@@ -93,6 +96,8 @@ void show_Global_table()
         printf("%s\t", aux->name);
         if(aux->params != NULL)
             printf("%s\t", aux->params);
+        else
+            printf("\t");
         printf("%s\n", aux->type);
         aux = aux->next;
     }
@@ -123,9 +128,9 @@ void print_Function_table(Function * func) {
     printf("===== Function %s Symbol Table =====\n",func->name);
     while(aux)
     {
-        printf("%s\t%s\t", aux->name, aux->type);
+        printf("%s\t\t%s", aux->name, aux->type);
         if(aux->param != NULL)
-            printf("param\n");
+            printf("\tparam\n");
         else
         {
             printf("\n");
