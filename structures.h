@@ -10,7 +10,6 @@ typedef struct _l {
 typedef struct _n {
     
     int line, col;
-
     char * str;
     struct _n * down;
     struct _n * right;

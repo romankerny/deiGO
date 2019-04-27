@@ -62,6 +62,7 @@ Global_element * insert_Global_element(char * name, char * type, char * params) 
     Global_element * new_global_el = malloc(sizeof(Global_element));
     new_global_el->name = strdup(name);
     new_global_el->type = strdup(type);
+    new_global_el->params = NULL;
 
     if(params != NULL)
         new_global_el->params = strdup(params);
@@ -72,7 +73,7 @@ Global_element * insert_Global_element(char * name, char * type, char * params) 
         return new_global_el;
     }
 
-    for(aux = global; aux; aux = aux->next)
+    for(aux = global; aux->next; aux = aux->next)
     {
         if(strcmp(aux->name, name) == 0) return NULL;
     }

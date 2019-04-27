@@ -8,14 +8,38 @@
 
 
 
-void check_VarDecl(n* VarType) {
+void check_VarDeclGlobal(n* VarType) {
     
     n* VarId = VarType->right;
+    char * id = malloc(sizeof(char) * strlen(VarId->str));
+    sscanf(VarId->str,"Id(%s)", id);
+    int len = strlen(id);
+    id[len-1] = '\0';
 
-    if (insert_Global_element(VarId->str, VarType->str, NULL) == NULL)
+    char * type = strdup(VarType->str);
+    type[0] = tolower(type[0]);
+
+    if (insert_Global_element(id, type, NULL) == NULL)
     {
-        printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, VarId->str);
+        printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, id);
     }
+}
+
+void check_VarDeclFunc(n * VarType, Function * func) {
+    n* VarId = VarType->right;
+    char * id = malloc(sizeof(char) * strlen(VarId->str));
+    sscanf(VarId->str,"Id(%s)", id);
+    int len = strlen(id);
+    id[len-1] = '\0';
+
+    char * type = strdup(VarType->str);
+    type[0] = tolower(type[0]);
+
+    if (insert_Func_element(id, type, NULL, func) == NULL)
+    {
+        printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, id);
+    }
+
 }
 
 void check_program(n* prog)
@@ -26,7 +50,7 @@ void check_program(n* prog)
     
         if(strcmp(aux->str, "VarDecl") == 0)
         {
-            check_VarDecl(aux->down);
+            check_VarDeclGlobal(aux->down);
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
@@ -41,7 +65,22 @@ void check_FuncDecl(n* FuncDecl)
     Function * func;
 
     func = check_FuncHeader(FuncDecl->down);
+    check_FuncBody(FuncDecl->down->right, func);
 
+}
+
+void check_FuncBody(n * FuncBody, Function * func)
+{
+    n * aux = FuncBody->down; 
+    while(aux)
+    {
+        if(strcmp(aux->str, "VarDecl") == 0) {
+            check_VarDeclFunc(aux->down, func);
+        }
+
+
+        aux = aux->right;
+    }
 
 }
 
@@ -51,10 +90,7 @@ Function * check_FuncHeader(n* FuncHeader)
     n* FuncParams;
     n* ParamDecl;
 
-    char * type = NULL;
-    char * aux;
-
-
+    char * type = NULL, *aux;
     char param_str [1024] = "";
     int i = 0;
 
