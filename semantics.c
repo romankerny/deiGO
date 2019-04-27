@@ -25,7 +25,10 @@ void check_VarDeclGlobal(n* VarType) {
     }
 }
 
-void check_VarDeclFunc(n * VarType, Function * func) {
+void check_VarDeclFunc(n * VarDecl, Function * func) {
+
+    n* VarType = VarDecl->down;
+
     n* VarId = VarType->right;
     char * id = malloc(sizeof(char) * strlen(VarId->str));
     sscanf(VarId->str,"Id(%s)", id);
@@ -75,10 +78,31 @@ void check_FuncBody(n * FuncBody, Function * func)
     while(aux)
     {
         if(strcmp(aux->str, "VarDecl") == 0) {
-            check_VarDeclFunc(aux->down, func);
+            check_VarDeclFunc(aux, func);
+        } else if(strcmp(aux->str, "Assign") == 0) {
+            check_Assign(aux, func);
+
+        } else if(strcmp(aux->str, "Block") == 0) {
+            check_Block(aux, func);
+
+        } else if(strcmp(aux->str, "If") == 0) {
+            check_If(aux, func);
+
+        } else if(strcmp(aux->str, "For") == 0) {
+            check_For(aux, func);
+
+        } else if(strcmp(aux->str, "Return") == 0) {
+            check_Return(aux, func);
+
+        } else if(strcmp(aux->str, "Call") == 0) {
+            check_Call(aux, func);
+
+        } else if(strcmp(aux->str, "Print") == 0) {
+            check_Print(aux, func);
+
+        } else if(strcmp(aux->str, "ParseArgs") == 0) {
+            check_ParseArgs(aux, func);
         }
-
-
         aux = aux->right;
     }
 
@@ -164,4 +188,30 @@ Function * check_FuncHeader(n* FuncHeader)
 
     
     return to_return;
+}
+
+
+void check_Assign(n* Assign, Function *func) {
+
+}
+void check_Block(n* Block, Function *func) {
+
+}
+void check_If(n* If, Function *func) {
+
+}
+void check_For(n* For, Function *func) {
+
+}
+void check_Return(n* Return, Function *func) {
+
+}
+void check_Call(n* Call, Function *func) {
+
+}
+void check_Print(n* Print, Function *func) {
+
+}
+void check_ParseArgs(n* ParseArgs, Function *func) {
+    
 }
