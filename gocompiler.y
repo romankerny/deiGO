@@ -290,6 +290,8 @@ int main(int argc, char *argv[])
    
     show_Functions_table();
 
+    print_tree(tree_node_pointer, 0);
+
     return 0;
 }
 
