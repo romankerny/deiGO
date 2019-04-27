@@ -28,6 +28,19 @@ Function * insert_Function(char *name) {
     return new_Function;
 }
 
+Function_element * searh_Element(Function * func, char * name)
+{
+    Function_element * aux = func->next;
+
+    while(aux)
+    {
+        if(strcmp(aux->name, name) == 0) return aux;
+        aux = aux->next;
+    }
+
+    return NULL;
+}
+
 
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
