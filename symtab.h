@@ -28,14 +28,6 @@ typedef struct _t2 {
     struct _t2 *down;
 } Function;
 
-/*
-Function_element *insert_el(char *str);
-void show_table();
-void clean_table();
-Function_element *search_el(char *str);*/
-
-
-
 Function * insert_Function(char *name);
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func);
 Global_element * insert_Global_element(char * name, char * type, char * params);
