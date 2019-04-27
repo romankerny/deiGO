@@ -193,6 +193,18 @@ Function * check_FuncHeader(n* FuncHeader)
 
 void check_Assign(n* Assign, Function *func) {
 
+    n* Id = Assign->down;
+    n* Expr = Id->right;
+
+    char* name_id = malloc(sizeof(char) * strlen(Id->str));
+    sscanf(Id->str, "Id(%s)", name_id);
+    name_id[strlen(name_id)-1] = '\0';
+
+    Function_element *element = searh_Element(func, name_id);
+    if (element == NULL) {
+        printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
+    }
+
 }
 void check_Block(n* Block, Function *func) {
 
@@ -213,5 +225,5 @@ void check_Print(n* Print, Function *func) {
 
 }
 void check_ParseArgs(n* ParseArgs, Function *func) {
-    
+
 }

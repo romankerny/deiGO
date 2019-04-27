@@ -15,10 +15,6 @@ typedef struct _t0 {
 } Global_element;
 
 
-
-
-
-
 typedef struct _t1{
 	char *name;
     char *type;
