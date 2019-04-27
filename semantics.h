@@ -7,6 +7,7 @@ void check_FuncDecl(n* FuncDecl);
 Function * check_FuncHeader(n* FuncHeader);
 void check_FuncBody(n * FuncBody, Function * func);
 void check_Statement(n * aux, Function * func);
+char * check_Expr(n * Expr, Function * func);
 
 
 void check_Assign(n* Assign, Function *func);

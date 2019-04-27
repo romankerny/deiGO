@@ -220,7 +220,7 @@ void check_Assign(n* Assign, Function *func) {
 
 void check_Block(n* Block, Function *func) {
     n * aux = Block->down;
-
+    printf("no block\n");
     while(aux)
     {
         check_Statement(aux, func);
@@ -228,7 +228,14 @@ void check_Block(n* Block, Function *func) {
     }
 }
 
+
 void check_If(n* If, Function *func) {
+    n * expr = If->down;
+    printf("no check\n");
+    if(strcmp(check_Expr(expr, func), "bool") == 0)
+    {
+
+    }
 
     
 }
@@ -245,5 +252,113 @@ void check_Print(n* Print, Function *func) {
 
 }
 void check_ParseArgs(n* ParseArgs, Function *func) {
+
+}
+
+char * check_Expr(n * Expr, Function * func) {
+
+    char * type  = NULL;
+    char value[100];
+
+    if (Expr == NULL)
+        return NULL;
+    
+    char first  = Expr->str[0];
+    char second = Expr->str[1];
+
+    if (first == 'I' && second == 'n')
+    {   
+
+        printf("%s\n", Expr->str);
+
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        strcat(Expr->str, " - int");
+
+        return "int";
+    } 
+    else if(first == 'R')
+    {
+        printf("%s\n", Expr->str);
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        strcat(Expr->str, " - float32");
+        return "float32";
+
+    } 
+    else if(first == 'I' && second == 'd')
+    {
+
+        printf("%s\n", Expr->str);
+        char * id = malloc(sizeof(char) * strlen(Expr->str));
+        sscanf(Expr->str,"Id(%s)", id);
+        int len = strlen(id);
+        id[len-1] = '\0';
+
+
+        Function_element * el = searh_Element(func, id);
+
+
+        if (el == NULL) {
+            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+            printf("Line %d, column %d: Cannot find symbol %s\n", Expr->line, Expr->col, id);
+            strcat(Expr->str, " - undef");
+            return "undef";
+
+        }
+        else
+        {
+            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+            sprintf(Expr->str, "%s - %s", Expr->str, el->type);
+            return el->type;
+        }
+
+        
+    }
+    else if(first == 'C')
+    {
+        /*
+        printf("%s\n", Expr->str);
+        char * type = func->next->type;
+        
+        if (strcmp(type, "none") != 0)
+        {
+            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+            sprintf(Expr->str, "Call - %s", type);
+
+        }*/
+
+        return "call";
+
+    } else {
+
+        char * t1 = check_Expr(Expr->down,        func);
+        char * t2 = check_Expr(Expr->down->right, func);
+
+
+        if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0 || strcmp(Expr->str, "Lt") == 0 
+        || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Eq") == 0 || strcmp(Expr->str, "Ne") == 0
+        || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0 || strcmp(Expr->str, "Not") == 0) {
+
+            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+            sprintf(Expr->str, "%s - bool", Expr->str);
+
+        } else {
+            if(strcmp(t1, t2) == 0)
+            {
+                Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+                sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                return t1;
+            }
+            else
+            {
+                Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
+            }
+            
+            
+        }
+        
+
+    }
 
 }
