@@ -407,7 +407,7 @@ char * check_Expr(n * Expr, Function * func) {
         // - / * % int e int, float e float
         else if(strcmp(Expr->str, "Sub") == 0 || strcmp(Expr->str, "Div") == 0 || strcmp(Expr->str, "Mul") == 0 || strcmp(Expr->str, "Mod") == 0 ) {
 
-            if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") && strcmp(t2, "float32") == 0)) {
+            if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
             } else {
@@ -419,7 +419,7 @@ char * check_Expr(n * Expr, Function * func) {
 
         // + int e int, float e float, string e string
         else if(strcmp(Expr->str, "Add") == 0) {
-             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") && strcmp(t2, "float32") == 0)
+             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)
              || (strcmp(t1, "string") == 0 && strcmp(t2, "string") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
@@ -432,7 +432,7 @@ char * check_Expr(n * Expr, Function * func) {
 
         // +a -a     t2 == null e int, ou float
         else if (strcmp(Expr->str, "Plus") == 0 || strcmp(Expr->str, "Minus") == 0) {
-             if (strcmp(t1, "int") == 0 || strcmp(t1, "float32") ) {
+             if (strcmp(t1, "int") == 0 || strcmp(t1, "float32") == 0 ) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
             } else {
