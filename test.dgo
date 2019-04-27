@@ -10,4 +10,26 @@ var dentro int;
 var pois float32;
 }
 
-func main(){ }
+func main(){
+
+var a int;
+
+a = 1;
+	{
+		a = a + 1;
+		a = a * 2;
+	}
+
+	if(1 < 2){
+			
+	}
+
+	for {
+	}
+
+	return a
+	putas(a,a,0.32);
+	fmt.Println("print");
+	a,_ = strconv.Atoi(os.Args[0]);
+
+ }
