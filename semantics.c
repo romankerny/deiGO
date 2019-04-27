@@ -100,13 +100,14 @@ Function * check_FuncHeader(n* FuncHeader)
     
     sscanf(FuncId->str,"Id(%s)", id);
     int len = strlen(id);
-    id[len-1] = '\0';
+    id[len-1] = '\0'; // tirar o )
 
 
     Function * to_return = insert_Function(id);
     
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
     {
+        
         type = strdup("none");
         FuncParams = FuncId->right;
     }
@@ -117,40 +118,45 @@ Function * check_FuncHeader(n* FuncHeader)
         FuncParams = FuncId->right->right;
     }
     
+    
+
+    printf("%s\n", type);
     insert_Func_element("return", type, NULL, to_return);
     
     ParamDecl = FuncParams->down;
     strcat(param_str, "(");
-
+    
 
 
     while(ParamDecl)
     {
+        aux = strdup("\0");
         aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
-        if (i > 0) {
+        if (i == 0) {
             
             strcat(param_str, aux);
         }
         else {
-            
-            strcat(param_str, aux);
             strcat(param_str, ",");
+            strcat(param_str, aux);
+            
         }
 
         char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
-        int len = strlen(param_id);
-        param_id[len-1] = '\0';
+        param_id[strlen(param_id)-1] = '\0';
 
-        
-        insert_Func_element(param_id,aux,"param", to_return);
+
+        insert_Func_element(param_id, aux,"param", to_return);
         ParamDecl = ParamDecl->right;
         i++;
     }
 
     strcat(param_str, ")");
+    param_str[strlen(param_str)] = '\0';
+
     strcat(to_return->name, param_str);
     
     insert_Global_element(id, type, param_str);

@@ -23,3 +23,6 @@ meta4/*
 !meta2/*.out
 !meta3/*.out
 !meta4/*.out
+
+# other files
+.DS_Store
