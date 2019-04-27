@@ -141,7 +141,6 @@ Function * check_FuncHeader(n* FuncHeader)
     
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
     {
-        
         strcpy(type ,"none");
         FuncParams = FuncId->right;
     }
@@ -181,7 +180,6 @@ Function * check_FuncHeader(n* FuncHeader)
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
 
-
         insert_Func_element(param_id, aux,"param", to_return);
         ParamDecl = ParamDecl->right;
         i++;
@@ -217,12 +215,14 @@ void check_Assign(n* Assign, Function *func) {
     sscanf(Id->str, "Id(%s)", name_id);
     name_id[strlen(name_id)-1] = '\0';
 
-    Function_element *element = searh_Element(func, name_id);
-    if (element == NULL) {
+    Function_element *element = search_Element(func, name_id);
+    Global_element *gelement = search_Global(name_id);
+
+    if (element == NULL && gelement == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
         strcat(Id->str, " - undef");
         strcat(Assign->str, " - undef");
-    } else {
+    } else if (element){
         sprintf(Id->str, "%s - %s", Id->str, element->type);
 
         if (strcmp(element->type, expr_type) == 0)
@@ -230,6 +230,13 @@ void check_Assign(n* Assign, Function *func) {
         else
             strcat(Assign->str, " - undef");
 
+    } else {
+        sprintf(Id->str, "%s - %s", Id->str, gelement->type);
+
+        if (strcmp(gelement->type, expr_type) == 0)
+            sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
+        else
+            strcat(Assign->str, " - undef");
     }
 
 }
@@ -300,19 +307,23 @@ char * check_Expr(n * Expr, Function * func) {
         int len = strlen(id);
         id[len-1] = '\0';
 
-        Function_element * el = searh_Element(func, id);
+        Function_element * el = search_Element(func, id);
+        Global_element *gel = search_Global(id);
 
-        if (el == NULL) {
-            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+
+        if (el == NULL && gel == NULL) {
             printf("Line %d, column %d: Cannot find symbol %s\n", Expr->line, Expr->col, id);
             strcat(Expr->str, " - undef");
             return "undef";
         }
-        else
+        else if (el)
         {
-            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
             sprintf(Expr->str, "%s - %s", Expr->str, el->type);
             return el->type;
+        } else {
+            sprintf(Expr->str, "%s - %s", Expr->str, gel->type);
+            return gel->type;
         }
 
         
@@ -338,23 +349,52 @@ char * check_Expr(n * Expr, Function * func) {
         char *t2 = check_Expr(Expr->down->right, func);
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
-
-        if (strcmp(t1, t2) == 0) {
-            
-            if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0 || strcmp(Expr->str, "Lt") == 0 
+        
+        // Bools
+        if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0 || strcmp(Expr->str, "Lt") == 0 
             || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Eq") == 0 || strcmp(Expr->str, "Ne") == 0
             || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0 || strcmp(Expr->str, "Not") == 0) {
-            
-                sprintf(Expr->str, "%s - bool", Expr->str);
-                return "bool";
-            } else {
-                sprintf(Expr->str, "%s - %s", Expr->str, t1);
-                return t1;
-            } 
+                
+                // a = !a
+                if (t2 == NULL) {
+                    if (strcmp(t1, "bool") == 0) {
+                        sprintf(Expr->str, "%s - bool", Expr->str);
+                        return "bool";
+                    } else {
+                        sprintf(Expr->str, "%s - undef", Expr->str);
+                        return "undef";
+                    }
+                } else {
 
+                    if (strcmp(t1, t2) == 0) {
+                        sprintf(Expr->str, "%s - bool", Expr->str);
+                        return "bool";
+                    } else {
+                        sprintf(Expr->str, "%s - undef", Expr->str);
+                        return "undef";
+                    }
+                }     
+        // Contas
         } else {
-                sprintf(Expr->str, "%s - undef", Expr->str);
-                return "undef";
-        } 
+            // a = -1
+            // a = +1
+            if (t2 == NULL) {
+                if (strcmp(t1, "float32") == 0 || strcmp(t1, "int") == 0) {
+                    sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                    return t1;
+                } else {
+                    sprintf(Expr->str, "%s - undef", Expr->str);
+                    return "undef";
+                }
+            } else {
+                if (strcmp(t1, t2) == 0) {
+                    sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                    return t1;
+                } else {
+                    sprintf(Expr->str, "%s - undef", Expr->str);
+                    return "undef";
+                }
+            }
+        }
     }
 }

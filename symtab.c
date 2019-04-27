@@ -28,7 +28,7 @@ Function * insert_Function(char *name) {
     return new_Function;
 }
 
-Function_element * searh_Element(Function * func, char * name)
+Function_element * search_Element(Function * func, char * name)
 {
     Function_element * aux = func->next;
 
@@ -38,6 +38,18 @@ Function_element * searh_Element(Function * func, char * name)
         aux = aux->next;
     }
 
+    return NULL;
+}
+
+Global_element * search_Global(char * name)
+{
+    Global_element * aux = global;
+    
+    while(aux)
+    {
+        if(strcmp(aux->name, name) == 0) return aux;
+        aux = aux->next;
+    }
     return NULL;
 }
 
