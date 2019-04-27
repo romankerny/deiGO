@@ -369,74 +369,41 @@ char * check_Expr(n * Expr, Function * func) {
 
 
         // contas
-
+        
         // - / * % int e int, float e float
+        if(strcmp(Expr->str, "Sub") == 0 || strcmp(Expr->str, "Div") == 0 || strcmp(Expr->str, "Mul") == 0 || strcmp(Expr->str, "Mod") == 0 ) {
 
+            if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") && strcmp(t2, "float32") == 0)) {
+                sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                return t1;
+            } else {
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
+            }
+
+        }
 
         // + int e int, float e float, string e string
-
+        if(strcmp(Expr->str, "Add") == 0) {
+             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") && strcmp(t2, "float32") == 0)
+             || (strcmp(t1, "string") == 0 && strcmp(t2, "string") == 0)) {
+                sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                return t1;
+            } else {
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
+            }
+        }
 
 
         // +a -a     t2 == null e int, ou float
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0 || strcmp(Expr->str, "Lt") == 0 
-            || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Eq") == 0 || strcmp(Expr->str, "Ne") == 0
-            || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0 || strcmp(Expr->str, "Not") == 0) {
-                
-                // a = !a
-                if (t2 == NULL) {
-                    if (strcmp(t1, "bool") == 0) {
-                        sprintf(Expr->str, "%s - bool", Expr->str);
-                        return "bool";
-                    } else {
-                        sprintf(Expr->str, "%s - undef", Expr->str);
-                        return "undef";
-                    }
-                } else {
-
-                    if (strcmp(t1, t2) == 0) {
-                        sprintf(Expr->str, "%s - bool", Expr->str);
-                        return "bool";
-                    } else {
-                        sprintf(Expr->str, "%s - undef", Expr->str);
-                        return "undef";
-                    }
-                }     
-        // Contas
-        } else {
-            // a = -1
-            // a = +1
-            if (t2 == NULL) {
-                if (strcmp(t1, "float32") == 0 || strcmp(t1, "int") == 0) {
-                    sprintf(Expr->str, "%s - %s", Expr->str, t1);
-                    return t1;
-                } else {
-                    sprintf(Expr->str, "%s - undef", Expr->str);
-                    return "undef";
-                }
+        if(strcmp(Expr->str, "Plus") == 0 || strcmp(Expr->str, "Minus") == 0) {
+             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") && strcmp(t2, "float32") == 0)) {
+                sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                return t1;
             } else {
-                if (strcmp(t1, t2) == 0) {
-                    sprintf(Expr->str, "%s - %s", Expr->str, t1);
-                    return t1;
-                } else {
-                    sprintf(Expr->str, "%s - undef", Expr->str);
-                    return "undef";
-                }
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
             }
         }
     }
