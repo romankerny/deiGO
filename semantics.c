@@ -205,11 +205,20 @@ Function * check_FuncHeader(n* FuncHeader)
 void check_Assign(n* Assign, Function *func) {
 
 }
-void check_Block(n* Block, Function *func) {
 
+void check_Block(n* Block, Function *func) {
+    n * aux = Block->down;
+
+    while(aux)
+    {
+        check_Statement(aux, func);
+        aux = aux->right;
+    }
 }
+
 void check_If(n* If, Function *func) {
 
+    
 }
 void check_For(n* For, Function *func) {
 
