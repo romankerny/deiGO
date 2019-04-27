@@ -90,7 +90,7 @@ Function * check_FuncHeader(n* FuncHeader)
     n* FuncParams;
     n* ParamDecl;
 
-    char * type = NULL, *aux;
+    char type[50], *aux;
     char param_str [1024] = "";
     int i = 0;
 
@@ -108,12 +108,12 @@ Function * check_FuncHeader(n* FuncHeader)
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
     {
         
-        type = strdup("none");
+        strcpy(type ,strdup("none"));
         FuncParams = FuncId->right;
     }
     else
     {
-        type = strdup(FuncId->right->str);
+        strcpy(type ,strdup(FuncId->right->str));
         type[0] = tolower(type[0]);
         FuncParams = FuncId->right->right;
     }
@@ -125,7 +125,7 @@ Function * check_FuncHeader(n* FuncHeader)
     
     ParamDecl = FuncParams->down;
     strcat(param_str, "(");
-    
+
 
 
     while(ParamDecl)
@@ -146,7 +146,7 @@ Function * check_FuncHeader(n* FuncHeader)
 
         char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
-        param_id[strlen(param_id)-1] = '\0';
+        param_id[strlen(param_id)-1] = '\0'; // tirar o )
 
 
         insert_Func_element(param_id, aux,"param", to_return);
