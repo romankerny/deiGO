@@ -72,6 +72,34 @@ void check_FuncDecl(n* FuncDecl)
 
 }
 
+void check_Statement(n * aux, Function * func)
+{   
+    if(strcmp(aux->str, "Assign") == 0) {
+        check_Assign(aux, func);
+
+    } else if(strcmp(aux->str, "Block") == 0) {
+        check_Block(aux, func);
+
+    } else if(strcmp(aux->str, "If") == 0) {
+        check_If(aux, func);
+
+    } else if(strcmp(aux->str, "For") == 0) {
+        check_For(aux, func);
+
+    } else if(strcmp(aux->str, "Return") == 0) {
+        check_Return(aux, func);
+
+    } else if(strcmp(aux->str, "Call") == 0) {
+        check_Call(aux, func);
+
+    } else if(strcmp(aux->str, "Print") == 0) {
+        check_Print(aux, func);
+
+    } else if(strcmp(aux->str, "ParseArgs") == 0) {
+        check_ParseArgs(aux, func);
+    }
+}
+
 void check_FuncBody(n * FuncBody, Function * func)
 {
     n * aux = FuncBody->down; 
@@ -79,30 +107,12 @@ void check_FuncBody(n * FuncBody, Function * func)
     {
         if(strcmp(aux->str, "VarDecl") == 0) {
             check_VarDeclFunc(aux, func);
-        } else if(strcmp(aux->str, "Assign") == 0) {
-            check_Assign(aux, func);
-
-        } else if(strcmp(aux->str, "Block") == 0) {
-            check_Block(aux, func);
-
-        } else if(strcmp(aux->str, "If") == 0) {
-            check_If(aux, func);
-
-        } else if(strcmp(aux->str, "For") == 0) {
-            check_For(aux, func);
-
-        } else if(strcmp(aux->str, "Return") == 0) {
-            check_Return(aux, func);
-
-        } else if(strcmp(aux->str, "Call") == 0) {
-            check_Call(aux, func);
-
-        } else if(strcmp(aux->str, "Print") == 0) {
-            check_Print(aux, func);
-
-        } else if(strcmp(aux->str, "ParseArgs") == 0) {
-            check_ParseArgs(aux, func);
         }
+        else
+        {
+            check_Statement(aux, func);
+        }
+        
         aux = aux->right;
     }
 
@@ -156,7 +166,8 @@ Function * check_FuncHeader(n* FuncHeader)
         aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
-        if (i == 0) {
+        if (i == 0) 
+        {
             
             strcat(param_str, aux);
         }
