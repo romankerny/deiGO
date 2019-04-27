@@ -128,7 +128,7 @@ Function * check_FuncHeader(n* FuncHeader)
 
     while(ParamDecl)
     {
-        aux = strdup("\0");
+        // aux = strdup("\0");
         aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
@@ -139,12 +139,12 @@ Function * check_FuncHeader(n* FuncHeader)
         else {
             strcat(param_str, ",");
             strcat(param_str, aux);
-            
         }
 
         char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
+        
 
 
         insert_Func_element(param_id, aux,"param", to_return);
@@ -154,10 +154,12 @@ Function * check_FuncHeader(n* FuncHeader)
 
     strcat(param_str, ")");
 
+    char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str)));
     char * name_aux = strdup(to_return->name);
-    strcat(name_aux, param_str);
-    to_return->name = strdup(name_aux);
-    // strcat(to_return->name, param_str);
+    strcat(last, name_aux);
+    strcat(last, param_str);
+    to_return->name = strdup(last);
+
     insert_Global_element(id, type, param_str);
 
     
