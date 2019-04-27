@@ -352,7 +352,6 @@ char * check_Expr(n * Expr, Function * func) {
         
         // compare
 
-
         // GE GT LT LE - int int - float float
         if(strcmp(Expr->str, "Lt") == 0 || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Ne") == 0 || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0)
         {
@@ -406,30 +405,6 @@ char * check_Expr(n * Expr, Function * func) {
 
         }
 
-
-
-        
-
-
-        
-
-
-        // == !=  int e int, float e float, bool e bool, string e string
-
-
-
-
-
-        // contas
-
-        // - / * % int e int, float e float
-
-
-        // + int e int, float e float, string e string
-
-
-
-        // +a -a     t2 == null e int, ou float
 
 
     }
