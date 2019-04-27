@@ -353,7 +353,7 @@ char * check_Expr(n * Expr, Function * func) {
         // compare
 
         // GE GT LT LE - int int - float float
-        if(strcmp(Expr->str, "Lt") == 0 || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Ne") == 0 || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0)
+        if(strcmp(Expr->str, "Lt") == 0 || strcmp(Expr->str, "Gt") == 0 || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0)
         {
             if((strcmp(t1, "int") == 0 && strcmp(t2,"int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2,"float32") == 0)) 
             {
@@ -401,6 +401,12 @@ char * check_Expr(n * Expr, Function * func) {
                 sprintf(Expr->str, "%s - bool", Expr->str);
                 return "bool";
             }
+            else
+            {
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
+            }
+            
 
         }        // contas
         
