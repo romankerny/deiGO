@@ -153,9 +153,11 @@ Function * check_FuncHeader(n* FuncHeader)
     }
 
     strcat(param_str, ")");
-    
-    strcat(to_return->name, param_str);
-    
+
+    char * name_aux = strdup(to_return->name);
+    strcat(name_aux, param_str);
+    to_return->name = strdup(name_aux);
+    // strcat(to_return->name, param_str);
     insert_Global_element(id, type, param_str);
 
     
