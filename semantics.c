@@ -350,7 +350,50 @@ char * check_Expr(n * Expr, Function * func) {
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
         
-        // Bools
+        // compare
+
+
+        // GE GT LT LE - INT INT - FLOAT FLOAT
+
+
+        // ! - bool
+
+
+        // And e Or : bool - bool
+
+
+        // == !=  int e int, float e float, bool e bool, string e string
+
+
+
+
+
+        // contas
+
+        // - / * % int e int, float e float
+
+
+        // + int e int, float e float, string e string
+
+
+
+        // +a -a     t2 == null e int, ou float
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
         if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0 || strcmp(Expr->str, "Lt") == 0 
             || strcmp(Expr->str, "Gt") == 0  || strcmp(Expr->str, "Eq") == 0 || strcmp(Expr->str, "Ne") == 0
             || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0 || strcmp(Expr->str, "Not") == 0) {
