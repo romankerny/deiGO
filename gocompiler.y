@@ -264,6 +264,7 @@ Expr:   Expr AND Expr    {$$ =  create_node("And", $1, NULL, $2.line, $2.col); $
 
 int main(int argc, char *argv[])
 {
+
     int print_tr = 0;
 
     if (argc == 2) {
@@ -274,7 +275,6 @@ int main(int argc, char *argv[])
              print_tr = 1;
         }
     }
-
     if(flag == 1)
         yylex();
      else
@@ -282,7 +282,9 @@ int main(int argc, char *argv[])
 
     if (error == 0 && print_tr == 1) {
         print_tree(tree_node_pointer, 0);
+
     }
+
 
     check_program(tree_node_pointer);
  

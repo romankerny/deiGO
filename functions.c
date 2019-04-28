@@ -47,7 +47,9 @@ n * add_to_end_of_list (n * head, n * to_add) {
 n * add_node(char * _str, n * _down, n * _right) {
 
     n * node = malloc(sizeof(n));
-    node->str = strdup(_str);
+
+    if (_str != NULL)
+        node->str = strdup(_str);
     node->down = _down;
     node->right = _right;
     return node;
@@ -55,7 +57,6 @@ n * add_node(char * _str, n * _down, n * _right) {
 }
 
 n * create_node(char * _str, n * _down, n * _right, int line, int col) {
-
     n * node = malloc(sizeof(n));
     node->str = strdup(_str);
     node->down = _down;
