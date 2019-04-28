@@ -1,18 +1,26 @@
 package main;
 
 
-func sum (a int, b int) int
-{
-	return a + b;
-}
-
-func print_n(n int) {
-	fmt.Println(n);
-}
-
 func main() {
     
 
-    print_n(sum(3+4));
+    var i int;
+
+
+
+	for {
+	 	i = i + 1;
+	}
+
+	for (4) {
+		i = i * 2;
+	}	
 	
-};
+}
+
+
+
+
+
+
+
