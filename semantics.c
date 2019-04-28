@@ -212,10 +212,10 @@ Function * check_FuncHeader(n* FuncHeader)
 
 void check_Assign(n* Assign, Function *func) {
 
-    Assign->str = realloc(Assign->str, sizeof(char)*(strlen(Assign->str)+10));
+    Assign->str = realloc(Assign->str, sizeof(char)*(strlen(Assign->str) + 20));
 
     n* Id = Assign->down;
-    Id->str = realloc(Id->str, sizeof(char)*(strlen(Id->str) + 10));
+    Id->str = realloc(Id->str, sizeof(char)*(strlen(Id->str) + 20));
 
     n* Expr = Id->right;
     
@@ -336,7 +336,7 @@ void check_Print(n* Print, Function *func) {
 
     if (first == 'S' && second == 't') {
         /*
-        Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 10));
+        Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 20));
         strcat(Expr_or_StrLit->str, " - string");*/
 
     } else {
@@ -351,8 +351,8 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
     n* Expr = IdVar->right;
 
     // Prepare for annotate
-    ParseArgs->str = realloc(ParseArgs->str, sizeof(char)* (strlen(ParseArgs->str) + 10));
-    IdVar->str = realloc(IdVar->str, sizeof(char)* (strlen(IdVar->str) + 10));
+    ParseArgs->str = realloc(ParseArgs->str, sizeof(char)* (strlen(ParseArgs->str) + 20));
+    IdVar->str = realloc(IdVar->str, sizeof(char)* (strlen(IdVar->str) + 20));
 
     // Remove Id()
     char* name_IdVar = malloc(sizeof(char) * strlen(IdVar->str));
@@ -397,13 +397,13 @@ char * check_Expr(n * Expr, Function * func) {
 
     if (first == 'I' && second == 'n')
     {   
-        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        Expr->str = realloc(Expr->str, sizeof(char) * (strlen(Expr->str) + 20));
         strcat(Expr->str, " - int");
         return "int";
     } 
     else if(first == 'R')
     {
-        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        Expr->str = realloc(Expr->str, sizeof(char) * (strlen(Expr->str) + 20));
         strcat(Expr->str, " - float32");
         return "float32";
 
@@ -418,7 +418,7 @@ char * check_Expr(n * Expr, Function * func) {
         Function_element * el = search_Element(func, id);
         Global_element *gel = search_Global(id);
 
-        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 
         if (el == NULL && gel == NULL) {
             printf("Line %d, column %d: Cannot find symbol %s\n", Expr->line, Expr->col, id);
@@ -447,7 +447,7 @@ char * check_Expr(n * Expr, Function * func) {
         char *t1 = check_Expr(Expr->down,        func);
         char *t2 = check_Expr(Expr->down->right, func);
 
-        Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
         
         // compare
 
