@@ -183,8 +183,6 @@ Function * check_FuncHeader(n* FuncHeader)
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-        char * param_id = getCleanId(ParamDecl->down->right->str);
-
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
         free(aux);
         free(param_id);
