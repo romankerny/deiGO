@@ -7,6 +7,15 @@
 #include <ctype.h>
 
 
+char * getCleanId(char * IdCidC)
+{
+    char * id = malloc(sizeof(char) * strlen(IdCidC));
+    sscanf(IdCidC,"Id(%s)", id);
+    int len = strlen(id);
+    id[len-1] = '\0';
+    return id;
+}
+
 
 void check_VarDeclGlobal(n* VarType) {
     
@@ -254,7 +263,7 @@ void check_Block(n* Block, Function *func) {
 
 void check_If(n* If, Function *func) {
     n * expr = If->down;
-    printf("no check\n");
+    // printf("no check\n");
     /*
     if(strcmp(check_Expr(expr, func), "bool") == 0)
     {
@@ -269,9 +278,24 @@ void check_For(n* For, Function *func) {
 void check_Return(n* Return, Function *func) {
 
 }
-void check_Call(n* Call, Function *func) {
+
+char * check_Call(n* Call, Function *func) 
+{
+
+    char * func_params;
+    n * id_func = Call->down;
+    n * aux = id_func->right;
+
+    char * id = getCleanId(id_func->str);
+
+    Global_element * global_aux = search_Global(id); // tem de existir nesta fase
+    func_params = global_aux->params;
+    
+    sprintf(id_func->str, "%s - %s", id_func->str, func_params);
+    return global_aux->type; // tipo do return
 
 }
+
 void check_Print(n* Print, Function *func) {
 
 }
@@ -328,21 +352,16 @@ char * check_Expr(n * Expr, Function * func) {
 
         
     }
-    else if(first == 'C')
+    else if(first == 'C' && second == 'a')
     {
-        /*
-        printf("%s\n", Expr->str);
-        char * type = func->next->type;
-        
-        if (strcmp(type, "none") != 0)
-        {
-            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
-            sprintf(Expr->str, "Call - %s", type);
 
-        }*/
+        printf("no call crlelrrl \n");
+        printf("fdsfafasfafsaf\n");
 
-        return "call";
-
+        char * type = check_Call(Expr, func);
+        printf(" a dar set no no do call\n");
+        sprintf(Expr->str, "%s - %s", Expr->str, type);
+        return type;
     } 
     else {
         char *t1 = check_Expr(Expr->down,        func);
