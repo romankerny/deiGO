@@ -161,14 +161,14 @@ Function * check_FuncHeader(n* FuncHeader)
 
 
     insert_Func_element("return", type, NULL, to_return);
-    
+
     while(ParamDecl)
     {
      
         aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
-        if (i == 0) 
+        if (i == 0)
         {
             strcat(param_str, aux);
         }
@@ -176,16 +176,12 @@ Function * check_FuncHeader(n* FuncHeader)
             strcat(param_str, ",");
             strcat(param_str, aux);
         }
-
-       
-
-        char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
-        sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
-        param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
+        char * param_id = getCleanId(ParamDecl->down->right->str);
 
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
         free(aux);
+        free(param_id);
         
         ParamDecl = ParamDecl->right;
         i++;
