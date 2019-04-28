@@ -281,9 +281,9 @@ void check_Print(n* Print, Function *func) {
     char second = Expr_or_StrLit->str[1];
 
     if (first == 'S' && second == 't') {
-        /*
+        
         Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 10));
-        strcat(Expr_or_StrLit->str, " - string");*/
+        strcat(Expr_or_StrLit->str, " - string");
     } else {
         check_Expr(Expr_or_StrLit, func);
     }
