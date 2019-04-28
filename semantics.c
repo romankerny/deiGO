@@ -413,7 +413,7 @@ char * check_Expr(n * Expr, Function * func) {
         id[len-1] = '\0';
 
         Function_element * el = search_Element(func, id);
-        Global_element *gel = search_Global(id);
+        Global_element *gel   = search_Global(id);
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 
@@ -480,7 +480,7 @@ char * check_Expr(n * Expr, Function * func) {
 
             if ((strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, "float32");
-                return t1;
+                return "float32";
             } else 
             {
                 sprintf(Expr->str, "%s - %s", Expr->str, "int");
