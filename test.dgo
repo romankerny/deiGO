@@ -1,12 +1,14 @@
 package main;
 
-func main() {
 
-	var f float32;
-	var i int;
-var c float32;
-
-f = f * i;
-
+func a(){
 }
 
+
+func b()int{
+}
+
+func main(){
+
+
+};

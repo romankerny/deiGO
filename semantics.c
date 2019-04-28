@@ -21,10 +21,8 @@ char * getCleanId(char * IdCidC)
 void check_VarDeclGlobal(n* VarType) {
     
     n* VarId = VarType->right;
-    char * id = malloc(sizeof(char) * strlen(VarId->str));
-    sscanf(VarId->str,"Id(%s)", id);
-    int len = strlen(id);
-    id[len-1] = '\0';
+
+    char * id = getCleanId(VarId->str);
 
     char * type = strdup(VarType->str);
     type[0] = tolower(type[0]);
@@ -40,14 +38,12 @@ void check_VarDeclFunc(n * VarDecl, Function * func) {
     n* VarType = VarDecl->down;
 
     n* VarId = VarType->right;
-    char * id = malloc(sizeof(char) * strlen(VarId->str));
-    sscanf(VarId->str,"Id(%s)", id);
-    int len = strlen(id);
-    id[len-1] = '\0';
 
+    char * id = getCleanId(VarId->str);
     char * type = strdup(VarType->str);
     type[0] = tolower(type[0]);
 
+    
     if (insert_Func_element(id, type, NULL, func) == NULL)
     {
         printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, id);
@@ -139,7 +135,7 @@ Function * check_FuncHeader(n* FuncHeader)
     n* ParamDecl;
 
     char type[50], *aux;
-    char *param_str = malloc(sizeof(char) * 1024);
+    char param_str[1024];
     strcpy(param_str, "");
     int i = 0;
 
@@ -148,7 +144,7 @@ Function * check_FuncHeader(n* FuncHeader)
     Function * to_return = insert_Function(id);
     
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
-    {
+    {   // 
         strcpy(type ,"none");
         FuncParams = FuncId->right;
     }
@@ -160,22 +156,20 @@ Function * check_FuncHeader(n* FuncHeader)
     }
     
     
-    insert_Func_element("return", type, NULL, to_return);
-    
     ParamDecl = FuncParams->down;
     strcat(param_str, "(");
 
 
-
+    insert_Func_element("return", type, NULL, to_return);
+    
     while(ParamDecl)
     {
-        // aux = strdup("\0");
+     
         aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
         if (i == 0) 
         {
-            
             strcat(param_str, aux);
         }
         else {
@@ -183,29 +177,33 @@ Function * check_FuncHeader(n* FuncHeader)
             strcat(param_str, aux);
         }
 
+       
+
         char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
 
-        insert_Func_element(param_id, aux,"param", to_return);
+        insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
+        free(aux);
+        
         ParamDecl = ParamDecl->right;
         i++;
     }
 
     strcat(param_str, ")");
 
-    char * name_aux = strdup(to_return->name);
-    char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
+
+    char * last = malloc(sizeof(char) * (strlen(id) + strlen(param_str)));
     strcpy(last, "");
 
-    strcat(last, name_aux);
+    strcat(last, id);
     strcat(last, param_str);
-    to_return->name = strdup(last);
+    to_return->name = strdup(last); // inserir ex boas(int,int,int) no name da função
+    free(last);
 
     insert_Global_element(id, type, param_str);
 
-    
     return to_return;
 }
 
@@ -444,6 +442,7 @@ char * check_Expr(n * Expr, Function * func) {
         return type;
     } 
     else {
+
         char *t1 = check_Expr(Expr->down,        func);
         char *t2 = check_Expr(Expr->down->right, func);
 

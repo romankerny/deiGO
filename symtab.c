@@ -72,9 +72,15 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
     new_func_el->next  = NULL;
-    new_func_el->name  = strdup(name);
-    new_func_el->type  = strdup(type);
+    new_func_el->name  = NULL;
     new_func_el->param = NULL;
+    new_func_el->type = NULL;
+
+     if(name != NULL)
+        new_func_el->name  = strdup(name);
+
+    if(type != NULL)
+        new_func_el->type  = strdup(type);
 
     if(param != NULL)
         new_func_el->param = strdup(param);
