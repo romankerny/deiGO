@@ -135,7 +135,8 @@ Function * check_FuncHeader(n* FuncHeader)
     n* ParamDecl;
 
     char type[50], *aux;
-    char param_str [1024] = "";
+    char *param_str = malloc(sizeof(char) * 1024);
+    strcpy(param_str, "");
     int i = 0;
 
 
@@ -197,8 +198,10 @@ Function * check_FuncHeader(n* FuncHeader)
 
     strcat(param_str, ")");
 
-    char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str)));
     char * name_aux = strdup(to_return->name);
+    char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
+    strcpy(last, "");
+
     strcat(last, name_aux);
     strcat(last, param_str);
     to_return->name = strdup(last);
@@ -252,10 +255,7 @@ void check_Assign(n* Assign, Function *func) {
 }
 
 void check_Block(n* Block, Function *func) {
-
-    if (Block == NULL)
-        return;
-
+    
     n * aux = Block->down;
     while(aux)
     {

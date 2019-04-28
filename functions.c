@@ -50,6 +50,9 @@ n * add_node(char * _str, n * _down, n * _right) {
 
     if (_str != NULL)
         node->str = strdup(_str);
+    else
+        node->str = _str;
+        
     node->down = _down;
     node->right = _right;
     return node;

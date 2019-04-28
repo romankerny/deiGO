@@ -101,6 +101,7 @@ Global_element * insert_Global_element(char * name, char * type, char * params) 
     new_global_el->name = strdup(name);
     new_global_el->type = strdup(type);
     new_global_el->params = NULL;
+    new_global_el->next = NULL;
 
     if(params != NULL)
         new_global_el->params = strdup(params);

@@ -87,7 +87,7 @@ VarDeclaration: VAR VarSpec                          {$$ = $2;}
     ;
 
 VarSpec: ID ListComID Type                              {
-                                                        char aux [1024];
+                                                        char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                                         sprintf(aux,"Id(%s)", $1.str);
                                                         n * id        = create_node(strdup(aux), NULL, NULL, $1.line, $1.col);
                                                         n * type_spec = add_node($3, NULL, id);
@@ -99,7 +99,7 @@ VarSpec: ID ListComID Type                              {
 ListComID:                                              {$$ = NULL;}
     |     ListComID COMMA ID                            {
         
-                                                        char aux [1024];
+                                                        char *aux = malloc(sizeof(char)*(strlen($3.str)+20));
                                                         sprintf(aux,"Id(%s)", $3.str);
                                                         n * id        = create_node(strdup(aux), NULL, NULL, $3.line, $3.col);
                                                         n * type_spec = add_node(NULL, NULL, id);
@@ -114,7 +114,7 @@ Type: INT                                            {$$ = "Int";}
     ;
 
 FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       { 
-                                                                    char aux [1024];
+                                                                    char *aux = malloc(sizeof(char)*(strlen($2.str)+20));
                                                                     sprintf(aux,"Id(%s)", $2.str);
                                                                     n * func_params = add_node("FuncParams", $4, NULL);
                                                                     n * type_spec   = add_node($6, NULL, func_params);
@@ -123,7 +123,7 @@ FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       {
                                                                     $$ = add_node("FuncDecl", header, NULL);}
 
     |            FUNC ID LPAR Parameters RPAR      FuncBody       { 
-                                                                    char aux [1024];
+                                                                    char *aux = malloc(sizeof(char)*(strlen($2.str)+20));
                                                                     sprintf(aux,"Id(%s)", $2.str);
                                                                     n * func_params = add_node("FuncParams", $4, NULL);
                                                                     n * id          = create_node(strdup(aux), NULL, func_params, $2.line, $2.col);
@@ -133,7 +133,7 @@ FuncDeclaration: FUNC ID LPAR Parameters RPAR Type FuncBody       {
 
 Parameters:                                                        {$$ = NULL;}
     |     ID Type ListComIdType                                    {
-                                                                    char aux [1024];
+                                                                    char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                                                     sprintf(aux,"Id(%s)", $1.str);
                                                                     n * id         = create_node(strdup(aux), NULL, NULL, $1.line, $1.col);
                                                                     n * type_spec  = add_node($2, NULL, id);
@@ -143,7 +143,7 @@ Parameters:                                                        {$$ = NULL;}
 
 ListComIdType:                                                     {$$ = NULL;}
     |     ListComIdType COMMA ID Type                              {
-                                                                    char aux [1024];
+                                                                    char *aux = malloc(sizeof(char)*(strlen($3.str)+20));
                                                                     sprintf(aux,"Id(%s)", $3.str);
                                                                     n * id        = create_node(strdup(aux), NULL, NULL, $3.line, $3.col);
                                                                     n * type_spec = add_node($4, NULL, id);
@@ -160,7 +160,7 @@ VarsAndStatements:                                                {$$ = NULL;}
     |     VarsAndStatements Statement SEMICOLON                   {$$ = add_to_end_of_list ($1, $2);}
     ;
 
-Statement: ID ASSIGN Expr {char aux[1024];
+Statement: ID ASSIGN Expr {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                         sprintf(aux, "Id(%s)", $1.str);
                         $$ = add_node("Assign", create_node(strdup(aux), NULL, $3, $1.line, $1.col), NULL);}
     |     LBRACE ListStatSemi RBRACE                                                 {if(need_to_create_block($2)) {
@@ -191,7 +191,7 @@ Statement: ID ASSIGN Expr {char aux[1024];
     |     FuncInvocation                                                             {$$ = add_node("Call", $1, NULL);}
     |     ParseArgs                                                                  {$$ = $1;}
     |     PRINT LPAR Expr   RPAR                                                     {$$ = add_node("Print", $3, NULL);}
-    |     PRINT LPAR STRLIT RPAR                                                     {char aux [1024];
+    |     PRINT LPAR STRLIT RPAR                                                     {char *aux = malloc(sizeof(char)*(strlen($3)+20));
                                                                                       sprintf(aux,"StrLit(%s)", $3);
                                                                                       n * strlit = add_node(strdup(aux), NULL, NULL);
                                                                                       $$ = add_node("Print", strlit, NULL);
@@ -203,7 +203,7 @@ ListStatSemi:                                                                   
     |     ListStatSemi Statement SEMICOLON                                           {$$ = add_to_end_of_list($1,$2);}
     ;
 
-ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR           {  char aux [1024];
+ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR           {  char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                                                                         sprintf(aux,"Id(%s)", $1.str);
                                                                                         n * left      = create_node(strdup(aux), NULL, $9, $1.line, $1.col);
                                                                                         $$            = create_node("ParseArgs", left, NULL, $7.line, $7.col);
@@ -211,11 +211,11 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR      
     |      ID COMMA BLANKID ASSIGN PARSEINT LPAR error RPAR                          {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
 
-FuncInvocation: ID LPAR RPAR {char aux[1024];
+FuncInvocation: ID LPAR RPAR {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                 sprintf(aux, "Id(%s)", $1.str);
                                 $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }
 
-    | ID LPAR Expr ListCommaExpr RPAR { char aux[1024];
+    | ID LPAR Expr ListCommaExpr RPAR { char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                         sprintf(aux, "Id(%s)", $1.str);
                                         $$ = add_to_end_of_list (create_node(strdup(aux), NULL, $3, $1.line, $1.col), $4);}
     | ID LPAR error RPAR {$$ = add_node(NULL, NULL, NULL); error = 1;}
@@ -241,15 +241,15 @@ Expr:   Expr AND Expr    {$$ =  create_node("And", $1, NULL, $2.line, $2.col); $
     |   NOT Expr         {$$ =  create_node("Not", $2, NULL, $1.line, $1.col);}
     |   MINUS Expr %prec NOT       {$$ = create_node("Minus", $2, NULL, $1.line, $1.col);}
     |   PLUS Expr  %prec NOT      {$$ = create_node("Plus", $2, NULL, $1.line, $1.col);}
-    |   INTLIT           {char aux[1024];
+    |   INTLIT           {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                          sprintf(aux, "IntLit(%s)", $1.str);
                          $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }
 
-    |   REALLIT          {char aux[1024];
+    |   REALLIT          {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                          sprintf(aux, "RealLit(%s)", $1.str);
                          $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }
 
-    |   ID               {char aux[1024];
+    |   ID               {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                          sprintf(aux, "Id(%s)", $1.str);
                          $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }   
     |   FuncInvocation  {$$ = add_node("Call", $1, NULL);}
@@ -284,8 +284,7 @@ int main(int argc, char *argv[])
         print_tree(tree_node_pointer, 0);
 
     }
-
-
+    
     check_program(tree_node_pointer);
  
     show_Global_table();

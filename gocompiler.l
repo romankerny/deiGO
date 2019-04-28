@@ -19,7 +19,7 @@
     int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
     int string_beginning_line,  string_beginning_column;
-    char str_beginning[1024];
+    char str_beginning[2048];
     int semi = 0;
     int i = 0;
     int last_c = 0, last_l = 0;
