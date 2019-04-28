@@ -47,7 +47,7 @@ Global_element * search_Global(char * name)
     
     while(aux)
     {
-        if(strcmp(aux->name, name) == 0) return aux;
+        if(strcmp(aux->name, name) == 0)  {return aux;}
         aux = aux->next;
     }
     return NULL;
