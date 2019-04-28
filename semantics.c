@@ -184,8 +184,6 @@ Function * check_FuncHeader(n* FuncHeader)
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
-        free(aux);
-        free(param_id);
         
         ParamDecl = ParamDecl->right;
         i++;
@@ -202,7 +200,6 @@ Function * check_FuncHeader(n* FuncHeader)
     strcat(last, id);
     strcat(last, param_str);
     to_return->name = strdup(last); // inserir ex boas(int,int,int) no name da função
-    free(last);
 
     insert_Global_element(id, type, param_str);
 
