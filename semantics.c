@@ -284,8 +284,6 @@ void check_For(n* For, Function *func) {
 
     n * down_for  = For->down;
 
-
-
     if(strcmp(down_for->str, "Block") == 0)
     {
         check_Block(down_for, func);
@@ -304,7 +302,6 @@ void check_For(n* For, Function *func) {
 }
 void check_Return(n* Return, Function *func) {
     check_Expr(Return->down, func);
-
 }
 
 char * check_Call(n* Call, Function *func) 
