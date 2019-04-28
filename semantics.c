@@ -166,7 +166,7 @@ Function * check_FuncHeader(n* FuncHeader)
 
     while(ParamDecl)
     {
-        // aux = strdup("\0");
+       
         strcpy(aux, ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
@@ -186,19 +186,15 @@ Function * check_FuncHeader(n* FuncHeader)
         char * param_id = getCleanId(ParamDecl->down->right->str);
 
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
-        free(aux);
-        free(param_id);
-        
+
         ParamDecl = ParamDecl->right;
         i++;
     }
 
     strcat(param_str, ")");
 
-    //char name_aux = strdup(to_return->name);
     char name_aux[512] = {0};
     strcpy(name_aux, to_return->name);
-    //char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
     char last[512] = {0};
 
     strcat(last, id);
