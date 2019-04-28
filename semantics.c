@@ -322,7 +322,7 @@ char * check_Call(n* Call, Function *func)
         aux = aux->right;
     }
 
-    id_func->str = realloc(id_func->str, sizeof(char)* (strlen(id_func->str) + strlen(func_params)));
+    id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(func_params)) + 20));
     sprintf(id_func->str, "%s - %s", id_func->str, func_params);
     return global_aux->type; // tipo do return
 
