@@ -90,9 +90,6 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     }
     
     aux->next = new_func_el;
-
-
-
     return new_func_el;
     
 }

@@ -354,21 +354,16 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
 
     // Get children
     n* IdVar = ParseArgs->down;
-    n* IdIndex = IdVar->right;
+    n* Expr = IdVar->right;
 
     // Prepare for annotate
     ParseArgs->str = realloc(ParseArgs->str, sizeof(char)* (strlen(ParseArgs->str) + 10));
     IdVar->str = realloc(IdVar->str, sizeof(char)* (strlen(IdVar->str) + 10));
-    IdIndex->str = realloc(IdIndex->str, sizeof(char)* (strlen(IdIndex->str) + 10));
 
     // Remove Id()
     char* name_IdVar = malloc(sizeof(char) * strlen(IdVar->str));
     sscanf(IdVar->str, "Id(%s)", name_IdVar);
     name_IdVar[strlen(name_IdVar)-1] = '\0';
-
-    char* name_IdIndex = malloc(sizeof(char) * strlen(IdIndex->str));
-    sscanf(IdIndex->str, "Id(%s)", name_IdIndex);
-    name_IdIndex[strlen(name_IdIndex)-1] = '\0';
 
     // Get elements
     Function_element *var_el = search_Element(func, name_IdVar);
@@ -386,20 +381,7 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
         var_type = var_gel->type;
     }
 
-    Function_element *index_el = search_Element(func, name_IdIndex);
-    Global_element *index_gel = search_Global(name_IdIndex);
-
-    char *index_type;
-
-    if (index_el == NULL && index_gel == NULL) {
-        printf("Line %d, column %d: Cannot find symbol %s\n", IdIndex->line, IdIndex->col, name_IdIndex);
-    } else if (index_el) {
-        sprintf(IdIndex->str, "%s - %s", IdIndex->str, index_el->type);
-        index_type = index_el->type;
-    } else {
-        sprintf(IdIndex->str, "%s - %s", IdIndex->str, index_gel->type);
-        index_type = index_gel->type;
-    }
+    char *index_type = check_Expr(Expr, func);
 
      if (strcmp(var_type, "int") == 0 && strcmp(index_type, "int") == 0) {
          strcat(ParseArgs->str, " - int");
