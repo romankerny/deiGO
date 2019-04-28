@@ -13,6 +13,7 @@ char * getCleanId(char * IdCidC)
     sscanf(IdCidC,"Id(%s)", id);
     int len = strlen(id);
     id[len-1] = '\0';
+
     return id;
 }
 
@@ -311,10 +312,9 @@ char * check_Call(n* Call, Function *func)
     n * id_func = Call->down;
     n * aux = id_func->right;
 
+
+    char * id = getCleanId(id_func->str); 
     
-
-    char * id = getCleanId(id_func->str);
-
     Global_element * global_aux = search_Global(id); // tem de existir nesta fase
     func_params = global_aux->params;
     
@@ -325,7 +325,7 @@ char * check_Call(n* Call, Function *func)
     }
 
     
-    
+    id_func->str = realloc(id_func->str, sizeof(char)* (strlen(id_func->str) + strlen(func_params)));
     sprintf(id_func->str, "%s - %s", id_func->str, func_params);
     return global_aux->type; // tipo do return
 
