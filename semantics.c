@@ -100,7 +100,11 @@ void check_Statement(n * aux, Function * func)
         check_Return(aux, func);
 
     } else if(strcmp(aux->str, "Call") == 0) {
-        check_Call(aux, func);
+        aux->str = realloc(aux->str, strlen(aux->str) + 20);
+        char * type = check_Call(aux, func);
+        if(strcmp(type,"none") != 0)
+            sprintf(aux->str, "%s - %s", aux->str, type);
+
 
     } else if(strcmp(aux->str, "Print") == 0) {
         check_Print(aux, func);
@@ -440,7 +444,10 @@ char * check_Expr(n * Expr, Function * func) {
     {
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
         char * type = check_Call(Expr, func);
-        sprintf(Expr->str, "%s - %s", Expr->str, type);
+
+        if(strcmp(type,"none") != 0)
+            sprintf(Expr->str, "%s - %s", Expr->str, type);
+
         return type;
     } 
     else {
