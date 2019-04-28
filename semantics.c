@@ -293,7 +293,7 @@ void check_For(n* For, Function *func) {
     else
     {
         char * type = check_Expr(down_for, func);
-        if(strcmp(type, "bool")) 
+        if(strcmp(type, "bool"))
         {
             printf("Line %d, column %d: Incompatible type %s in if statement\n", down_for->line, down_for->col, type);
         }
