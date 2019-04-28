@@ -268,14 +268,84 @@ void check_For(n* For, Function *func) {
 }
 void check_Return(n* Return, Function *func) {
 
+    
+
 }
 void check_Call(n* Call, Function *func) {
 
 }
 void check_Print(n* Print, Function *func) {
 
+    n* Expr_or_StrLit = Print->down;
+    char first = Expr_or_StrLit->str[0];
+    char second = Expr_or_StrLit->str[1];
+
+    if (first == 'S' && second == 't') {
+        /*
+        Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 10));
+        strcat(Expr_or_StrLit->str, " - string");*/
+    } else {
+        check_Expr(Expr_or_StrLit, func);
+    }
+
 }
 void check_ParseArgs(n* ParseArgs, Function *func) {
+
+    // Get children
+    n* IdVar = ParseArgs->down;
+    n* IdIndex = IdVar->right;
+
+    // Prepare for annotate
+    ParseArgs->str = realloc(ParseArgs->str, sizeof(char)* (strlen(ParseArgs->str) + 10));
+    IdVar->str = realloc(IdVar->str, sizeof(char)* (strlen(IdVar->str) + 10));
+    IdIndex->str = realloc(IdIndex->str, sizeof(char)* (strlen(IdIndex->str) + 10));
+
+    // Remove Id()
+    char* name_IdVar = malloc(sizeof(char) * strlen(IdVar->str));
+    sscanf(IdVar->str, "Id(%s)", name_IdVar);
+    name_IdVar[strlen(name_IdVar)-1] = '\0';
+
+    char* name_IdIndex = malloc(sizeof(char) * strlen(IdIndex->str));
+    sscanf(IdIndex->str, "Id(%s)", name_IdIndex);
+    name_IdIndex[strlen(name_IdIndex)-1] = '\0';
+
+    // Get elements
+    Function_element *var_el = search_Element(func, name_IdVar);
+    Global_element *var_gel = search_Global(name_IdVar);
+
+    char *var_type;
+
+    if (var_el == NULL && var_gel == NULL) {
+        printf("Line %d, column %d: Cannot find symbol %s\n", IdVar->line, IdVar->col, name_IdVar);
+    } else if (var_el) {
+        sprintf(IdVar->str, "%s - %s", IdVar->str, var_el->type);
+        var_type = var_el->type;
+    } else {
+        sprintf(IdVar->str, "%s - %s", IdVar->str, var_gel->type);
+        var_type = var_gel->type;
+    }
+
+    Function_element *index_el = search_Element(func, name_IdIndex);
+    Global_element *index_gel = search_Global(name_IdIndex);
+
+    char *index_type;
+
+    if (index_el == NULL && index_gel == NULL) {
+        printf("Line %d, column %d: Cannot find symbol %s\n", IdIndex->line, IdIndex->col, name_IdIndex);
+    } else if (index_el) {
+        sprintf(IdIndex->str, "%s - %s", IdIndex->str, index_el->type);
+        index_type = index_el->type;
+    } else {
+        sprintf(IdIndex->str, "%s - %s", IdIndex->str, index_gel->type);
+        index_type = index_gel->type;
+    }
+
+     if (strcmp(var_type, "int") == 0 && strcmp(index_type, "int") == 0) {
+         strcat(ParseArgs->str, " - int");
+     } else {
+        strcat(ParseArgs->str, " - undef");
+        printf("Line %d, column %d: Operator strconv.Atoi cannot be applied to types %s, %s\n", ParseArgs->line, ParseArgs->col, var_type, index_type);
+     }
 
 }
 
@@ -447,4 +517,6 @@ char * check_Expr(n * Expr, Function * func) {
             }
         }
     }
+    // Unreachable
+    return "unreachable";
 }
