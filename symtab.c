@@ -23,8 +23,6 @@ Function * insert_Function(char *name) {
     for (aux = funcs; aux->down; aux = aux->down);
     aux->down = new_Function;
 
-    
-
     return new_Function;
 }
 
