@@ -15,6 +15,6 @@ void check_Block(n* Block, Function *func);
 void check_If(n* If, Function *func);
 void check_For(n* For, Function *func);
 void check_Return(n* Return, Function *func);
-void check_Call(n* Call, Function *func);
+char * check_Call(n* Call, Function *func);
 void check_Print(n* Print, Function *func);
 void check_ParseArgs(n* ParseArgs, Function *func);

@@ -1,35 +1,18 @@
-package main
+package main;
 
 
-var a int;
-var b float32;
-
-func putas(c int, d int, crl float32) int{
-
-var dentro int;
-var pois float32;
+func sum (a int, b int) int
+{
+	return a + b;
 }
 
-func main(){
+func print_n(n int) {
+	fmt.Println(n);
+}
 
-var a int;
+func main() {
+    
 
-a = 1;
-	{
-		a = a + 1;
-		a = a * 2;
-	}
-
-	if(1 < a){
-		
-	}
-
-	for {
-	}
-
-	return a
-	// putas(a,a,0.32);
-	fmt.Println("print");
-	a,_ = strconv.Atoi(os.Args[0]);
-
- }
+    print_n(sum(3+4));
+	
+};

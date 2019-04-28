@@ -7,6 +7,15 @@
 #include <ctype.h>
 
 
+char * getCleanId(char * IdCidC)
+{
+    char * id = malloc(sizeof(char) * strlen(IdCidC));
+    sscanf(IdCidC,"Id(%s)", id);
+    int len = strlen(id);
+    id[len-1] = '\0';
+    return id;
+}
+
 
 void check_VarDeclGlobal(n* VarType) {
     
@@ -277,9 +286,34 @@ void check_Return(n* Return, Function *func) {
     check_Expr(Return->down, func);
 
 }
-void check_Call(n* Call, Function *func) {
+
+char * check_Call(n* Call, Function *func) 
+{
+
+    char * func_params;
+    n * id_func = Call->down;
+    n * aux = id_func->right;
+
+    
+
+    char * id = getCleanId(id_func->str);
+
+    Global_element * global_aux = search_Global(id); // tem de existir nesta fase
+    func_params = global_aux->params;
+    
+    while(aux)
+    {
+        check_Expr(aux, func);
+        aux = aux->right;
+    }
+
+    
+    
+    sprintf(id_func->str, "%s - %s", id_func->str, func_params);
+    return global_aux->type; // tipo do return
 
 }
+
 void check_Print(n* Print, Function *func) {
 
     n* Expr_or_StrLit = Print->down;
@@ -364,6 +398,7 @@ char * check_Expr(n * Expr, Function * func) {
     char first  = Expr->str[0];
     char second = Expr->str[1];
 
+
     if (first == 'I' && second == 'n')
     {   
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
@@ -405,21 +440,12 @@ char * check_Expr(n * Expr, Function * func) {
 
         
     }
-    else if(first == 'C')
+    else if(first == 'C' && second == 'a')
     {
-        /*
-        printf("%s\n", Expr->str);
-        char * type = func->next->type;
-        
-        if (strcmp(type, "none") != 0)
-        {
-            Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
-            sprintf(Expr->str, "Call - %s", type);
 
-        }*/
-
-        return "call";
-
+        char * type = check_Call(Expr, func);
+        sprintf(Expr->str, "%s - %s", Expr->str, type);
+        return type;
     } 
     else {
         char *t1 = check_Expr(Expr->down,        func);
