@@ -478,7 +478,7 @@ char * check_Expr(n * Expr, Function * func) {
         else if(strcmp(Expr->str, "Sub") == 0 || strcmp(Expr->str, "Div") == 0 || strcmp(Expr->str, "Mul") == 0 || strcmp(Expr->str, "Mod") == 0
                || strcmp(Expr->str, "Add") == 0) {
 
-            if ((strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)) {
+            if ((strcmp(t1, "float32") == 0 || strcmp(t2, "float32") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, "float32");
                 return "float32";
             } else 
