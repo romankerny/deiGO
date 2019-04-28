@@ -288,10 +288,20 @@ char * check_Call(n* Call, Function *func)
     n * id_func = Call->down;
     n * aux = id_func->right;
 
+    
+
     char * id = getCleanId(id_func->str);
 
     Global_element * global_aux = search_Global(id); // tem de existir nesta fase
     func_params = global_aux->params;
+    
+    while(aux)
+    {
+        check_Expr(aux, func);
+        aux = aux->right;
+    }
+
+    
     
     sprintf(id_func->str, "%s - %s", id_func->str, func_params);
     return global_aux->type; // tipo do return
@@ -382,8 +392,6 @@ char * check_Expr(n * Expr, Function * func) {
     char second = Expr->str[1];
 
 
-    if(strcmp(Expr->str, "Call") == 0) printf("CHEGOU UM CALL CARALHO |||\n");
-
     if (first == 'I' && second == 'n')
     {   
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
@@ -428,11 +436,7 @@ char * check_Expr(n * Expr, Function * func) {
     else if(first == 'C' && second == 'a')
     {
 
-        printf("no call crlelrrl \n");
-        printf("fdsfafasfafsaf\n");
-
         char * type = check_Call(Expr, func);
-        printf(" a dar set no no do call\n");
         sprintf(Expr->str, "%s - %s", Expr->str, type);
         return type;
     } 
