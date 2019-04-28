@@ -314,20 +314,14 @@ char * check_Call(n* Call, Function *func)
     n * id_func = Call->down;
     n * aux = id_func->right;
 
-    
-
     char * id = getCleanId(id_func->str);
-
     Global_element * global_aux = search_Global(id); // tem de existir nesta fase
     func_params = global_aux->params;
-    
     while(aux)
     {
         check_Expr(aux, func);
         aux = aux->right;
-    }
-
-    
+    }    
     
     sprintf(id_func->str, "%s - %s", id_func->str, func_params);
     return global_aux->type; // tipo do return
@@ -444,7 +438,7 @@ char * check_Expr(n * Expr, Function * func) {
     }
     else if(first == 'C' && second == 'a')
     {
-
+        Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
         char * type = check_Call(Expr, func);
         sprintf(Expr->str, "%s - %s", Expr->str, type);
         return type;
