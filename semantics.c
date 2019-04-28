@@ -381,6 +381,9 @@ char * check_Expr(n * Expr, Function * func) {
     char first  = Expr->str[0];
     char second = Expr->str[1];
 
+
+    if(strcmp(Expr->str, "Call") == 0) printf("CHEGOU UM CALL CARALHO |||\n");
+
     if (first == 'I' && second == 'n')
     {   
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 10);
