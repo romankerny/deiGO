@@ -242,8 +242,11 @@ void check_Assign(n* Assign, Function *func) {
 }
 
 void check_Block(n* Block, Function *func) {
+
+    if (Block == NULL)
+        return;
+
     n * aux = Block->down;
-    printf("no block\n");
     while(aux)
     {
         check_Statement(aux, func);
@@ -253,22 +256,25 @@ void check_Block(n* Block, Function *func) {
 
 
 void check_If(n* If, Function *func) {
-    n * expr = If->down;
-    printf("no check\n");
-    /*
-    if(strcmp(check_Expr(expr, func), "bool") == 0)
-    {
 
-    }*/
-
+    n* expr = If->down;
+    n* block1 = expr->right;
+    n* block2 = block1->right;
     
+    char* type = check_Expr(expr, func);
+
+    if(strcmp(type, "bool")) {
+        printf("Line %d, column %d: Incompatible type %s in if statement ", If->line, If->col, type);
+    }
+
+    check_Block(block1, func);
+    check_Block(block2, func);
 }
 void check_For(n* For, Function *func) {
 
 }
 void check_Return(n* Return, Function *func) {
-
-    
+    check_Expr(Return->down, func);
 
 }
 void check_Call(n* Call, Function *func) {
@@ -281,9 +287,10 @@ void check_Print(n* Print, Function *func) {
     char second = Expr_or_StrLit->str[1];
 
     if (first == 'S' && second == 't') {
-        
+        /*
         Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 10));
-        strcat(Expr_or_StrLit->str, " - string");
+        strcat(Expr_or_StrLit->str, " - string");*/
+
     } else {
         check_Expr(Expr_or_StrLit, func);
     }
