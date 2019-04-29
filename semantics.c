@@ -183,10 +183,12 @@ Function * check_FuncHeader(n* FuncHeader)
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-        char * param_id = getCleanId(ParamDecl->down->right->str);
-
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
+<<<<<<< HEAD
 
+=======
+        
+>>>>>>> dcd790bd6c9ca26d94330192df1feb8553152052
         ParamDecl = ParamDecl->right;
         i++;
     }
@@ -200,7 +202,6 @@ Function * check_FuncHeader(n* FuncHeader)
     strcat(last, id);
     strcat(last, param_str);
     to_return->name = strdup(last); // inserir ex boas(int,int,int) no name da função
-    free(last);
 
     insert_Global_element(id, type, param_str);
 
