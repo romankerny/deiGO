@@ -54,13 +54,19 @@ Global_element * search_Global(char * name)
 Function * search_Function(char * name)
 {
     Function * aux = funcs;
-
     while(aux)
     {
-        if(strcmp(aux->name, name) == 0) return aux;
+        char *clean_name = malloc(sizeof(char) * strlen(aux->name));
+        sscanf(aux->name, "%[^)]", clean_name);
+        clean_name[strlen(clean_name)-1] = '\0';
+        
+        if(strcmp(clean_name, name) == 0) {
+            free(clean_name);
+            return aux;
+        }
         aux = aux->down;
+        free(clean_name);
     }
-
     return NULL;
 }
 

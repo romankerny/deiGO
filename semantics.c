@@ -67,19 +67,30 @@ void check_program(n* prog)
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
-            check_FuncDecl(aux);
+            Function * func;
+            func = check_FuncHeader(aux->down);
+        }
+        aux = aux->right;
+    }
+    
+    aux = prog->down;
+    while (aux) {
+        if (strcmp(aux->str, "FuncDecl") == 0) {
+
+            n* FuncHeader = aux->down;
+            n* FuncBody = FuncHeader->right;
+
+            char *name = malloc(sizeof(char)*strlen(FuncHeader->down->str)); 
+            sscanf(FuncHeader->down->str,"Id(%s)", name);
+            name[strlen(name)-1] = '\0';
+
+            check_FuncBody(FuncBody, search_Function(name));
+            free(name);
         }
         aux = aux->right;
     }
 }
 
-void check_FuncDecl(n* FuncDecl)
-{
-    Function * func;
-    func = check_FuncHeader(FuncDecl->down);
-    check_FuncBody(FuncDecl->down->right, func);
-
-}
 
 void check_Statement(n * aux, Function * func)
 {   
