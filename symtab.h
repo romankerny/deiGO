@@ -38,7 +38,7 @@ Global_element * search_Global(char * name);
 void show_Global_table();
 void show_Functions_table();
 void print_Function_table(Function * func);
-Function * search_Function(char * name);
+Function *search_Function(char * name);
 
 
 #endif

@@ -69,6 +69,7 @@ void check_program(n* prog)
         {
             Function * func;
             func = check_FuncHeader(aux->down);
+
         }
         aux = aux->right;
     }
@@ -84,7 +85,8 @@ void check_program(n* prog)
             sscanf(FuncHeader->down->str,"Id(%s)", name);
             name[strlen(name)-1] = '\0';
 
-            check_FuncBody(FuncBody, search_Function(name));
+            Function *func = search_Function(name);
+            check_FuncBody(FuncBody, func);
             free(name);
         }
         aux = aux->right;
