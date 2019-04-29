@@ -162,7 +162,7 @@ VarsAndStatements:                                                {$$ = NULL;}
 
 Statement: ID ASSIGN Expr {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                         sprintf(aux, "Id(%s)", $1.str);
-                        $$ = add_node("Assign", create_node(strdup(aux), NULL, $3, $1.line, $1.col), NULL);}
+                        $$ = create_node("Assign", create_node(strdup(aux), NULL, $3, $1.line, $1.col), NULL, $2.line, $2.col);}
     |     LBRACE ListStatSemi RBRACE                                                 {if(need_to_create_block($2)) {
                                                                                         $$ = add_node("Block", $2, NULL);
                                                                                      } else {
@@ -266,6 +266,7 @@ int main(int argc, char *argv[])
 {
 
     int print_tr = 0;
+    int flag_s = 0;
 
     if (argc == 2) {
         if (strcmp(argv[1], "-l") == 0) {
@@ -274,25 +275,29 @@ int main(int argc, char *argv[])
         if (strcmp(argv[1], "-t") == 0) {
              print_tr = 1;
         }
+        if (strcmp(argv[1], "-s") == 0) {
+             flag_s = 1;
+        }
     }
-    if(flag == 1)
+    if(flag)
         yylex();
      else
         yyparse();
 
-    if (error == 0 && print_tr == 1) {
-        print_tree(tree_node_pointer, 0);
+    if (error == 0) {
+
+        if (print_tr) {
+            print_tree(tree_node_pointer, 0);
+        } else {
+            check_program(tree_node_pointer);
+            if(flag_s) {
+                show_Global_table();
+                show_Functions_table();
+                print_tree(tree_node_pointer, 0);
+            }
+        }
 
     }
-    
-    check_program(tree_node_pointer);
- 
-    show_Global_table();
-   
-    show_Functions_table();
-
-    print_tree(tree_node_pointer, 0);
-
     return 0;
 }
 

@@ -260,7 +260,7 @@ void check_Assign(n* Assign, Function *func) {
         if (strcmp(element->type, expr_type) == 0) {
             sprintf(Assign->str, "%s - %s", Assign->str, element->type);
         }
-        else if(strcmp(element->type, "float32") == 0&& isIntlit(Expr->str)) 
+        else if(strcmp(element->type, "float32") == 0 && isIntlit(Expr->str)) 
         {
             sprintf(Assign->str, "%s - float32", Assign->str);
         }
