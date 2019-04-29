@@ -1,14 +1,12 @@
 package main;
 
 
-func a(){
-}
-
-
-func b()int{
-}
 
 func main(){
+	var a int;
+	var b float32;
+	var c bool;
 
+	c = a == 1.0;
 
 };

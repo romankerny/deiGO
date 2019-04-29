@@ -17,7 +17,13 @@ char * getCleanId(char * IdCidC)
     return id;
 }
 
-
+int isIntlit(char * s) {
+    int len = strlen(s); // garantir q não há erros de acesso de memória
+    if(len >= 2 && s[0] == 'I' && s[1] == 'n'){
+        return 1;
+    }
+    return 0;
+}
 void check_VarDeclGlobal(n* VarType) {
     
     n* VarId = VarType->right;
@@ -251,19 +257,25 @@ void check_Assign(n* Assign, Function *func) {
         strcat(Assign->str, " - undef");
     } else if (element){
         sprintf(Id->str, "%s - %s", Id->str, element->type);
-
-        if (strcmp(element->type, expr_type) == 0)
+        if (strcmp(element->type, expr_type) == 0) {
             sprintf(Assign->str, "%s - %s", Assign->str, element->type);
-        else if ((strcmp(element->type, "float32") == 0 && strcmp("int", expr_type) == 0) || (strcmp(element->type, "int") == 0 && strcmp("float32", expr_type) == 0) )
-            strcat(Assign->str, " - float32");
+        }
+        else if(strcmp(element->type, "float32") == 0&& isIntlit(Expr->str)) 
+        {
+            sprintf(Assign->str, "%s - float32", Assign->str);
+        }
         else
             strcat(Assign->str, " - undef");
-
     } else {
         sprintf(Id->str, "%s - %s", Id->str, gelement->type);
 
-        if (strcmp(gelement->type, expr_type) == 0)
+        if (strcmp(gelement->type, expr_type) == 0) {
             sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
+        }
+        else if(strcmp(gelement->type, "float32") == 0 && isIntlit(Expr->str)) 
+        {
+            sprintf(Assign->str, "%s - float32", Assign->str);
+        }
         else
             strcat(Assign->str, " - undef");
     }
@@ -438,7 +450,8 @@ char * check_Expr(n * Expr, Function * func) {
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 
-        if (el == NULL && gel == NULL) {
+        if (el == NULL && gel == NULL) 
+        {
             printf("Line %d, column %d: Cannot find symbol %s\n", Expr->line, Expr->col, id);
             strcat(Expr->str, " - undef");
             return "undef";
@@ -475,11 +488,16 @@ char * check_Expr(n * Expr, Function * func) {
         // GE GT LT LE - int int - float float
         if(strcmp(Expr->str, "Lt") == 0 || strcmp(Expr->str, "Gt") == 0 || strcmp(Expr->str, "Le") == 0  || strcmp(Expr->str, "Ge") == 0)
         {
-            if((strcmp(t1, "int") == 0 && strcmp(t2,"int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2,"float32") == 0)) 
+            if((strcmp(t1, "int") == 0 && strcmp(t2,"int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2,"float32") == 0) || (strcmp(t1, "string") == 0 && strcmp(t2,"string") == 0)) 
             {
                 sprintf(Expr->str, "%s - bool", Expr->str);
                 return "bool";
-            } 
+            }
+            else if((strcmp(t1, "float32") == 0 && isIntlit(Expr->down->right->str)) || ((strcmp(t2, "float32") == 0 && isIntlit(Expr->down->str))))
+            {
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
+            }
             else
             {   
                 sprintf(Expr->str, "%s - undef", Expr->str);
@@ -521,6 +539,11 @@ char * check_Expr(n * Expr, Function * func) {
                 sprintf(Expr->str, "%s - bool", Expr->str);
                 return "bool";
             }
+            else if((strcmp(t1, "float32") == 0 && isIntlit(Expr->down->right->str)) || ((strcmp(t2, "float32") == 0 && isIntlit(Expr->down->str))))
+            {
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
+            }
             else
             {
                 sprintf(Expr->str, "%s - undef", Expr->str);
@@ -531,25 +554,49 @@ char * check_Expr(n * Expr, Function * func) {
         }        // contas
         
         // - / * % int e int, float e float
-        else if(strcmp(Expr->str, "Sub") == 0 || strcmp(Expr->str, "Div") == 0 || strcmp(Expr->str, "Mul") == 0 || strcmp(Expr->str, "Mod") == 0 ) {
+        else if(strcmp(Expr->str, "Sub") == 0 || strcmp(Expr->str, "Div") == 0 || strcmp(Expr->str, "Mul") == 0) {
 
             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
-            } else {
+            }
+            else if((strcmp(t1, "float32") == 0 && isIntlit(Expr->down->right->str)) || ((strcmp(t2, "float32") == 0 && isIntlit(Expr->down->str))))
+            {
+                sprintf(Expr->str, "%s - float32", Expr->str);
+                return "float32";
+            }
+            else {
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
 
+        } 
+        else if(strcmp(Expr->str, "Mod") == 0)
+        {
+            if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0)) {
+                sprintf(Expr->str, "%s - %s", Expr->str, t1);
+                return t1;
+            } 
+            else 
+            {
+                sprintf(Expr->str, "%s - undef", Expr->str);
+                return "undef";
+            }
         }
 
         // + int e int, float e float, string e string
         else if(strcmp(Expr->str, "Add") == 0) {
-             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0)
-             || (strcmp(t1, "string") == 0 && strcmp(t2, "string") == 0)) {
+    
+             if ((strcmp(t1, "int") == 0 && strcmp(t2, "int") == 0) || (strcmp(t1, "float32") == 0 && strcmp(t2, "float32") == 0) || (strcmp(t1, "string") == 0 && strcmp(t2, "string") == 0)) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
-            } else {
+            }
+            else if((strcmp(t1, "float32") == 0 && isIntlit(Expr->down->right->str)) || ((strcmp(t2, "float32") == 0 && isIntlit(Expr->down->str))))
+            {
+                sprintf(Expr->str, "%s - float32", Expr->str);
+                return "float32";
+            }        
+            else {
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }

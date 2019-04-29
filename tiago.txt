@@ -1,0 +1,62 @@
+===== Global Symbol Table =====
+a	()	none
+b	()	int
+main	()	none
+
+===== Function a() Symbol Table =====
+return		none
+
+===== Funct Global Symbol Table =====
+a	()	none					      |	aion b() Symbol Table =====
+return		int
+
+===== Function main() Symbol Table =====
+return		none
+a		int
+b		float32
+
+Program
+..FuncDecl
+....FuncHeader
+......Id(a)
+......FuncParams
+....FuncBody
+..FuncDecl
+....FuncHeader
+......Id(b)
+......Int
+......FuncParams
+....FuncBody
+..FuncDecl
+....FuncHeader
+......Id(main)
+......FuncParams
+....FuncBody
+......VarDecl
+........Int
+........Id(a)
+......VarDecl
+........Float32
+........Id(b)
+......Assign - float32
+........Id(b) - float32
+........IntLit(1) - int
+......Assign - int
+........Id(a) - int
+........IntLit(2) - int
+......Assign - int
+........Id(a) - int
+........Minus - int
+..........Id(a) - int
+......Assign - float32
+........Id(b) - float32
+........Minus - float32
+..........Id(b) - float32
+......Assign - float32
+........Id(a) - int
+........Plus - float32
+..........Id(b) - float32
+......Assign - float32
+........Id(b) - float32
+........Plus - int
+..........Id(a) - int
