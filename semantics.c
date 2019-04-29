@@ -134,12 +134,15 @@ Function * check_FuncHeader(n* FuncHeader)
     n* FuncParams;
     n* ParamDecl;
 
-    char type[50], *aux;
-    char param_str[1024];
+    char type[50]= {0};
+    char aux[512] = {0};
+    char param_str[512] = {0};
     strcpy(param_str, "");
     int i = 0;
 
-    char * id = getCleanId(FuncId->str);
+    char id[512] = {0};
+    sscanf(FuncId->str,"Id(%s)", id);
+    id[strlen(id)-1] = 0;
 
     Function * to_return = insert_Function(id);
     
@@ -164,11 +167,11 @@ Function * check_FuncHeader(n* FuncHeader)
 
     while(ParamDecl)
     {
-     
-        aux = strdup(ParamDecl->down->str);
+        // aux = strdup("\0");
+        strcpy(aux, ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
-        if (i == 0) 
+        if (i == 0)
         {
             strcat(param_str, aux);
         }
@@ -177,34 +180,33 @@ Function * check_FuncHeader(n* FuncHeader)
             strcat(param_str, aux);
         }
 
-       
-
-        char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
+        char param_id[512] = {0};
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-
         insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
-
+        
         ParamDecl = ParamDecl->right;
         i++;
     }
 
     strcat(param_str, ")");
 
-
-    char * last = malloc(sizeof(char) * (strlen(id) + strlen(param_str)));
-    strcpy(last, "");
+    //char name_aux = strdup(to_return->name);
+    char name_aux[512] = {0};
+    strcpy(name_aux, to_return->name);
+    //char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
+    char last[512] = {0};
 
     strcat(last, id);
     strcat(last, param_str);
-    to_return->name = strdup(last); // inserir ex boas
-    free(last);
+    to_return->name = strdup(last); // inserir ex boas(int,int,int) no name da função
 
     insert_Global_element(id, type, param_str);
 
     return to_return;
 }
+
 
 
 void check_Assign(n* Assign, Function *func) {
