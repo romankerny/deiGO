@@ -72,6 +72,7 @@ void check_program(n* prog)
 void check_FuncDecl(n* FuncDecl)
 {
     Function * func;
+
     func = check_FuncHeader(FuncDecl->down);
     check_FuncBody(FuncDecl->down->right, func);
 
@@ -133,15 +134,12 @@ Function * check_FuncHeader(n* FuncHeader)
     n* FuncParams;
     n* ParamDecl;
 
-    char type[50]= {0};
-    char aux[512] = {0};
-    char param_str[512] = {0};
+    char type[50], *aux;
+    char param_str[1024];
     strcpy(param_str, "");
     int i = 0;
 
-    char id[512] = {0};
-    sscanf(FuncId->str,"Id(%s)", id);
-    id[strlen(id)-1] = 0;
+    char * id = getCleanId(FuncId->str);
 
     Function * to_return = insert_Function(id);
     
@@ -166,11 +164,11 @@ Function * check_FuncHeader(n* FuncHeader)
 
     while(ParamDecl)
     {
-       
-        strcpy(aux, ParamDecl->down->str);
+     
+        aux = strdup(ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
-        if (i == 0)
+        if (i == 0) 
         {
             strcat(param_str, aux);
         }
@@ -179,29 +177,29 @@ Function * check_FuncHeader(n* FuncHeader)
             strcat(param_str, aux);
         }
 
-        char param_id[512] = {0};
+       
+
+        char * param_id = malloc(sizeof(char) * strlen(ParamDecl->down->right->str));
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-        insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
-<<<<<<< HEAD
 
-=======
-        
->>>>>>> dcd790bd6c9ca26d94330192df1feb8553152052
+        insert_Func_element(param_id, aux,"param", to_return); // inserir param na tabela
+
         ParamDecl = ParamDecl->right;
         i++;
     }
 
     strcat(param_str, ")");
 
-    char name_aux[512] = {0};
-    strcpy(name_aux, to_return->name);
-    char last[512] = {0};
+
+    char * last = malloc(sizeof(char) * (strlen(id) + strlen(param_str)));
+    strcpy(last, "");
 
     strcat(last, id);
     strcat(last, param_str);
-    to_return->name = strdup(last); // inserir ex boas(int,int,int) no name da função
+    to_return->name = strdup(last); // inserir ex boas
+    free(last);
 
     insert_Global_element(id, type, param_str);
 
@@ -311,19 +309,17 @@ char * check_Call(n* Call, Function *func)
     char * id = getCleanId(id_func->str); 
     
     Global_element * global_aux = search_Global(id); // tem de existir nesta fase
-    if (global_aux == NULL) {
-        return "undef";
-    } else {
-        func_params = global_aux->params;
-        while(aux)
-        {
-            check_Expr(aux, func);
-            aux = aux->right;
-        }
-        id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(func_params)) + 20));
-        sprintf(id_func->str, "%s - %s", id_func->str, func_params);
-        return global_aux->type; // tipo do return
+    func_params = global_aux->params;
+    while(aux)
+    {
+        check_Expr(aux, func);
+        aux = aux->right;
     }
+
+    id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(func_params)) + 20));
+    sprintf(id_func->str, "%s - %s", id_func->str, func_params);
+    return global_aux->type; // tipo do return
+
 }
 
 void check_Print(n* Print, Function *func) {
