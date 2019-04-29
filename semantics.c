@@ -17,6 +17,42 @@ char * getCleanId(char * IdCidC)
     return id;
 }
 
+char* get_op(char *op) {
+    if (strcmp(op, "And") == 0)
+        return "&&";
+    if (strcmp(op, "Or") == 0)
+        return "||";
+    if (strcmp(op, "Lt") == 0)
+        return "<";
+    if (strcmp(op, "Gt") == 0)
+        return ">";
+    if (strcmp(op, "Eq") == 0)
+        return "==";
+    if (strcmp(op, "Ne") == 0)
+        return "!=";
+    if (strcmp(op, "Le") == 0)
+        return "<=";
+    if (strcmp(op, "Ge") == 0)
+        return ">=";
+    if (strcmp(op, "Add") == 0 || strcmp(op, "Plus") == 0)
+        return "+";
+    if (strcmp(op, "Sub") == 0 || strcmp(op, "Minus") == 0)
+        return "-";
+    if (strcmp(op, "Mul") == 0)
+        return "*";
+    if (strcmp(op, "Div") == 0)
+        return "/";
+    if (strcmp(op, "Mod") == 0)
+        return "%";
+    if (strcmp(op, "Not") == 0)
+        return "!";
+    if (strcmp(op, "Assign") == 0)
+        return "=";
+
+    // Unreacheable
+    return "$";
+}
+
 int isIntlit(char * s) {
     int len = strlen(s); // garantir q não há erros de acesso de memória
     if(len >= 2 && s[0] == 'I' && s[1] == 'n'){
@@ -264,8 +300,10 @@ void check_Assign(n* Assign, Function *func) {
         {
             sprintf(Assign->str, "%s - float32", Assign->str);
         }
-        else
+        else {
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), element->type, expr_type);
             strcat(Assign->str, " - undef");
+        }
     } else {
         sprintf(Id->str, "%s - %s", Id->str, gelement->type);
 
@@ -276,8 +314,10 @@ void check_Assign(n* Assign, Function *func) {
         {
             sprintf(Assign->str, "%s - float32", Assign->str);
         }
-        else
+        else {
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), gelement->type, expr_type);
             strcat(Assign->str, " - undef");
+        }
     }
 
 }
@@ -500,6 +540,7 @@ char * check_Expr(n * Expr, Function * func) {
             }
             else
             {   
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -514,6 +555,7 @@ char * check_Expr(n * Expr, Function * func) {
             }
             else
             {
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n", Expr->line, Expr->col, get_op(Expr->str), t1);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -527,6 +569,7 @@ char * check_Expr(n * Expr, Function * func) {
             }
             else
             {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -546,6 +589,7 @@ char * check_Expr(n * Expr, Function * func) {
             }
             else
             {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -566,6 +610,7 @@ char * check_Expr(n * Expr, Function * func) {
                 return "float32";
             }
             else {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -579,6 +624,7 @@ char * check_Expr(n * Expr, Function * func) {
             } 
             else 
             {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -597,6 +643,7 @@ char * check_Expr(n * Expr, Function * func) {
                 return "float32";
             }        
             else {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
@@ -609,6 +656,7 @@ char * check_Expr(n * Expr, Function * func) {
                 sprintf(Expr->str, "%s - %s", Expr->str, t1);
                 return t1;
             } else {
+                printf("Line %d, column %d: Operator %s cannot be applied to type %s\n", Expr->line, Expr->col, get_op(Expr->str), t1);
                 sprintf(Expr->str, "%s - undef", Expr->str);
                 return "undef";
             }
