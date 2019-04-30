@@ -1,18 +1,12 @@
-package main;
-
-func ola() int {
+package main
 
 
-return 1;
+
+func main() {
+var b int;
+b = 0772934214;
+
+
+
+	
 }
-
-func boas() int{
-return;
-}
-
-
-func main(){
-
-
-
-};
