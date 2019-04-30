@@ -365,17 +365,24 @@ void check_Assign(n* Assign, Function *func) {
             strcat(Assign->str, " - undef");
         }
     } else {
-        sprintf(Id->str, "%s - %s", Id->str, gelement->type);
 
-        if (strcmp(gelement->type, expr_type) == 0) {
-            sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
-        }
-        else if(strcmp(gelement->type, "float32") == 0 && isIntlit(Expr->str)) 
-        {
-            sprintf(Assign->str, "%s - float32", Assign->str);
-        }
-        else {
-            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), gelement->type, expr_type);
+        if (gelement->params == NULL) {
+
+            sprintf(Id->str, "%s - %s", Id->str, gelement->type);
+
+            if (strcmp(gelement->type, expr_type) == 0) {
+                sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
+            }
+            else if(strcmp(gelement->type, "float32") == 0 && isIntlit(Expr->str)) 
+            {
+                sprintf(Assign->str, "%s - float32", Assign->str);
+            }
+            else {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), gelement->type, expr_type);
+                strcat(Assign->str, " - undef");
+            }
+        } else {
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), "undef", expr_type);
             strcat(Assign->str, " - undef");
         }
     }
@@ -511,7 +518,7 @@ void check_Print(n* Print, Function *func) {
         strcpy(expr_type, check_Expr(Expr_or_StrLit, func));
 
         if (strcmp(expr_type, "undef") == 0) {
-            printf("Line %d, column %d: Incompatible type %s in return statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
+            printf("Line %d, column %d: Incompatible type %s in fmt.Println statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
         }
     }
 
@@ -543,8 +550,11 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
         sprintf(IdVar->str, "%s - %s", IdVar->str, var_el->type);
         var_type = var_el->type;
     } else {
-        sprintf(IdVar->str, "%s - %s", IdVar->str, var_gel->type);
-        var_type = var_gel->type;
+
+        if (var_gel->params == NULL) {
+            sprintf(IdVar->str, "%s - %s", IdVar->str, var_gel->type);
+            var_type = var_gel->type;
+        }
     }
 
     char *index_type = check_Expr(Expr, func);
@@ -630,8 +640,13 @@ char * check_Expr(n * Expr, Function * func) {
             sprintf(Expr->str, "%s - %s", Expr->str, el->type);
             return el->type;
         } else {
-            sprintf(Expr->str, "%s - %s", Expr->str, gel->type);
-            return gel->type;
+            if (gel->params == NULL) {
+                sprintf(Expr->str, "%s - %s", Expr->str, gel->type);
+                return gel->type;
+            } else {
+                strcat(Expr->str, " - undef");
+                return "undef";
+            }
         }
 
         
