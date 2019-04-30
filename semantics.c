@@ -298,7 +298,10 @@ Function * check_FuncHeader(n* FuncHeader)
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-        // check_if_param_Already_Defined(to_return);
+        if(check_if_param_Already_Defined(to_return, param_id))
+        {
+            printf("Line %d, column %d: Symbol %s already defined\n", ParamDecl->down->right->line, ParamDecl->down->right->col, param_id);
+        }
         
         insert_Func_element(param_id, aux,"param", to_return);
         ParamDecl = ParamDecl->right;

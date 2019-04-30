@@ -1,10 +1,12 @@
 package main
 
-
+func lala(a int, a int) int {
+	return 1;
+}
 
 func main() {
-var b int;
-b = 9;
+
+
 
 
 }

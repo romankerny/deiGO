@@ -18,3 +18,6 @@ void check_Return(n* Return, Function *func);
 char * check_Call(n* Call, Function *func);
 void check_Print(n* Print, Function *func);
 void check_ParseArgs(n* ParseArgs, Function *func);
+
+
+int check_if_param_Already_Defined(Function * to_return, char * param_id);

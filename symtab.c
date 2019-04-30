@@ -74,6 +74,23 @@ Function* search_Function_by_name(char * name)
     return NULL;
 }
 
+int check_if_param_Already_Defined(Function * to_return, char * param_id)
+{
+
+    Function_element * aux = to_return->next;
+
+    while(aux)
+    {   
+        if(strcmp(aux->name, param_id) == 0) 
+        {
+            return 1;
+        }
+        aux = aux->next;
+    }
+
+    return 0;
+}
+
 Function* search_Function(char * name)
 {
     Function * aux = funcs;
