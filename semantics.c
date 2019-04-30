@@ -433,9 +433,9 @@ void check_Return(n* Return, Function *func)
 
 
     if(expression_type == NULL) {
-        if(!(strcmp(func_type, "none") == 0)) {
+        /*if(!(strcmp(func_type, "none") == 0)) {
             printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->down->line, Return->down->col, "none");
-        }
+        }*/
     }
     else 
     {
