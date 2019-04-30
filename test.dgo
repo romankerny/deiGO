@@ -1,7 +1,13 @@
 package main
 
-func lala(a int, a int) int {
-	return 1;
+func lala(a int, a int, b int, b int) int {
+var a int;
+var b float32;
+
+a = 123123;
+return 1;
+
+
 }
 
 func main() {
