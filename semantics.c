@@ -165,6 +165,7 @@ void check_program(n* prog)
 
             Function *func = search_Function_by_name(name);
             check_FuncBody(FuncBody, func);
+        
             free(name);
         }
         aux = aux->right;
@@ -280,7 +281,7 @@ Function * check_FuncHeader(n* FuncHeader)
 
     while(ParamDecl)
     {
-        // aux = strdup("\0");
+        
         strcpy(aux, ParamDecl->down->str);
         aux[0] = tolower(aux[0]);
 
