@@ -18,6 +18,7 @@ typedef struct _t0 {
 typedef struct _t1{
 	char *name;
     char *type;
+    int   used;      // declared and not used error
     char *param;
 	struct _t1 *next;
 } Function_element;
@@ -40,5 +41,8 @@ void show_Functions_table();
 void print_Function_table(Function * func);
 Function *search_Function(char * name);
 
+
+char * get_Func_Type(Function * f);
+void set_as_Used(Function_element * f);
 
 #endif

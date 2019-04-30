@@ -1,12 +1,18 @@
 package main;
 
+func ola() int {
+
+
+return 1;
+}
+
+func boas() int{
+return;
+}
 
 
 func main(){
-	var a int;
-	var b float32;
-	var c bool;
 
-	c = a == 1.0;
+
 
 };

@@ -184,6 +184,8 @@ void check_FuncBody(n * FuncBody, Function * func)
         aux = aux->right;
     }
 
+
+
 }
 
 Function * check_FuncHeader(n* FuncHeader)
@@ -369,9 +371,30 @@ void check_For(n* For, Function *func) {
     }
 
 }
+
+
 void check_Return(n* Return, Function *func) {
-    check_Expr(Return->down, func);
+
+    char * func_type        = get_Func_Type(func);
+    char * expression_type  = check_Expr(Return->down, func);
+
+    if(!(((strcmp(func_type, "none") == 0 && expression_type == NULL) || (strcmp(func_type, expression_type) == 0)))) 
+    {
+        if(expression_type == NULL)
+        {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->line, Return->col, "none");
+        }
+        else
+        {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->line, Return->col, expression_type);
+        }
+    }
+
+    // printf("func_type: %s , expression type %s\n", func_type, expression_type);
+
 }
+
+
 
 char * check_Call(n* Call, Function *func) 
 {
@@ -486,7 +509,7 @@ char * check_Expr(n * Expr, Function * func) {
         id[len-1] = '\0';
 
         Function_element * el = search_Element(func, id);
-        Global_element *gel = search_Global(id);
+        Global_element *gel   = search_Global(id);
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 
@@ -498,6 +521,7 @@ char * check_Expr(n * Expr, Function * func) {
         }
         else if (el)
         {
+            set_as_Used(el); 
             sprintf(Expr->str, "%s - %s", Expr->str, el->type);
             return el->type;
         } else {
@@ -509,7 +533,7 @@ char * check_Expr(n * Expr, Function * func) {
     }
     else if(first == 'C' && second == 'a')
     {
-        Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
+        Expr->str   = realloc(Expr->str, strlen(Expr->str) + 20);
         char * type = check_Call(Expr, func);
 
         if(strcmp(type,"none") != 0)

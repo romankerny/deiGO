@@ -74,6 +74,9 @@ Function* search_Function(char * name)
     return NULL;
 }
 
+void set_as_Used(Function_element * f) {
+    f->used = 1;
+}
 
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
@@ -82,7 +85,8 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     new_func_el->next  = NULL;
     new_func_el->name  = NULL;
     new_func_el->param = NULL;
-    new_func_el->type = NULL;
+    new_func_el->type  = NULL;
+    new_func_el->used  = 0;
 
      if(name != NULL)
         new_func_el->name  = strdup(name);
@@ -155,6 +159,14 @@ void show_Global_table()
     printf("\n");
 }
 
+char * get_Func_Type(Function * f) {
+
+    char * return_type = NULL;
+    if(f->next->type != NULL) {
+        return_type = f->next->type;
+    } 
+    return return_type;
+}
 
 void show_Functions_table()
 {
