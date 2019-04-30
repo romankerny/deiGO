@@ -15,6 +15,7 @@
     }
 
     extern int flag;
+    extern int error;
     int colno = 0;
     int print_string = 1;
     int comment_beginning_line, comment_beginning_column;
@@ -134,6 +135,7 @@ asp               \"
 
 void yyerror (const char *s)
 {
+    error = 1;
 
     if(yytext[0] == 0) {
         printf ("Line %d, column %d: syntax error: %s\n", last_l, (int) last_c, yytext);
