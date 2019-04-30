@@ -90,7 +90,6 @@ int isIntlit(char * s) {
     if(len >= 2 && s[0] == 'I' && s[1] == 'n') {
         return 1;
     }
-    
     return 0;
 }
 
@@ -344,7 +343,7 @@ void check_Assign(n* Assign, Function *func) {
     name_id[strlen(name_id)-1] = '\0';
 
     Function_element *element = search_Element(func, name_id);
-    Global_element *gelement = search_Global(name_id);
+    Global_element *gelement = search_Global(name_id, 0);
 
     if (element == NULL && gelement == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
@@ -383,7 +382,7 @@ void check_Assign(n* Assign, Function *func) {
                 strcat(Assign->str, " - undef");
             }
         } else {
-            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), "undef", expr_type);
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), "undeff", expr_type);
             strcat(Assign->str, " - undef");
         }
     }
@@ -496,7 +495,7 @@ char * check_Call(n* Call, Function *func)
         sprintf(id_func->str, "%s - %s", id_func->str, expr_type);
         return "undef";
     } else {
-        Global_element *called_global = search_Global(getCleanId(id_func->str)); // tem de existir nesta fase
+        Global_element *called_global = search_Global(getCleanId(id_func->str), 1); // tem de existir nesta fase
         id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(called_global->params)) + 20));
         sprintf(id_func->str, "%s - %s", id_func->str, called_global->params);
         return called_global->type;
@@ -541,7 +540,7 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
 
     // Get elements
     Function_element *var_el = search_Element(func, name_IdVar);
-    Global_element *var_gel = search_Global(name_IdVar);
+    Global_element *var_gel = search_Global(name_IdVar, 0);
 
     char *var_type;
 
@@ -625,7 +624,7 @@ char * check_Expr(n * Expr, Function * func) {
         int len = strlen(id);
         id[len-1] = '\0';
         Function_element * el = search_Element(func, id);
-        Global_element *gel   = search_Global(id);
+        Global_element *gel   = search_Global(id, 0);
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 

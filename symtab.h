@@ -33,7 +33,7 @@ Function * insert_Function(char *name);
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func);
 Global_element * insert_Global_element(char * name, char * type, char * params);
 Function_element * search_Element(Function * func, char * name);
-Global_element * search_Global(char * name);
+Global_element * search_Global(char * name, int is_func);
 
 
 void show_Global_table();
