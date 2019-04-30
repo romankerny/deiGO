@@ -450,8 +450,6 @@ void check_Return(n* Return, Function *func)
  
 }
 
-
-
 char * check_Call(n* Call, Function *func) 
 {
 
@@ -501,12 +499,17 @@ void check_Print(n* Print, Function *func) {
     char second = Expr_or_StrLit->str[1];
 
     if (first == 'S' && second == 't') {
-        /*
+        
         Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 20));
-        strcat(Expr_or_StrLit->str, " - string");*/
+        strcat(Expr_or_StrLit->str, " - string");
 
     } else {
-        check_Expr(Expr_or_StrLit, func);
+        char expr_type[512] = {0};
+        strcpy(expr_type, check_Expr(Expr_or_StrLit, func));
+
+        if (strcmp(expr_type, "undef") == 0) {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
+        }
     }
 
 }
@@ -633,7 +636,7 @@ char * check_Expr(n * Expr, Function * func) {
     else if(first == 'C' && second == 'a')
     {
         Expr->str   = realloc(Expr->str, strlen(Expr->str) + 20);
-        char * type = check_Call(Expr, func);
+        char *type = check_Call(Expr, func);
 
         if(strcmp(type,"none") != 0)
             sprintf(Expr->str, "%s - %s", Expr->str, type);

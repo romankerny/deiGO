@@ -285,7 +285,6 @@ int main(int argc, char *argv[])
         yyparse();
 
     if (error == 0) {
-
         if (print_tr) {
             print_tree(tree_node_pointer, 0);
         } else {
