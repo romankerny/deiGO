@@ -298,7 +298,8 @@ Function * check_FuncHeader(n* FuncHeader)
         sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
         param_id[strlen(param_id)-1] = '\0'; // tirar o )
         
-
+        // check_if_param_Already_Defined(to_return);
+        
         insert_Func_element(param_id, aux,"param", to_return);
         ParamDecl = ParamDecl->right;
         i++;
@@ -556,15 +557,18 @@ char * check_Expr(n * Expr, Function * func) {
     
     char first    = Expr->str[0];
     char second   = Expr->str[1];
+
     
 
 
     if (first == 'I' && second == 'n')
     {   
         char seventh  = Expr->str[7];
+        char eigth    = Expr->str[8];
+
         Expr->str = realloc(Expr->str, sizeof(char) * (strlen(Expr->str) + 20));
 
-        if(seventh == '0')
+        if(seventh == '0' && eigth != 'x' && eigth != 'X')
         {
             char * octal = get_Clean_Val(Expr->str);
             
