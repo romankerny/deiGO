@@ -87,7 +87,7 @@ char* get_op(char *op) {
 
 int isIntlit(char * s) {
     int len = strlen(s); // garantir q não há erros de acesso de memória
-    if(len >= 2 && s[0] == 'I' && s[1] == 'n'){
+    if(len >= 2 && s[0] == 'I' && s[1] == 'n') {
         return 1;
     }
     

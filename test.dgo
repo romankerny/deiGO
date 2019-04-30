@@ -4,9 +4,7 @@ package main
 
 func main() {
 var b int;
-b = 089;
+b = 9;
 
 
-
-	
 }
