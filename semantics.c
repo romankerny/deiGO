@@ -347,6 +347,8 @@ void check_Assign(n* Assign, Function *func) {
         strcat(Id->str, " - undef");
         strcat(Assign->str, " - undef");
     } else if (element){
+        set_as_Used(element); 
+
         sprintf(Id->str, "%s - %s", Id->str, element->type);
         if (strcmp(element->type, expr_type) == 0) {
             sprintf(Assign->str, "%s - %s", Assign->str, element->type);
