@@ -13,10 +13,42 @@ char * getCleanId(char * IdCidC)
     sscanf(IdCidC,"Id(%s)", id);
     int len = strlen(id);
     id[len-1] = '\0';
-
     return id;
 }
 
+int Valid_Octal(char * s)
+{
+    int i;
+
+    for (i = 0; i < strlen(s); i++) {
+        if (s[i] >= '8') return 0;
+    }
+    return 1;
+}
+
+
+char * get_Clean_Val(char *s) {
+
+    int i, l = strlen(s);
+    int a = 0;
+    char * new_s = calloc(l, sizeof(char));
+    int first_bracket = 0;
+    
+    for (i = 0; i < l; i++)
+    {
+        if(s[i] == '(')
+        {
+            first_bracket = i;
+            break;
+        }
+    }
+    for(i = first_bracket + 1; i < l-1; i++) {
+        if(s[i] == ')') break;
+        new_s[a++] = s[i]; 
+    }
+    return new_s;
+
+}
 char* get_op(char *op) {
     if (strcmp(op, "And") == 0)
         return "&&";
@@ -58,8 +90,12 @@ int isIntlit(char * s) {
     if(len >= 2 && s[0] == 'I' && s[1] == 'n'){
         return 1;
     }
+    
     return 0;
 }
+
+
+
 void check_VarDeclGlobal(n* VarType) {
     
     n* VarId = VarType->right;
@@ -502,15 +538,39 @@ char * check_Expr(n * Expr, Function * func) {
     if (Expr == NULL)
         return NULL;
     
-    char first  = Expr->str[0];
-    char second = Expr->str[1];
+    char first    = Expr->str[0];
+    char second   = Expr->str[1];
+    
 
 
     if (first == 'I' && second == 'n')
     {   
+        char seventh  = Expr->str[7];
         Expr->str = realloc(Expr->str, sizeof(char) * (strlen(Expr->str) + 20));
-        strcat(Expr->str, " - int");
-        return "int";
+
+        if(seventh == '0')
+        {
+            char * octal = get_Clean_Val(Expr->str);
+            
+            if(!Valid_Octal(octal))
+            {
+                printf("Line %d, column %d: Invalid octal constant: %s\n", Expr->line, Expr->col, octal);
+                strcat(Expr->str, " - undef");
+                return "undef";
+            }
+            else 
+            {
+                strcat(Expr->str, " - int");
+                return "int";
+            }
+        }
+        else
+        {
+            strcat(Expr->str, " - int");
+            return "int";
+        }
+
+
     } 
     else if(first == 'R')
     {
@@ -525,7 +585,6 @@ char * check_Expr(n * Expr, Function * func) {
         sscanf(Expr->str,"Id(%s)", id);
         int len = strlen(id);
         id[len-1] = '\0';
-
         Function_element * el = search_Element(func, id);
         Global_element *gel   = search_Global(id);
 
