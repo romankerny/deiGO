@@ -1,18 +1,13 @@
 package main;
 
-func ola() int {
 
 
-return 1;
-}
 
-func boas() int{
-return;
-}
+func main() int {
 
-
-func main(){
-
-
+var a int;
+	
+var i int;
+return a;
 
 };

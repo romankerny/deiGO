@@ -170,7 +170,7 @@ void check_Statement(n * aux, Function * func)
 
 void check_FuncBody(n * FuncBody, Function * func)
 {
-    n * aux = FuncBody->down; 
+    n * aux = FuncBody->down;
     while(aux)
     {
         if(strcmp(aux->str, "VarDecl") == 0) {
@@ -184,7 +184,24 @@ void check_FuncBody(n * FuncBody, Function * func)
         aux = aux->right;
     }
 
+    // find if all vars used
+    n * aux2 = FuncBody->down;
+    while(aux2)
+    {
+        if(strcmp(aux2->str, "VarDecl") == 0)
+        {
+            // 
+            char * id = getCleanId(aux2->down->right->str);
+            Function_element * f = search_Element(func, id);
 
+            if(f->used == 0)
+            {
+                printf("Line %d, column %d: Symbol %s declared but never used\n", aux2->down->right->line, aux2->down->right->col, id);
+            }
+        }
+        aux2 = aux2->right;
+    }
+    
 
 }
 
@@ -373,25 +390,26 @@ void check_For(n* For, Function *func) {
 }
 
 
-void check_Return(n* Return, Function *func) {
+void check_Return(n* Return, Function *func) 
+{
 
     char * func_type        = get_Func_Type(func);
     char * expression_type  = check_Expr(Return->down, func);
 
-    if(!(((strcmp(func_type, "none") == 0 && expression_type == NULL) || (strcmp(func_type, expression_type) == 0)))) 
-    {
-        if(expression_type == NULL)
-        {
-            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->line, Return->col, "none");
-        }
-        else
-        {
-            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->line, Return->col, expression_type);
+
+    if(expression_type == NULL) {
+        if(!(strcmp(func_type, "none") == 0)) {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->down->line, Return->down->col, "none");
         }
     }
-
-    // printf("func_type: %s , expression type %s\n", func_type, expression_type);
-
+    else 
+    {
+        if(!(strcmp(func_type, expression_type) == 0)) 
+        {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->down->line, Return->down->col, expression_type);
+        }
+    }
+ 
 }
 
 
@@ -538,7 +556,6 @@ char * check_Expr(n * Expr, Function * func) {
 
         if(strcmp(type,"none") != 0)
             sprintf(Expr->str, "%s - %s", Expr->str, type);
-
         return type;
     } 
     else {

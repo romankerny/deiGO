@@ -163,7 +163,7 @@ char * get_Func_Type(Function * f) {
 
     char * return_type = NULL;
     if(f->next->type != NULL) {
-        return_type = f->next->type;
+        return_type = strdup(f->next->type);
     } 
     return return_type;
 }
