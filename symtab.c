@@ -51,7 +51,7 @@ Global_element * search_Global(char * name)
     return NULL;
 }
 
-Function* search_Function(char * name)
+Function* search_Function_by_name(char * name)
 {
     Function * aux = funcs;
     while(aux)
@@ -70,6 +70,19 @@ Function* search_Function(char * name)
         }
         aux = aux->down;
         free(clean_name);
+    }
+    return NULL;
+}
+
+Function* search_Function(char * name)
+{
+    Function * aux = funcs;
+    while(aux)
+    {   
+        if(strcmp(aux->name, name) == 0) {
+            return aux;
+        }
+        aux = aux->down;
     }
     return NULL;
 }

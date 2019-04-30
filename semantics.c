@@ -127,7 +127,7 @@ void check_program(n* prog)
             sscanf(FuncHeader->down->str,"Id(%s)", name);
             name[strlen(name)-1] = '\0';
 
-            Function *func = search_Function(name);
+            Function *func = search_Function_by_name(name);
             check_FuncBody(FuncBody, func);
             free(name);
         }
@@ -223,7 +223,6 @@ Function * check_FuncHeader(n* FuncHeader)
     
     ParamDecl = FuncParams->down;
     strcat(param_str, "(");
-
 
 
     while(ParamDecl)
@@ -399,25 +398,42 @@ void check_Return(n* Return, Function *func) {
 char * check_Call(n* Call, Function *func) 
 {
 
-    char * func_params;
     n * id_func = Call->down;
-    n * aux = id_func->right;
+    n * params = id_func->right;
 
-    char * id = getCleanId(id_func->str); 
+    char expr_type[1024] = {0};
+    strcpy(expr_type, "(");
     
-    Global_element * global_aux = search_Global(id); // tem de existir nesta fase
-    if (global_aux == NULL) {
+    int i = 0;
+    while(params)
+    {
+        if (i == 0) {
+            strcat(expr_type, check_Expr(params, func));
+        } else {
+            strcat(expr_type, ",");
+            strcat(expr_type, check_Expr(params, func));
+        }
+        i++;
+        params = params->right;
+    }
+    strcat(expr_type, ")");
+
+    char *id = getCleanId(id_func->str);
+    id = realloc(id, sizeof(char) * (strlen(id)+strlen(expr_type)*2)); 
+    strcat(id, expr_type);
+
+
+    Function *called_func = search_Function(id);
+    if (called_func == NULL) {
+        id_func->str = realloc(id_func->str, sizeof(char)*(strlen(id_func->str)+ strlen(expr_type) + 20));
+        printf("Line %d, column %d: Cannot find symbol %s\n", id_func->line, id_func->col, id);
+        sprintf(id_func->str, "%s - %s", id_func->str, expr_type);
         return "undef";
     } else {
-        func_params = global_aux->params;
-        while(aux)
-        {
-            check_Expr(aux, func);
-            aux = aux->right;
-        }
-        id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(func_params)) + 20));
-        sprintf(id_func->str, "%s - %s", id_func->str, func_params);
-        return global_aux->type; // tipo do return
+        Global_element *called_global = search_Global(getCleanId(id_func->str)); // tem de existir nesta fase
+        id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(called_global->params)) + 20));
+        sprintf(id_func->str, "%s - %s", id_func->str, called_global->params);
+        return called_global->type;
     }
 }
 
