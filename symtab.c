@@ -141,9 +141,10 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
         return new_func_el;
     }
 
-    for (aux = func->next; aux->next; aux = aux->next)
+    for (aux = func->next; aux; aux = aux->next)
     {
         if(strcmp(aux->name, name) == 0) return NULL;
+        if(aux->next == NULL) break;
     }
     
     aux->next = new_func_el;

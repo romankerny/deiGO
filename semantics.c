@@ -263,6 +263,7 @@ Function * check_FuncHeader(n* FuncHeader)
     id[strlen(id)-1] = 0;
 
     Function * to_return = insert_Function(id);
+
     
     if (strcmp(FuncId->right->str, "FuncParams") == 0)
     {
