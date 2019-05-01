@@ -357,6 +357,7 @@ void check_Assign(n* Assign, Function *func) {
 
     if (element == NULL && gelement == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
+        printf("Line %d, column %d: Operator %s cannot be applied to types undef, undef\n", Assign->line, Assign->col, get_op(Assign->str));
         strcat(Id->str, " - undef");
         strcat(Assign->str, " - undef");
     } else if (element){
