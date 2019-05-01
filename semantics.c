@@ -90,7 +90,6 @@ int isIntlit(char * s) {
     if(len >= 2 && s[0] == 'I' && s[1] == 'n') {
         return 1;
     }
-    
     return 0;
 }
 
@@ -349,7 +348,7 @@ void check_Assign(n* Assign, Function *func) {
     name_id[strlen(name_id)-1] = '\0';
 
     Function_element *element = search_Element(func, name_id);
-    Global_element *gelement = search_Global(name_id);
+    Global_element *gelement = search_Global(name_id, 0);
 
     if (element == NULL && gelement == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
@@ -371,17 +370,24 @@ void check_Assign(n* Assign, Function *func) {
             strcat(Assign->str, " - undef");
         }
     } else {
-        sprintf(Id->str, "%s - %s", Id->str, gelement->type);
 
-        if (strcmp(gelement->type, expr_type) == 0) {
-            sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
-        }
-        else if(strcmp(gelement->type, "float32") == 0 && isIntlit(Expr->str)) 
-        {
-            sprintf(Assign->str, "%s - float32", Assign->str);
-        }
-        else {
-            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), gelement->type, expr_type);
+        if (gelement->params == NULL) {
+
+            sprintf(Id->str, "%s - %s", Id->str, gelement->type);
+
+            if (strcmp(gelement->type, expr_type) == 0) {
+                sprintf(Assign->str, "%s - %s", Assign->str, gelement->type);
+            }
+            else if(strcmp(gelement->type, "float32") == 0 && isIntlit(Expr->str)) 
+            {
+                sprintf(Assign->str, "%s - float32", Assign->str);
+            }
+            else {
+                printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), gelement->type, expr_type);
+                strcat(Assign->str, " - undef");
+            }
+        } else {
+            printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Assign->line, Assign->col, get_op(Assign->str), "undeff", expr_type);
             strcat(Assign->str, " - undef");
         }
     }
@@ -494,7 +500,7 @@ char * check_Call(n* Call, Function *func)
         sprintf(id_func->str, "%s - %s", id_func->str, expr_type);
         return "undef";
     } else {
-        Global_element *called_global = search_Global(getCleanId(id_func->str)); // tem de existir nesta fase
+        Global_element *called_global = search_Global(getCleanId(id_func->str), 1); // tem de existir nesta fase
         id_func->str = realloc(id_func->str, sizeof(char)*((strlen(id_func->str)+strlen(called_global->params)) + 20));
         sprintf(id_func->str, "%s - %s", id_func->str, called_global->params);
         return called_global->type;
@@ -517,7 +523,7 @@ void check_Print(n* Print, Function *func) {
         strcpy(expr_type, check_Expr(Expr_or_StrLit, func));
 
         if (strcmp(expr_type, "undef") == 0) {
-            printf("Line %d, column %d: Incompatible type %s in return statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
+            printf("Line %d, column %d: Incompatible type %s in fmt.Println statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
         }
     }
 
@@ -539,7 +545,7 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
 
     // Get elements
     Function_element *var_el = search_Element(func, name_IdVar);
-    Global_element *var_gel = search_Global(name_IdVar);
+    Global_element *var_gel = search_Global(name_IdVar, 0);
 
     char *var_type;
 
@@ -549,8 +555,11 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
         sprintf(IdVar->str, "%s - %s", IdVar->str, var_el->type);
         var_type = var_el->type;
     } else {
-        sprintf(IdVar->str, "%s - %s", IdVar->str, var_gel->type);
-        var_type = var_gel->type;
+
+        if (var_gel->params == NULL) {
+            sprintf(IdVar->str, "%s - %s", IdVar->str, var_gel->type);
+            var_type = var_gel->type;
+        }
     }
 
     char *index_type = check_Expr(Expr, func);
@@ -620,7 +629,7 @@ char * check_Expr(n * Expr, Function * func) {
         int len = strlen(id);
         id[len-1] = '\0';
         Function_element * el = search_Element(func, id);
-        Global_element *gel   = search_Global(id);
+        Global_element *gel   = search_Global(id, 0);
 
         Expr->str = realloc(Expr->str, strlen(Expr->str) + 20);
 
@@ -636,8 +645,13 @@ char * check_Expr(n * Expr, Function * func) {
             sprintf(Expr->str, "%s - %s", Expr->str, el->type);
             return el->type;
         } else {
-            sprintf(Expr->str, "%s - %s", Expr->str, gel->type);
-            return gel->type;
+            if (gel->params == NULL) {
+                sprintf(Expr->str, "%s - %s", Expr->str, gel->type);
+                return gel->type;
+            } else {
+                strcat(Expr->str, " - undef");
+                return "undef";
+            }
         }
 
         
