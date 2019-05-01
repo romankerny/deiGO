@@ -228,7 +228,7 @@ void check_program(n* prog)
             
             Function *func = search_Function(final_id);
             
-            if(func != NULL)
+            if(func != NULL && func->visited == 0)
                 check_FuncBody(FuncBody, func);
         
             free(name);
@@ -273,6 +273,7 @@ void check_Statement(n * aux, Function * func)
 
 void check_FuncBody(n * FuncBody, Function * func)
 {
+    func->visited = 1;
     n * aux = FuncBody->down;
     while(aux)
     {
@@ -296,8 +297,8 @@ void check_FuncBody(n * FuncBody, Function * func)
             // 
             char * id = getCleanId(aux2->down->right->str);
             Function_element * f = search_Element(func, id);
-
-            if(f->used == 0)
+            
+            if(f->used == 0 && f->param == NULL)
             {
                 printf("Line %d, column %d: Symbol %s declared but never used\n", aux2->down->right->line, aux2->down->right->col, id);
             }

@@ -28,6 +28,7 @@ typedef struct _t2 {
     char *name_no_params;
     Function_element *next;
     struct _t2 *down;
+    int visited;
 } Function;
 
 Function * insert_Function(char *name);

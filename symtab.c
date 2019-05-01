@@ -15,6 +15,7 @@ Function * insert_Function_safe(char *name) {
     new_Function->name           = strdup(name);
     new_Function->name_no_params = strdup(name);
     new_Function->next = NULL;
+    new_Function->visited = 0;
 
     if(funcs == NULL) {
         funcs = new_Function;
