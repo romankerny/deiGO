@@ -468,6 +468,8 @@ void check_Return(n* Return, Function *func)
         if(!(strcmp(func_type, expression_type) == 0)) 
         {
             printf("Line %d, column %d: Incompatible type %s in return statement\n", Expr->line, Expr->col, expression_type);
+        } else if (strcmp(func_type, "none") == 0 && strcmp(expression_type, "none") == 0) {
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Expr->line, Expr->col, expression_type);
         }
     }
  
