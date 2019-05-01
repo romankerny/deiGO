@@ -166,7 +166,9 @@ void check_program(n* prog)
             name[strlen(name)-1] = '\0';
 
             Function *func = search_Function_by_name(name);
-            check_FuncBody(FuncBody, func);
+            
+            if(func != NULL)
+                check_FuncBody(FuncBody, func);
         
             free(name);
         }
@@ -244,7 +246,7 @@ void check_FuncBody(n * FuncBody, Function * func)
 
 }
 
-Function * check_FuncHeader(n* FuncHeader)
+void check_FuncHeader(n* FuncHeader)
 {   
     n* FuncId = FuncHeader->down;
     n* FuncParams;
@@ -333,7 +335,7 @@ Function * check_FuncHeader(n* FuncHeader)
         insert_Global_element(id, type, param_str);
 
     }
-    return to_return;
+
 }
 
 

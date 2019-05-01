@@ -4,7 +4,7 @@
 void check_program(n* prog);
 void check_VarDecl(n* VarType);
 void check_FuncDecl(n* FuncDecl);
-Function * check_FuncHeader(n* FuncHeader);
+void check_FuncHeader(n* FuncHeader);
 void check_FuncBody(n * FuncBody, Function * func);
 void check_Statement(n * aux, Function * func);
 char * check_Expr(n * Expr, Function * func);

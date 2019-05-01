@@ -29,13 +29,6 @@ Function * insert_Function_safe(char *name) {
 
 Function * insert_Function(char * name) {
     
-    Function * new_Function = malloc(sizeof(Function));
-
-    new_Function->down = NULL;
-    new_Function->name           = strdup(name);
-    new_Function->name_no_params = strdup(name);
-    new_Function->next = NULL;
-
     Global_element * aux = global;
     while(aux)
     {
@@ -138,6 +131,8 @@ void set_as_Used(Function_element * f) {
 
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
 
+    if(func == NULL) printf("VEIO A NULL CRL\n\n");
+
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
     new_func_el->next  = NULL;
@@ -155,7 +150,8 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
     if(param != NULL)
         new_func_el->param = strdup(param);
 
-    if(func->next == NULL) {
+    if(func->next == NULL)
+    {
         func->next = new_func_el;
         return new_func_el;
     }
