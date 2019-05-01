@@ -12,7 +12,8 @@ Function * insert_Function(char *name) {
     Function * new_Function = malloc(sizeof(Function));
 
     new_Function->down = NULL;
-    new_Function->name = strdup(name);
+    new_Function->name           = strdup(name);
+    new_Function->name_no_params = strdup(name);
     new_Function->next = NULL;
 
     if(funcs == NULL) {
@@ -20,7 +21,11 @@ Function * insert_Function(char *name) {
         return new_Function;
     }
 
-    for (aux = funcs; aux->down; aux = aux->down);
+    for (aux = funcs; aux; aux = aux->down)
+    {
+        if(strcmp(name, aux->name_no_params) == 0) return NULL;
+        if(aux->down == NULL) break;
+    }
     aux->down = new_Function;
 
     return new_Function;

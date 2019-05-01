@@ -25,6 +25,7 @@ typedef struct _t1{
 
 typedef struct _t2 {
     char *name;
+    char *name_no_params;
     Function_element *next;
     struct _t2 *down;
 } Function;

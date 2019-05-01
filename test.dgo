@@ -1,5 +1,7 @@
 package main;
 
-var i int;
-var i float32;
-var i string;
+func f() { g(); h(); };
+func f() {
+	return 0;
+};
+

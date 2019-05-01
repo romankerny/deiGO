@@ -149,9 +149,7 @@ void check_program(n* prog)
 
         } else if(strcmp(aux->str, "FuncDecl") == 0)
         {
-            Function * func;
-            func = check_FuncHeader(aux->down);
-
+            check_FuncHeader(aux->down);
         }
         aux = aux->right;
     }
@@ -263,72 +261,76 @@ Function * check_FuncHeader(n* FuncHeader)
     id[strlen(id)-1] = 0;
 
     Function * to_return = insert_Function(id);
-
-    
-    if (strcmp(FuncId->right->str, "FuncParams") == 0)
-    {
-        strcpy(type ,"none");
-        FuncParams = FuncId->right;
+    if(to_return == NULL) {
+        printf("Line %d, column %d: Symbol %s already defined\n", FuncId->line, FuncId->col, id);
     }
     else
     {
-        strcpy(type ,strdup(FuncId->right->str));
-        type[0] = tolower(type[0]);
-        FuncParams = FuncId->right->right;
-    }
-    
-    
-    insert_Func_element("return", type, NULL, to_return);
-    
-    ParamDecl = FuncParams->down;
-    strcat(param_str, "(");
 
-
-    while(ParamDecl)
-    {
-        
-        strcpy(aux, ParamDecl->down->str);
-        aux[0] = tolower(aux[0]);
-
-        if (i == 0) 
+        if (strcmp(FuncId->right->str, "FuncParams") == 0)
         {
-
-            strcat(param_str, aux);
+            strcpy(type ,"none");
+            FuncParams = FuncId->right;
         }
-        else {
-            strcat(param_str, ",");
-            strcat(param_str, aux);
-        }
-
-        char param_id[512] = {0};
-        sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
-        param_id[strlen(param_id)-1] = '\0'; // tirar o )
-        
-        if(check_if_param_Already_Defined(to_return, param_id))
+        else
         {
-            printf("Line %d, column %d: Symbol %s already defined\n", ParamDecl->down->right->line, ParamDecl->down->right->col, param_id);
+            strcpy(type ,strdup(FuncId->right->str));
+            type[0] = tolower(type[0]);
+            FuncParams = FuncId->right->right;
         }
         
-        insert_Func_element(param_id, aux,"param", to_return);
-        ParamDecl = ParamDecl->right;
-        i++;
+        
+        insert_Func_element("return", type, NULL, to_return);
+        
+        ParamDecl = FuncParams->down;
+        strcat(param_str, "(");
+
+
+        while(ParamDecl)
+        {
+            
+            strcpy(aux, ParamDecl->down->str);
+            aux[0] = tolower(aux[0]);
+
+            if (i == 0) 
+            {
+
+                strcat(param_str, aux);
+            }
+            else {
+                strcat(param_str, ",");
+                strcat(param_str, aux);
+            }
+
+            char param_id[512] = {0};
+            sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
+            param_id[strlen(param_id)-1] = '\0'; // tirar o )
+            
+            if(check_if_param_Already_Defined(to_return, param_id))
+            {
+                printf("Line %d, column %d: Symbol %s already defined\n", ParamDecl->down->right->line, ParamDecl->down->right->col, param_id);
+            }
+            
+            insert_Func_element(param_id, aux,"param", to_return);
+            ParamDecl = ParamDecl->right;
+            i++;
+        }
+
+        strcat(param_str, ")");
+
+        //char name_aux = strdup(to_return->name);
+        char name_aux[512] = {0};
+        strcpy(name_aux, to_return->name);
+        //char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
+        char last[512] = {0};
+
+        strcat(last, name_aux);
+        strcat(last, param_str);
+        to_return->name = strdup(last);
+
+        insert_Global_element(id, type, param_str);
+
     }
-
-    strcat(param_str, ")");
-
-    //char name_aux = strdup(to_return->name);
-    char name_aux[512] = {0};
-    strcpy(name_aux, to_return->name);
-    //char * last = malloc(sizeof(char) * (strlen(to_return->name) + strlen(param_str) + strlen(name_aux)));
-    char last[512] = {0};
-
-    strcat(last, name_aux);
-    strcat(last, param_str);
-    to_return->name = strdup(last);
-
-    insert_Global_element(id, type, param_str);
-
-    
     return to_return;
 }
 
@@ -583,8 +585,6 @@ char * check_Expr(n * Expr, Function * func) {
     char second   = Expr->str[1];
 
     
-
-
     if (first == 'I' && second == 'n')
     {   
         char seventh  = Expr->str[7];
