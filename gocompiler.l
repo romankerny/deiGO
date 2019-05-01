@@ -1,7 +1,7 @@
 %option yylineno
 
-// Diogo Miguel Domingues Fernandes 2016233995
-// Roman Vasylovych Kernychyshyn 2015252618
+/* Diogo Miguel Domingues Fernandes 2016233995
+ Roman Vasylovych Kernychyshyn 2015252618 */
 
 %{
     #include <string.h>
