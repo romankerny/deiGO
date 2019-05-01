@@ -1,7 +1,4 @@
 package main;
 
-func f() { g(); h(); };
-func f() {
-	return 0;
-};
-
+var a1 int;
+func a1() {};

@@ -6,7 +6,7 @@
 extern Global_element* global;
 extern Function *funcs;
 
-Function * insert_Function(char *name) {
+Function * insert_Function_safe(char *name) {
     
     Function * aux;
     Function * new_Function = malloc(sizeof(Function));
@@ -21,14 +21,28 @@ Function * insert_Function(char *name) {
         return new_Function;
     }
 
-    for (aux = funcs; aux; aux = aux->down)
-    {
-        if(strcmp(name, aux->name_no_params) == 0) return NULL;
-        if(aux->down == NULL) break;
-    }
+    for (aux = funcs; aux->down; aux = aux->down);
     aux->down = new_Function;
 
     return new_Function;
+}
+
+Function * insert_Function(char * name) {
+    
+    Function * new_Function = malloc(sizeof(Function));
+
+    new_Function->down = NULL;
+    new_Function->name           = strdup(name);
+    new_Function->name_no_params = strdup(name);
+    new_Function->next = NULL;
+
+    Global_element * aux = global;
+    while(aux)
+    {
+        if(strcmp(name, aux->name) == 0) return NULL;
+        aux = aux->next;
+    }
+    return insert_Function_safe(name);
 }
 
 Function_element * search_Element(Function * func, char * name)

@@ -261,11 +261,13 @@ Function * check_FuncHeader(n* FuncHeader)
     id[strlen(id)-1] = 0;
 
     Function * to_return = insert_Function(id);
+    
     if(to_return == NULL) {
         printf("Line %d, column %d: Symbol %s already defined\n", FuncId->line, FuncId->col, id);
     }
     else
     {
+        // we also need to check if there are no global variables with the same name
 
         if (strcmp(FuncId->right->str, "FuncParams") == 0)
         {
