@@ -158,13 +158,14 @@ void check_program(n* prog)
     
     aux = prog->down;
 
-    char aux_param[512] = {0};
-    char param_str[512] = {0};
-    strcpy(param_str, "");
-    int i = 0;
 
     while (aux) {
         if (strcmp(aux->str, "FuncDecl") == 0) {
+            char aux_param[512] = {0};
+            char param_str[512] = {0};
+            strcpy(param_str, "");
+            int i = 0;
+
 
             n* FuncHeader = aux->down;
             n* FuncBody = FuncHeader->right;
@@ -224,7 +225,8 @@ void check_program(n* prog)
             strcat(final_id, name);
             strcat(final_id, param_str);
 
-            Function *func = search_Function_by_name(final_id);
+            
+            Function *func = search_Function(final_id);
             
             if(func != NULL)
                 check_FuncBody(FuncBody, func);
@@ -255,7 +257,6 @@ void check_Statement(n * aux, Function * func)
 
     } else if(strcmp(aux->str, "Call") == 0) {
 
-        printf("vou fazer checkcall\n\n");
         aux->str = realloc(aux->str, strlen(aux->str) + 20);
         char * type = check_Call(aux, func);
         if(strcmp(type,"none") != 0)
@@ -542,7 +543,6 @@ void check_Return(n* Return, Function *func)
 
 char * check_Call(n* Call, Function *func) 
 {
-    printf("======== inside check call\n");
 
     n * id_func = Call->down;
     n * params = id_func->right;
@@ -568,7 +568,6 @@ char * check_Call(n* Call, Function *func)
     id = realloc(id, sizeof(char) * (strlen(id)+strlen(expr_type)*2)); 
     strcat(id, expr_type);
 
-    printf("searching func by %s\n", id);
 
     Function *called_func = search_Function(id);
     if (called_func == NULL) {
