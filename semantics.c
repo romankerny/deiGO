@@ -440,7 +440,7 @@ void check_For(n* For, Function *func) {
         char * type = check_Expr(down_for, func);
         if(strcmp(type, "bool"))
         {
-            printf("Line %d, column %d: Incompatible type %s in if statement\n", down_for->line, down_for->col, type);
+            printf("Line %d, column %d: Incompatible type %s in for statement\n", down_for->line, down_for->col, type);
         }
         check_Block(down_for->right, func);
         
@@ -453,7 +453,9 @@ void check_Return(n* Return, Function *func)
 {
 
     char * func_type        = get_Func_Type(func);
-    char * expression_type  = check_Expr(Return->down, func);
+    n* Expr = Return->down;
+    char * expression_type  = check_Expr(Expr, func);
+
 
 
     if(expression_type == NULL) {
@@ -465,7 +467,7 @@ void check_Return(n* Return, Function *func)
     {
         if(!(strcmp(func_type, expression_type) == 0)) 
         {
-            printf("Line %d, column %d: Incompatible type %s in return statement\n", Return->down->line, Return->down->col, expression_type);
+            printf("Line %d, column %d: Incompatible type %s in return statement\n", Expr->line, Expr->col, expression_type);
         }
     }
  

@@ -65,11 +65,10 @@
 
 
 %token SEMICOLON BLANKID PACKAGE LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC RESERVED
-%token <l> AND ASSIGN STAR COMMA DIV EQ GE GT LE LT MINUS MOD NE NOT OR PLUS CMDARGS
+%token <l> AND ASSIGN STAR COMMA DIV EQ GE GT LE LT MINUS MOD NE NOT OR PLUS CMDARGS RETURN
 %token <l> INTLIT
 %token <l> REALLIT
 %token <l> ID
-%token <l> RETURN
 %token <s> STRLIT
 
 
@@ -215,7 +214,7 @@ ParseArgs: ID COMMA BLANKID ASSIGN PARSEINT LPAR CMDARGS LSQ Expr RSQ RPAR      
 
 FuncInvocation: ID LPAR RPAR {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                 sprintf(aux, "Id(%s)", $1.str);
-                                $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }
+                                $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col);}
 
     | ID LPAR Expr ListCommaExpr RPAR { char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                                         sprintf(aux, "Id(%s)", $1.str);
@@ -254,7 +253,7 @@ Expr:   Expr AND Expr    {$$ =  create_node("And", $1, NULL, $2.line, $2.col); $
     |   ID               {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
                          sprintf(aux, "Id(%s)", $1.str);
                          $$ = create_node(strdup(aux), NULL, NULL, $1.line, $1.col); }   
-    |   FuncInvocation  {$$ = add_node("Call", $1, NULL);}
+    |   FuncInvocation  {$$ = create_node("Call", $1, NULL, $1->line, $1->col);}
     |   LPAR Expr RPAR  {$$ = $2;}
     |   LPAR error RPAR {$$ = add_node(NULL, NULL, NULL); error = 1;}
     ;
