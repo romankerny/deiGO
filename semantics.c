@@ -130,6 +130,8 @@ void check_VarDeclFunc(n * VarDecl, Function * func) {
     char * type = strdup(VarType->str);
     type[0] = tolower(type[0]);
 
+    
+
     if (insert_Func_element(id, type, NULL, func) == NULL)
     {
         printf("Line %d, column %d: Symbol %s already defined\n", VarId->line, VarId->col, id);
@@ -155,6 +157,12 @@ void check_program(n* prog)
     }
     
     aux = prog->down;
+
+    char aux_param[512] = {0};
+    char param_str[512] = {0};
+    strcpy(param_str, "");
+    int i = 0;
+
     while (aux) {
         if (strcmp(aux->str, "FuncDecl") == 0) {
 
@@ -165,7 +173,58 @@ void check_program(n* prog)
             sscanf(FuncHeader->down->str,"Id(%s)", name);
             name[strlen(name)-1] = '\0';
 
-            Function *func = search_Function_by_name(name);
+            // printf("%s\n\n", );  // tenho de procurar name c params
+            // Global_element * g = search_Global(name);
+
+            n * FuncId     = FuncHeader->down;
+            n * FuncParams = NULL; 
+            
+            // pay attention if func has return type
+            if (strcmp(FuncId->right->str, "FuncParams") == 0)
+            {
+                FuncParams = FuncId->right;
+            }
+            else
+            {
+                FuncParams = FuncId->right->right;
+            }
+            
+            n * ParamDecl = FuncParams->down;
+            
+            strcat(param_str, "(");
+
+
+            while(ParamDecl)
+            {
+                strcpy(aux_param, ParamDecl->down->str);
+                aux_param[0] = tolower(aux_param[0]);
+
+                if (i == 0) 
+                {
+
+                    strcat(param_str, aux_param);
+                }
+                else {
+                    strcat(param_str, ",");
+                    strcat(param_str, aux_param);
+                }
+
+                char param_id[512] = {0};
+                sscanf(ParamDecl->down->right->str,"Id(%s)", param_id);
+                param_id[strlen(param_id)-1] = '\0'; // tirar o )
+        
+
+                ParamDecl = ParamDecl->right;
+                i++;
+            }
+
+            strcat(param_str, ")");
+
+            char final_id[512] = {0};
+            strcat(final_id, name);
+            strcat(final_id, param_str);
+
+            Function *func = search_Function_by_name(final_id);
             
             if(func != NULL)
                 check_FuncBody(FuncBody, func);
@@ -195,6 +254,8 @@ void check_Statement(n * aux, Function * func)
         check_Return(aux, func);
 
     } else if(strcmp(aux->str, "Call") == 0) {
+
+        printf("vou fazer checkcall\n\n");
         aux->str = realloc(aux->str, strlen(aux->str) + 20);
         char * type = check_Call(aux, func);
         if(strcmp(type,"none") != 0)
@@ -270,7 +331,8 @@ void check_FuncHeader(n* FuncHeader)
     else
     {
         // we also need to check if there are no global variables with the same name
-
+        
+        // pay attention if func has return type or not
         if (strcmp(FuncId->right->str, "FuncParams") == 0)
         {
             strcpy(type ,"none");
@@ -353,6 +415,7 @@ void check_Assign(n* Assign, Function *func) {
     char* name_id = malloc(sizeof(char) * strlen(Id->str));
     sscanf(Id->str, "Id(%s)", name_id);
     name_id[strlen(name_id)-1] = '\0';
+
 
     Function_element *element = search_Element(func, name_id);
     Global_element *gelement = search_Global(name_id, 0);
@@ -479,6 +542,7 @@ void check_Return(n* Return, Function *func)
 
 char * check_Call(n* Call, Function *func) 
 {
+    printf("======== inside check call\n");
 
     n * id_func = Call->down;
     n * params = id_func->right;
@@ -503,6 +567,8 @@ char * check_Call(n* Call, Function *func)
     char *id = getCleanId(id_func->str);
     id = realloc(id, sizeof(char) * (strlen(id)+strlen(expr_type)*2)); 
     strcat(id, expr_type);
+
+    printf("searching func by %s\n", id);
 
     Function *called_func = search_Function(id);
     if (called_func == NULL) {
