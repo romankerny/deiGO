@@ -1,4 +1,13 @@
-package main;
+package main
 
-var a1 int;
-func a1() {};
+func main() {
+    var i int;
+    i = 1;
+    h(!i);
+    
+};
+
+func h(q bool)  int{
+
+return 1;
+};

@@ -261,7 +261,7 @@ Function * check_FuncHeader(n* FuncHeader)
     id[strlen(id)-1] = 0;
 
     Function * to_return = insert_Function(id);
-    
+
     if(to_return == NULL) {
         printf("Line %d, column %d: Symbol %s already defined\n", FuncId->line, FuncId->col, id);
     }
@@ -496,7 +496,6 @@ char * check_Call(n* Call, Function *func)
     char *id = getCleanId(id_func->str);
     id = realloc(id, sizeof(char) * (strlen(id)+strlen(expr_type)*2)); 
     strcat(id, expr_type);
-
 
     Function *called_func = search_Function(id);
     if (called_func == NULL) {
