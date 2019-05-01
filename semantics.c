@@ -7,6 +7,8 @@
 #include <ctype.h>
 
 
+
+
 char * getCleanId(char * IdCidC)
 {
     char * id = malloc(sizeof(char) * strlen(IdCidC));
