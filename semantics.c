@@ -556,6 +556,8 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
 
     if (var_el == NULL && var_gel == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", IdVar->line, IdVar->col, name_IdVar);
+        var_type = strdup("undef");
+        strcat(IdVar->str, " - undef");
     } else if (var_el) {
         sprintf(IdVar->str, "%s - %s", IdVar->str, var_el->type);
         var_type = var_el->type;
@@ -569,12 +571,12 @@ void check_ParseArgs(n* ParseArgs, Function *func) {
 
     char *index_type = check_Expr(Expr, func);
 
-     if (strcmp(var_type, "int") == 0 && strcmp(index_type, "int") == 0) {
-         strcat(ParseArgs->str, " - int");
-     } else {
+    if (strcmp(var_type, "int") == 0 && strcmp(index_type, "int") == 0) {
+        strcat(ParseArgs->str, " - int");
+    } else {
         strcat(ParseArgs->str, " - undef");
         printf("Line %d, column %d: Operator strconv.Atoi cannot be applied to types %s, %s\n", ParseArgs->line, ParseArgs->col, var_type, index_type);
-     }
+    }
 
 }
 
