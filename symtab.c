@@ -42,6 +42,7 @@ Function_element * search_Element(Function * func, char * name)
 Global_element * search_Global(char * name)
 {
     Global_element * aux = global;
+
     
     while(aux)
     {
@@ -143,7 +144,7 @@ Function_element * insert_Func_element(char * name, char * type, char * param, F
 }
 
 Global_element * insert_Global_element(char * name, char * type, char * params) {
-    
+        
     Global_element * aux;
     Global_element * new_global_el = malloc(sizeof(Global_element));
     new_global_el->name = strdup(name);
@@ -160,14 +161,28 @@ Global_element * insert_Global_element(char * name, char * type, char * params) 
         return new_global_el;
     }
 
-    for(aux = global; aux->next; aux = aux->next)
+   
+    for(aux = global; aux; aux = aux->next)
     {
         if(strcmp(aux->name, name) == 0) return NULL;
+        if(aux->next == NULL) break;
     }
     aux->next = new_global_el;
 
     return new_global_el;
 }
+
+/*
+int check_if_global_element_exists(char * name) {
+
+    Global_element * aux;
+    while(aux)
+    {
+        if(strcmp(aux->name, name) == 0) return 0;
+        aux = aux->next;
+    }
+    return 0;
+}*/
 
 
 

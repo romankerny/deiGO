@@ -1,18 +1,5 @@
-package main
+package main;
 
-func lala(a int, a int, b int, b int) int {
-var a int;
-var b float32;
-
-a = 123123;
-return 1;
-
-
-}
-
-func main() {
-
-
-
-
-}
+var i int;
+var i float32;
+var i string;

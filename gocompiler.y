@@ -42,6 +42,7 @@
 %type<tree_node_pointer>ParseArgs
 
 
+
 %type<s>Type
 
 
@@ -63,11 +64,12 @@
 %left LPAR
 
 
-%token SEMICOLON BLANKID PACKAGE RETURN LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC RESERVED
+%token SEMICOLON BLANKID PACKAGE LBRACE LPAR LSQ RBRACE RPAR RSQ ELSE FOR IF VAR INT FLOAT32 BOOL STRING PRINT PARSEINT FUNC RESERVED
 %token <l> AND ASSIGN STAR COMMA DIV EQ GE GT LE LT MINUS MOD NE NOT OR PLUS CMDARGS
 %token <l> INTLIT
 %token <l> REALLIT
 %token <l> ID
+%token <l> RETURN
 %token <s> STRLIT
 
 
@@ -186,8 +188,8 @@ Statement: ID ASSIGN Expr {char *aux = malloc(sizeof(char)*(strlen($1.str)+20));
     |     FOR Expr LBRACE ListStatSemi RBRACE                                        {$2->right = add_node("Block", $4, NULL);
                                                                                         $$ = add_node("For", $2, NULL);}
 
-    |     RETURN                                                                     {$$ = add_node("Return", NULL, NULL);}
-    |     RETURN Expr                                                                {$$ = add_node("Return", $2, NULL);;}
+    |     RETURN                                                                     {$$ = create_node("Return", NULL, NULL, $1.line, $1.col);}
+    |     RETURN Expr                                                                {$$ = create_node("Return", $2, NULL, $1.line, $1.col);}
     |     FuncInvocation                                                             {$$ = add_node("Call", $1, NULL);}
     |     ParseArgs                                                                  {$$ = $1;}
     |     PRINT LPAR Expr   RPAR                                                     {$$ = add_node("Print", $3, NULL);}

@@ -62,7 +62,7 @@ asp               \"
 ";" {semi = 0; colno += yyleng; if(flag){printf("SEMICOLON\n");} last_c = colno; last_l = yylineno; if(!flag) return SEMICOLON;}
 "_" {semi = 0; colno += yyleng; if(flag){printf("BLANKID\n");} last_c = colno; last_l = yylineno; if(!flag) return BLANKID;}
 "package" {semi = 0; colno += yyleng; if(flag){printf("PACKAGE\n");} last_c = colno; last_l = yylineno; if(!flag) return PACKAGE;}
-"return"  {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");} last_c = colno; last_l = yylineno; if(!flag) return RETURN;}
+"return"  {semi = 1; colno += yyleng; if(flag){printf("RETURN\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return RETURN;}
 "&&" {semi = 0; colno += yyleng; if(flag){printf("AND\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return AND;}
 "=" {semi = 0; colno += yyleng;  if(flag){printf("ASSIGN\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return ASSIGN;}
 "*" {semi = 0; colno += yyleng;  if(flag){printf("STAR\n");} yylval.l = create_loc(yylineno, colno-yyleng+1, yytext); last_c = colno; last_l = yylineno; if(!flag) return STAR;}
