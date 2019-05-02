@@ -1,0 +1,3 @@
+#!/bin/sh
+
+./gocompiler < $1 | sort | diff -y - $2

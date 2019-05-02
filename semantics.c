@@ -228,7 +228,7 @@ void check_program(n* prog)
             strcat(final_id, param_str);
 
             
-            Function *func = search_Function(final_id);
+            Function *func = get_Function(final_id);
             
             if(func != NULL && func->visited == 0)
                 check_FuncBody(FuncBody, func);
@@ -355,7 +355,6 @@ void check_FuncHeader(n* FuncHeader)
         ParamDecl = FuncParams->down;
         strcat(param_str, "(");
 
-
         while(ParamDecl)
         {
             
@@ -378,6 +377,7 @@ void check_FuncHeader(n* FuncHeader)
             
             if(check_if_param_Already_Defined(to_return, param_id))
             {
+                to_return->invalid = 1;
                 printf("Line %d, column %d: Symbol %s already defined\n", ParamDecl->down->right->line, ParamDecl->down->right->col, param_id);
             }
             
@@ -399,7 +399,6 @@ void check_FuncHeader(n* FuncHeader)
         to_return->name = strdup(last);
 
         insert_Global_element(id, type, param_str);
-
     }
 
 }
@@ -420,13 +419,12 @@ void check_Assign(n* Assign, Function *func) {
     sscanf(Id->str, "Id(%s)", name_id);
     name_id[strlen(name_id)-1] = '\0';
 
-
     Function_element *element = search_Element(func, name_id);
     Global_element *gelement = search_Global(name_id, 0);
 
     if (element == NULL && gelement == NULL) {
         printf("Line %d, column %d: Cannot find symbol %s\n", Id->line, Id->col, name_id);
-        printf("Line %d, column %d: Operator %s cannot be applied to types undef, undef\n", Assign->line, Assign->col, get_op(Assign->str));
+        printf("Line %d, column %d: Operator %s cannot be applied to types undef, %s\n", Assign->line, Assign->col, get_op(Assign->str), expr_type);
         strcat(Id->str, " - undef");
         strcat(Assign->str, " - undef");
     } else if (element){
@@ -534,12 +532,12 @@ void check_Return(n* Return, Function *func)
     }
     else 
     {
-        if(!(strcmp(func_type, expression_type) == 0)) 
+        if(strcmp(func_type, expression_type)) 
         {
             printf("Line %d, column %d: Incompatible type %s in return statement\n", Expr->line, Expr->col, expression_type);
-        } else if (strcmp(func_type, "none") == 0 && strcmp(expression_type, "none") == 0) {
+        } /*else if (strcmp(func_type, "none") == 0 && strcmp(expression_type, "none") == 0) {
             printf("Line %d, column %d: Incompatible type %s in return statement\n", Expr->line, Expr->col, expression_type);
-        }
+        }*/
     }
  
 }
@@ -592,18 +590,20 @@ void check_Print(n* Print, Function *func) {
     char first = Expr_or_StrLit->str[0];
     char second = Expr_or_StrLit->str[1];
 
+    Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 20));
+
+
     if (first == 'S' && second == 't') {
         
-        Expr_or_StrLit->str = realloc(Expr_or_StrLit->str, sizeof(char)*(strlen(Expr_or_StrLit->str) + 20));
         strcat(Expr_or_StrLit->str, " - string");
 
     } else {
         char expr_type[512] = {0};
         strcpy(expr_type, check_Expr(Expr_or_StrLit, func));
-
+        /*
         if (strcmp(expr_type, "undef") == 0) {
             printf("Line %d, column %d: Incompatible type %s in fmt.Println statement\n",Expr_or_StrLit->line, Expr_or_StrLit->col, expr_type);
-        }
+        }*/
     }
 
 }
@@ -677,8 +677,8 @@ char * check_Expr(n * Expr, Function * func) {
             if(!Valid_Octal(octal))
             {
                 printf("Line %d, column %d: Invalid octal constant: %s\n", Expr->line, Expr->col, octal);
-                strcat(Expr->str, " - undef");
-                return "undef";
+                strcat(Expr->str, " - int");
+                return "int";
             }
             else 
             {
@@ -768,8 +768,8 @@ char * check_Expr(n * Expr, Function * func) {
             else
             {   
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
-                sprintf(Expr->str, "%s - undef", Expr->str);
-                return "undef";
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
             }
 
         }  // Not - bool
@@ -783,8 +783,8 @@ char * check_Expr(n * Expr, Function * func) {
             else
             {
                 printf("Line %d, column %d: Operator %s cannot be applied to type %s\n", Expr->line, Expr->col, get_op(Expr->str), t1);
-                sprintf(Expr->str, "%s - undef", Expr->str);
-                return "undef";
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
             }
         } // And e Or : bool - bool
         else if(strcmp(Expr->str, "And") == 0 || strcmp(Expr->str, "Or") == 0)
@@ -797,8 +797,8 @@ char * check_Expr(n * Expr, Function * func) {
             else
             {
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
-                sprintf(Expr->str, "%s - undef", Expr->str);
-                return "undef";
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
             }
             
         } // == !=  int e int, float e float, bool e bool, string e string
@@ -817,8 +817,8 @@ char * check_Expr(n * Expr, Function * func) {
             else
             {
                 printf("Line %d, column %d: Operator %s cannot be applied to types %s, %s\n", Expr->line, Expr->col, get_op(Expr->str), t1, t2);
-                sprintf(Expr->str, "%s - undef", Expr->str);
-                return "undef";
+                sprintf(Expr->str, "%s - bool", Expr->str);
+                return "bool";
             }
             
 

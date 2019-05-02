@@ -29,6 +29,7 @@ typedef struct _t2 {
     Function_element *next;
     struct _t2 *down;
     int visited;
+    int invalid;
 } Function;
 
 Function * insert_Function(char *name);
@@ -43,6 +44,7 @@ void show_Functions_table();
 void print_Function_table(Function * func);
 Function *search_Function(char * name);
 Function* search_Function_by_name(char * name);
+Function* get_Function(char * name);
 
 
 char * get_Func_Type(Function * f);

@@ -16,6 +16,7 @@ Function * insert_Function_safe(char *name) {
     new_Function->name_no_params = strdup(name);
     new_Function->next = NULL;
     new_Function->visited = 0;
+    new_Function->invalid = 0;
 
     if(funcs == NULL) {
         funcs = new_Function;
@@ -118,6 +119,19 @@ Function* search_Function(char * name)
     Function * aux = funcs;
     while(aux)
     {   
+        if(strcmp(aux->name, name) == 0 && !aux->invalid) {
+            return aux;
+        }
+        aux = aux->down;
+    }
+    return NULL;
+}
+
+Function* get_Function(char * name)
+{
+    Function * aux = funcs;
+    while(aux)
+    {   
         if(strcmp(aux->name, name) == 0) {
             return aux;
         }
@@ -131,8 +145,6 @@ void set_as_Used(Function_element * f) {
 }
 
 Function_element * insert_Func_element(char * name, char * type, char * param, Function * func) {
-
-    if(func == NULL) printf("VEIO A NULL CRL\n\n");
 
     Function_element * aux;
     Function_element * new_func_el = malloc(sizeof(Function_element));
