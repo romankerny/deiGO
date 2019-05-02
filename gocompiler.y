@@ -282,21 +282,21 @@ int main(int argc, char *argv[])
     }
     if(flag)
         yylex();
-     else
+     else {
         yyparse();
-
-    if (error == 0) {
-        if (print_tr) {
-            print_tree(tree_node_pointer, 0);
-        } else {
-            check_program(tree_node_pointer);
-            if(flag_s) {
-                show_Global_table();
-                show_Functions_table();
+        if (error == 0) {
+            if (print_tr) {
                 print_tree(tree_node_pointer, 0);
+            } else {
+                check_program(tree_node_pointer);
+                if(flag_s) {
+                    show_Global_table();
+                    show_Functions_table();
+                    print_tree(tree_node_pointer, 0);
+                }
             }
-        }
 
+        }
     }
     return 0;
 }

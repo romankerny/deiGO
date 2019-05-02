@@ -132,6 +132,7 @@ asp               \"
 \n	       {colno += yyleng; last_l = yylineno-1; last_c = colno; if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) return SEMICOLON;}}
 \t         {colno += yyleng; last_l = yylineno; last_c = colno;}
 " "        {colno += yyleng; last_l = yylineno; last_c = colno;}
+<<EOF>>	   {colno += yyleng; last_l = yylineno-1; last_c = colno; if (semi && flag) printf("SEMICOLON\n"); colno = 0; if (semi) {semi = 0; if(!flag) {return SEMICOLON;}} yyterminate();}
 .          {colno += yyleng; last_c = colno; last_l = yylineno; printf("Line %d, column %d: illegal character (%s)\n", yylineno, colno, yytext);}
 
 %%
